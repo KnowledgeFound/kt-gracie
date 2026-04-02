@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "kt-gracie-backend": {
+      "main": "src/kt-gracie-backend/main.mo",
+      "type": "motoko"
+    },
+    "kt-gracie-frontend": {
+      "dependencies": [
+        "kt-gracie-backend"
+      ],
+      "source": [
+        "src/kt-gracie-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "kt-gracie-frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
