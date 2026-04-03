@@ -18,6 +18,96 @@ cd kt-gracie/
 dfx help
 dfx canister --help
 ```
+## Pre-requisites
+
+- dfx 0.31.0
+- node >= v22.14.0
+- Linux (any Distro), WSL or MacOS
+
+## Installing Node, IC SDK, DFX, and MOPS
+
+### Node
+
+Ensure you have Node installed in WSL or your macOS. 
+
+If not, you can install it through nvm (node version manager) for both Linux and macOS, run the following:
+
+```bash
+# installs nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+
+# download and install Node.js (you may need to restart the terminal)
+nvm install 20
+
+# verifies the right Node.js version is in the environment
+node -v
+
+# verifies the right npm version is in the environment
+npm -v
+```
+
+### dfx
+
+To install dfx (v 0.31.0), run the following:
+
+```bash
+DFX_VERSION=0.31.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+```
+
+To verify that the IC SDK is successfully installed, run the following command:
+
+```bash
+dfx --version
+```
+
+It's recommended to create an identity using dfx. To set an identity and a key run the following command:
+
+```bash
+dfx identity new
+```
+
+Then use your identity:
+
+```bash
+dfx identity use <insert_name>
+```
+
+To verify the list of identities available:
+```bash
+dfx identity list
+```
+
+Learn more about dfx identities here - [dfx identity](https://internetcomputer.org/docs/current/references/cli-reference/dfx-identity)
+
+### Mops
+
+Mops is a package manager that needs to be installed on the system rather than on the working directory. In the root run this command:
+
+Through curl
+
+```bash
+#In the root of your system ~/
+
+curl -fsSL cli.mops.one/install.sh | sh
+```
+In your project's dfx.json, add mops as a packtool
+
+```json
+"defaults": {
+  "build": {
+    "packtool": "mops sources"
+  }
+},
+```
+
+In your project's root directory, initialise mops:
+
+```bash
+mops init
+```
+
+
+**Note that the installation of mops will take some time. Approximately five minutes, or more depending on your system and network connection.**
 
 ## Running the project locally
 
