@@ -11,7 +11,7 @@ To learn more before you start working with `kt-gracie`, see the following docum
 - [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
 - [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
 
-If you want to start working on your project right away, you might want to try the following commands (testing):
+If you want to start working on your project right away, you might want to try the following commands:
 
 ```bash
 cd kt-gracie/
@@ -100,12 +100,12 @@ In your project's dfx.json, add mops as a packtool
 },
 ```
 
-In your project's root directory, initialise mops:
+In your project's root directory, run the following command:
 
 ```bash
-mops init
+mops install
 ```
-
+After running this, any toolchains or dependencies will be installed.
 
 **Note that the installation of mops will take some time. Approximately five minutes, or more depending on your system and network connection.**
 
@@ -117,7 +117,8 @@ If you want to test your project locally, you can use the following commands:
 # Starts the replica, running in the background
 dfx start --background
 
-# Deploys your canisters to the replica and generates your candid interface
+# Deploys your canisters to the replica and generates your candid interface. It basically deploys the fullstack application
+
 dfx deploy
 ```
 
@@ -135,6 +136,12 @@ If you are making frontend changes, you can start a development server with
 
 ```bash
 npm start
+```
+
+If you only want to run the backend only, use:
+
+```bash
+dfx deploy kt-gracie-backend
 ```
 
 Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
