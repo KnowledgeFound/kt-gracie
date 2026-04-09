@@ -24,7 +24,10 @@ jobs:
       # 🧠 Install dfx (Motoko toolchain)
       - name: Install dfx
         run: |
-          DFX_VERSION=0.31.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+          export DFX_VERSION=0.31.0
+          export CI=true
+          sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)" --yes
+          echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # 🧠 Check dfx version (Motoko toolchain)
@@ -41,7 +44,7 @@ jobs:
 
       # 🚀 Start local replica
       - name: Start dfx replica
-        run: dfx start
+        run: dfx start --background
 
       # 📦 Install frontend dependencies
       - name: Install frontend deps
