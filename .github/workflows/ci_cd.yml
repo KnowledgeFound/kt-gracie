@@ -21,6 +21,28 @@ jobs:
         with:
           node-version: 24
 
+      # 🧠 Install dfx (Motoko toolchain)
+      - name: Install dfx
+        run: |
+          DFX_VERSION=0.31.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      # 🧠 Check dfx version (Motoko toolchain)
+      - name: Check dfx version
+        run: dfx --version
+      
+      # Downloading mops
+      - name: Download mops
+        run: curl -fsSL cli.mops.one/install.sh | sh
+
+      # Installing mops
+      - name: Install mops
+        run: mops install
+
+      # 🚀 Start local replica
+      - name: Start dfx replica
+        run: dfx start
+
       # 📦 Install frontend dependencies
       - name: Install frontend deps
         run: |
@@ -37,28 +59,6 @@ jobs:
             npm run build
           fi
 
-      # 🧠 Install dfx (Motoko toolchain)
-      - name: Install dfx
-        run: |
-          DFX_VERSION=0.31.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      # 📦 Install dfx cache (includes moc)
-      - name: Install dfx cache
-        run: dfx cache install
-      
-      # Downloading mops
-      - name: Downloading mops
-        run: curl -fsSL cli.mops.one/install.sh | sh
-
-      # Install mops
-      - name: Install mops
-        run: mops install
-
-      # 🚀 Start local replica
-      - name: Start dfx replica
-        run: dfx start --background
-
       # 🔨 Build canisters (Motoko backend)
       - name: Build canisters
-        run: dfx build
+        run: dfx deploy
