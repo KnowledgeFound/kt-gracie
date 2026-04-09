@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { kt_gracie_backend } from 'declarations/kt-gracie-backend';
+// import { gracie } from '../../declarations/gracie';
+// import { city } from '../../declarations/city';
 
 function App() {
   const [greeting, setGreeting] = useState('');
