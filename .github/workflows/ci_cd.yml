@@ -45,7 +45,6 @@ jobs:
       - name: Start dfx replica
         run: 
           dfx start --background
-          sleep 5 # Wait for the replica to fully start
 
         
       # 🔨 Build canisters (Motoko backend)
