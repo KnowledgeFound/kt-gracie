@@ -53,15 +53,7 @@ jobs:
             cd src/kt-gracie-frontend
             npm install
           fi
-
-      # 🏗️ Build frontend
-      - name: Build frontend
-        run: |
-          if [ -d "src/kt-gracie-frontend" ]; then
-            cd src/kt-gracie-frontend
-            npm run build
-          fi
       
-      # 🏗️ Run backend
+      # 🏗️ Run fullstack app
       - name: Deploy canisters
         run: dfx deploy
