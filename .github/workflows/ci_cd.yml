@@ -46,11 +46,6 @@ jobs:
         run: 
           dfx start --background
 
-        
-      # 🔨 Build canisters (Motoko backend)
-      - name: Build canisters
-        run: dfx build
-
       # 📦 Install frontend dependencies
       - name: Install frontend deps
         run: |
@@ -68,5 +63,5 @@ jobs:
           fi
       
       # 🏗️ Run backend
-      - name: Run backend
-        run: dfx deploy kt-gracie-backend
+      - name: Deploy canisters
+        run: dfx deploy
