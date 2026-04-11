@@ -13,6 +13,14 @@
       ],
       "type": "assets",
       "workspace": "kt-gracie-frontend"
+    },
+    "gracie":{
+      "main":"src/gracie/main.mo",
+      "type": "motoko"
+    },
+    "city":{
+      "main":"src/city/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
