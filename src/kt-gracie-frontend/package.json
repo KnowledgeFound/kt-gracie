@@ -13,6 +13,7 @@
   "dependencies": {
     "@icp-sdk/core": "^5.0.0",
     "@pixi/react": "^7.1.2",
+    "@pixi/unsafe-eval": "^7.4.3",
     "@tanstack/react-query": "^5.99.0",
     "pixi.js": "^7.4.3",
     "react": "^18.2.0",
