@@ -9,7 +9,7 @@ const STATS = {
     tokens: 1250,
     health: 90,
     healthMax: 100,
-    username: "Agent_Unity",
+    username: "Lynn",
 };
 
 /* ── Animated cloud sprite (must be a child of <Stage>) ── */
@@ -91,20 +91,37 @@ export default function CityScene() {
             {/* ── Header Bar (overlaid) ── */}
             <header style={styles.header}>
                 <div style={styles.badgeGroup}>
-                    {/* Health Badge */}
-                    <div style={styles.badge}>
-                        <span style={styles.badgeIcon}>❤️</span>
-                        <div style={styles.badgeText}>
-                            <span style={styles.badgeLabel}>City Health</span>
-                            <span style={styles.badgeValue}>
-                                {health}/{STATS.healthMax}
-                            </span>
+                    {/* Health Badge — blue heart + progress bar */}
+                    <div style={styles.healthBadge}>
+                        {/* Blue circle heart icon */}
+                        <div style={styles.heartCircle}>
+                            <svg width="22" height="20" viewBox="0 0 24 22" fill="none">
+                                <path
+                                    d="M12 21s-9-5.5-9-12.5C3 4.5 5.5 2 8.5 2c1.74 0 3.41.81 4.5 2.09A6.04 6.04 0 0 1 17.5 2C20.5 2 23 4.5 23 8.5 23 15.5 12 21 12 21z"
+                                    fill="#6ec6f0"
+                                />
+                            </svg>
+                        </div>
+                        <div style={styles.healthContent}>
+                            <span style={styles.healthLabel}>CITY HEALTH: {health}%</span>
+                            <div style={styles.progressTrack}>
+                                <div
+                                    style={{
+                                        ...styles.progressFill,
+                                        width: `${health}%`,
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    {/* Tokens Badge */}
+                    {/* Tokens Badge — KT coin */}
                     <div style={styles.badge}>
-                        <span style={styles.badgeIcon}>📘</span>
+                        <div style={styles.ktCoin}>
+                            <div style={styles.ktCoinInner}>
+                                <span style={styles.ktCoinText}>KT</span>
+                            </div>
+                        </div>
                         <div style={styles.badgeText}>
                             <span style={styles.badgeLabel}>Knowledge Tokens</span>
                             <span style={styles.badgeValue}>{tokens}</span>
@@ -248,5 +265,98 @@ const styles = {
         fontSize: "16px",
         fontWeight: 700,
         color: "#1a3d5c",
+    },
+
+    /* ── Health badge with progress bar ── */
+    healthBadge: {
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        background: "rgba(235, 245, 255, 0.92)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        border: "1.5px solid rgba(56, 152, 216, 0.35)",
+        borderRadius: "40px",
+        padding: "10px 22px",
+        boxShadow:
+            "0 4px 14px rgba(56, 152, 216, 0.12), inset 0 1px 0 rgba(255,255,255,0.7)",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        cursor: "default",
+    },
+
+    heartCircle: {
+        width: "36px",
+        height: "36px",
+        borderRadius: "50%",
+        background: "linear-gradient(135deg, #d0eaff 0%, #eef7ff 100%)",
+        border: "2px solid rgba(110, 198, 240, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+    },
+
+    healthContent: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+    },
+
+    healthLabel: {
+        fontSize: "11px",
+        fontWeight: 700,
+        color: "#3a6d8c",
+        letterSpacing: "0.6px",
+    },
+
+    progressTrack: {
+        width: "140px",
+        height: "14px",
+        background: "#c8dce8",
+        borderRadius: "8px",
+        overflow: "hidden",
+        border: "1px solid rgba(56, 152, 216, 0.25)",
+    },
+
+    progressFill: {
+        height: "100%",
+        background: "linear-gradient(90deg, #5cb8e8 0%, #3a9ad9 100%)",
+        borderRadius: "8px",
+        transition: "width 0.6s ease-in-out",
+        backgroundImage:
+            "repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,0.25) 8px, rgba(255,255,255,0.25) 10px)",
+    },
+
+    /* ── KT Coin icon ── */
+    ktCoin: {
+        width: "38px",
+        height: "38px",
+        borderRadius: "50%",
+        background: "linear-gradient(135deg, #b8d8f0 0%, #6aafe0 50%, #4a98d4 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow:
+            "0 2px 8px rgba(74, 152, 212, 0.35), inset 0 1px 2px rgba(255,255,255,0.4)",
+        flexShrink: 0,
+    },
+
+    ktCoinInner: {
+        width: "30px",
+        height: "30px",
+        borderRadius: "50%",
+        border: "2px solid rgba(255, 255, 255, 0.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%)",
+    },
+
+    ktCoinText: {
+        fontSize: "12px",
+        fontWeight: 800,
+        color: "#ffffff",
+        letterSpacing: "1px",
+        textShadow: "0 1px 2px rgba(0,0,0,0.2)",
     },
 };
