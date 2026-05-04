@@ -1,5 +1,5 @@
-import HomePage from "./app/home/page";
+import CityScene from "./app/home/cityscene";
 
 export default function App() {
-  return <HomePage />;
+  return <CityScene />;
 }
