@@ -6,5 +6,12 @@ module Enums{
         #EXAM;
         #QUIZ;
         #ASSIGNMENT;
+    };
+
+    public type ContentType = {
+        #VIDEO;
+        #AUDIO;
+        #ARTICLE;
+        #TUTORIAL;
     } 
 }

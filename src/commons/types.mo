@@ -1,4 +1,6 @@
 import Enums "./ENUMS";
+import Int "mo:core/Int";
+import Text "mo:core/Text";
 
 module Types{
 
@@ -10,6 +12,8 @@ module Types{
     public type Subject = {
         name: Text;
         code: Text;
+        duration: Int;
+        description: Text;
         assessments: [Assessment];
     };
 
@@ -19,5 +23,12 @@ module Types{
         maxScore: Nat;
         currentScore: Nat;
     };
+
+    public type Content = {
+        name: Text;
+        contentType: Enums.ContentType;
+    };
+
+    
 
 }
