@@ -10,14 +10,16 @@ module Types{
     };
 
     public type Subject = {
+        id: Int;
         name: Text;
         code: Text;
-        duration: Int;
+        duration: Int; // Metric still has to be decided
         description: Text;
         assessments: [Assessment];
     };
 
     public type Assessment = {
+        id: Int;
         title: Text;
         assessmentType: Enums.AssessmentType;
         maxScore: Nat;

@@ -13,5 +13,5 @@ module Enums{
         #AUDIO;
         #ARTICLE;
         #TUTORIAL;
-    } 
+    }; 
 }
