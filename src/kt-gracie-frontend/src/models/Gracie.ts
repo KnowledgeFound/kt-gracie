@@ -1,4 +1,4 @@
-import { Gender } from '../ENUMS/gender'
+import { Gender } from '../ENUMS/enums'
 
 export class Gracie {
     private name: string;

@@ -45,9 +45,9 @@ persistent actor {
     return null;
   };
 
-  public func createSubjectMediator(subject: Types.Subject) : async Result.Result<Text,Text> {
+  public func createSubjectMediator(name: Text, code: Text, duration: Nat, description: Text) : async Result.Result<Text,Text> {
     try{
-      let newSubject = await City.createSubject(subject);
+      let newSubject = await City.createSubject(name,code,duration,description);
     
       await addSubject(newSubject);
 
@@ -60,16 +60,14 @@ persistent actor {
   };
 
   public func testCreateSubject() : async Result.Result<Text,Text> {
-    let subject : Types.Subject = {
-      id = 1;
-      name = "Compiler Construction";
-      code = "COS341";
-      duration = 84;
-      description = "Stephan Grunner";
-      assessments = [];
-    };
+    
+    let name = "Software Engineering";
+    let code = "COS301";
+    let duration = 94;
+    let description = "Stacey Barror";
+    
 
-    switch (await createSubjectMediator(subject)) {
+    switch (await createSubjectMediator(name,code,duration,description)) {
       case (#ok(value)) {
         return #ok(value);
       };
