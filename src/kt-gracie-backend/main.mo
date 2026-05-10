@@ -5,6 +5,7 @@ import Text "mo:core/Text";
 import Buffer "mo:base/Buffer";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
+import Nat "mo:base/Nat";
 import City "canister:city";
 
 persistent actor {
@@ -35,7 +36,7 @@ persistent actor {
     return null;
   };
 
-  public query func getSubjectById(id: Int) : async ?Types.Subject {
+  public query func getSubjectById(id: Nat) : async ?Types.Subject {
     for(subject in arr_subjects.vals()){
       if(subject.id == id){
         return ?subject;

@@ -11,8 +11,8 @@ export type Subject = {
     name: string;
     code: string;
     duration: bigint; // Metric still has to be decided
-    description: Text;
-    assessments: [Assessment];
+    description: string;
+    assessments: Assessment[];
 };
 
 export type CreateSubjectInput = {
