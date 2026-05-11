@@ -1,4 +1,4 @@
-import { Gender } from "src/ENUMS/gender";
+import { Gender } from '../ENUMS/enums'
 import { Gracie } from "./Gracie";
 import { Progress } from "./Progress";
 

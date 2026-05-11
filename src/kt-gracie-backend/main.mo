@@ -3,10 +3,17 @@ import Utils "../commons/utils";
 import Result "mo:core/Result";
 import Text "mo:core/Text";
 import Buffer "mo:base/Buffer";
+import Debug "mo:base/Debug";
+import Error "mo:base/Error";
+import Nat "mo:base/Nat";
+import City "canister:city";
 
 persistent actor {
 
   var arr_subjects : [Types.Subject] = [];
+
+  transient var SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
+  transient var SUBJECT_NOT_CREATED = "subject not created";
 
   public query func greet(name : Text) : async Text {
     let person : Types.person = { name = name; age = 30 };
@@ -17,5 +24,68 @@ persistent actor {
     let buffer = Buffer.fromArray<Types.Subject>(arr_subjects);
     buffer.add(subject);
     arr_subjects := Buffer.toArray(buffer);
+  };
+
+  public query func getSubjectByCode(code: Text) : async ?Types.Subject {
+    for(subject in arr_subjects.vals()){
+      if(subject.code == code){
+        return ?subject;
+      };
+    };
+
+    return null;
+  };
+
+  public query func getSubjectById(id: Nat) : async ?Types.Subject {
+    for(subject in arr_subjects.vals()){
+      if(subject.id == id){
+        return ?subject;
+      };
+    };
+
+    return null;
+  };
+
+  public func createSubjectMediator(name: Text, code: Text, duration: Nat, description: Text) : async Result.Result<Text,Text> {
+    try{
+      let newSubject = await City.createSubject(name,code,duration,description);
+    
+      await addSubject(newSubject);
+
+      return #ok(SUBJECT_SUCCESSFULLY_CREATED);
+    }
+    catch(err){
+      Debug.print("Unable to create subject: " # Error.message(err));
+      return #err(SUBJECT_NOT_CREATED);
+    }
+  };
+
+  public func testCreateSubject() : async Result.Result<Text,Text> {
+    
+    let name = "Software Engineering";
+    let code = "COS301";
+    let duration = 94;
+    let description = "Stacey Barror";
+    
+
+    switch (await createSubjectMediator(name,code,duration,description)) {
+      case (#ok(value)) {
+        return #ok(value);
+      };
+
+      case (#err(err)) {
+        return #err(err);
+      };
+    };
+  };
+
+  /////////////////////////HELPER FUNCTIONS/////////////////////////////
+  public query func  getNumberOfSubjects() : async Nat {
+    return arr_subjects.size();
+  };
+
+  //PLEASE REMOVE IN PRODCUTION!///
+  public query func getSubjectArray() : async [Types.Subject] {
+    return arr_subjects;
   };
 };
