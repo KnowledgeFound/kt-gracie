@@ -1,4 +1,4 @@
-import CityScene from "./app/home/cityscene";
+import CityScene from "./app/home/CityScene";
 
 export default function App() {
   return <CityScene />;
