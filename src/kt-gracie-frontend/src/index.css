@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans;
+  }
+
+  img {
+    @apply max-w-[50vw] max-h-[25vw] block mx-auto;
+  }
+
+  form {
+    @apply flex justify-center gap-2 flex-wrap max-w-[40vw] mx-auto items-baseline;
+  }
+
+  button[type='submit'] {
+    @apply px-5 py-2 m-2.5 float-right;
+  }
+}
+
+@layer components {
+  #greeting {
+    @apply m-2.5 p-[10px_60px] border border-gray-800;
+  }
+
+  #greeting:empty {
+    @apply hidden;
+  }
+
+  .browser-warning {
+    @apply hidden;
+  }
+}
