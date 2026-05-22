@@ -7,7 +7,6 @@ export class City {
     private contentScore: number = 0;
     private finalAssessmentScore: number = 0;
 
-
     constructor(name: string) {
         this.name = name;
     }
