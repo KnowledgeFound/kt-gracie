@@ -1,10 +1,6 @@
 import { FormEvent, useState } from 'react';
 import type { CreateUserInput, AgeBucket, Gender, Region } from '../types';
-import {
-	AGE_BUCKET_LABELS,
-	GENDER_LABELS,
-	REGION_LABELS,
-} from '../constants';
+import { AGE_BUCKET_LABELS, GENDER_LABELS, REGION_LABELS } from '../constants';
 import { Button } from '@/components/ui';
 
 interface CreateUserFormProps {
@@ -133,5 +129,3 @@ function Field({
 		</div>
 	);
 }
-
-

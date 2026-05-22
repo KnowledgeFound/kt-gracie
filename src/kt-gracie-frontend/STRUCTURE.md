@@ -1,12 +1,20 @@
-# Frontend Folder Structure Guide
+refactor(frontend): implement scalable frontend structure
 
-Recommended architecture for a multi-feature React + TypeScript application where multiple teams work in parallel with minimal merge conflicts and clear ownership boundaries.
+- reorganized frontend architecture for maintainability
+- separated layouts, components, pages, hooks, and services
+- added shared UI module
+- improved route organization
+- updated import aliases and paths
+- installed framer-motion
+- installed lucide-react
+- installed tailwindcss
+- installed postcss
+- optimized project scalability for team collaboration
+- worked auth, profile to test user crud with localstorage
+- drafted demo for quiz, leaderboad
+- extend tailwind’s theme for consistent brand colours, spacing, fonts.
 
----
-
-## Core Principle: Feature-First, Shared-Second
-
-Each team owns a **feature slice**. Everything a feature needs — components, hooks, services, types, state — lives inside that feature's folder. Shared code only graduates to the top level when two or more features genuinely need it.
+1. **Folder structure** matches the following skeleton:
 
 ```
 src/
@@ -15,6 +23,10 @@ src/
 │   │   └── page.tsx
 │   ├── home/
 │   │   └── page.tsx
+│   ├── leaderboard/
+│   │   └── page.tsx
+│   ├── profile/
+│   │   └── page.tsx
 │   ├── quiz/
 │   │   └── page.tsx
 │   └── layout.tsx              # Root layout (nav, providers)
@@ -22,9 +34,9 @@ src/
 ├── features/                   # ← Each team owns one folder here
 │   ├── auth/                   # Team A
 │   │   ├── components/         # UI components private to this feature
-│   │   │   ├── Login.tsx
-│   │   │   ├── Register.tsx
-│   │   │   └── UserCard.tsx
+│   │   │   ├── CreateUserForm.tsx
+│   │   │   ├── EditUserForm.tsx
+│   │   │   └── ProfileCard.tsx
 │   │   ├── hooks              # Feature-scoped hooks
 │   │   ├── services           # API / canister calls for this feature
 │   │   ├── types.ts            # Types owned by this feature
@@ -32,7 +44,18 @@ src/
 │   │   ├── utils.ts            # Pure helpers (validation, etc.)
 │   │   └── index.ts            # Public API — only export what other features need
 │   │
-│   ├── greeting/               # Team B
+│   ├── city/               # Team B
+│   │   ├── components/
+│   │   │   └── CityHeader.tsx
+│   │   │   └── CloudLayer.tsx
+│   │   │   └── DrawerMenu.tsx
+│   │   │   └── DriftingCloud.tsx
+│   │   │   └── HealthBadge.tsx
+│   │   │   └── TokensBadge.tsx
+│   │   │   └── UserBadge.tsx
+│   │   └── index.ts
+│   │
+│   ├── greeting/               # Team C
 │   │   ├── components/
 │   │   │   └── GreetingForm.tsx
 │   │   ├── hooks/
@@ -42,7 +65,7 @@ src/
 │   │   ├── types.ts
 │   │   └── index.ts
 │   │
-│   └── quiz/                   # Team C 
+│   └── quiz/                   # Team D
 │       ├── components/
 │       ├── hooks/
 │       ├── services/
@@ -52,12 +75,10 @@ src/
 ├── components/                 # Truly shared, design-system-level UI only
 │   ├── ui/                     # Primitives: Button, Input, Modal, Badge…
 │   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   ├── Modal.tsx
+│   │   ├── BackMenu.tsx
 │   │   └── index.ts
 │   └── layout/                 # App-wide layout shells
 │       ├── MainLayout.tsx
-│       ├── PageHeader.tsx
 │       └── index.ts
 │
 ├── hooks/                      # Shared hooks used by 2+ features
@@ -89,102 +110,22 @@ src/
 └── index.css                   # Tailwind directives + global base styles
 ```
 
----
+2. **Barrel rule enforced**: every feature folder contains `index.ts` that exports **only** what other features/pages are allowed to import.
+   - ✅ `import { UserCard } from '@/features/auth'`
+   - ❌ `import UserCard from '@/features/auth/components/UserCard'`
 
-## What Goes Where — Decision Rules
+3. **Import alias** `@/` is configured in `tsconfig.json` and `vite.config.js` (or equivalent) to point to `src/`.
 
-### Put it in `features/<name>/` when:
-- It is only used by one feature / one team
-- It would cause a merge conflict if two teams edited the same file
-- It has domain knowledge (user info, quiz scoring logic, greeting canister calls)
+4. **No relative imports that cross feature boundaries** (e.g. `../../../features/auth/...`).
 
-### Put it in `components/ui/` when:
-- It is a pure presentational primitive with no business logic
-- Any team could drop it into their feature without importing from another feature
-- Examples: `Button`, `Input`, `Spinner`, `Badge`, `Modal`, `Tooltip`
+5. **Naming conventions** applied:
+   - Components: `PascalCase.tsx`
+   - Hooks: `camelCase` with `use` prefix
+   - Services: `camelCase.ts` (noun)
+   - Stores: `camelCaseStore.ts`
+   - Constants: `constants.ts` with `SCREAMING_SNAKE_CASE` values inside
+   - Route pages: always `page.tsx`
 
-### Put it in `hooks/` (top-level) when:
-- Two or more features already use it
-- It has zero feature-specific knowledge (debounce, localStorage, media query)
+6. **Team ownership map** documented in `README.md` or `CONTRIBUTING.md` (e.g., Team A → `features/auth/`, Team B → `features/greeting/`, Shared → `components/ui/` etc.)
 
-### Put it in `services/` (top-level) when:
-- It is infrastructure shared by all features (ICP agent, HTTP client setup)
-- Feature-specific API calls still live in `features/<name>/services/`
-
-### Put it in `app/` when:
-- It is a route entry point — thin, no business logic
-- It composes feature components and passes route params down
-
----
-
-## The `index.ts` Barrel Rule
-
-Every feature folder **must** have an `index.ts` that explicitly declares its public API.
-
-```ts
-// features/auth/index.ts — only export what other features/pages need
-export { default as UserCard } from './components/UserCard';
-export type { User, AgeBucket } from './types';
-// Do NOT export internal hooks, stores, or services
-```
-
-Other features import from the barrel, never from deep paths:
-
-```ts
-// ✅ correct
-import { UserCard } from '@/features/auth';
-
-// ❌ wrong — breaks encapsulation, causes tight coupling
-import UserCard from '@/features/auth/components/UserCard';
-```
-
-
-## Team Ownership Map
-
-```
-Team A  →  features/auth/
-Team B  →  features/greeting/
-Team C  →  features/quiz/
-Shared  →  components/ui/, hooks/, services/canister/
-Platform → app/, config/, store/, main.tsx, App.tsx
-```
-
-Each team's PRs should only touch their own `features/<name>/` folder plus `app/<route>/page.tsx` for their route. Changes to `components/ui/` or `services/` require a cross-team review.
-
----
-
-## Naming Conventions
-
-| Thing | Convention | Example |
-|---|---|---|
-| Component files | PascalCase | `UserCard.tsx` |
-| Hook files | camelCase, `use` prefix | `useUser.ts` |
-| Service files | camelCase, noun | `userStorage.ts` |
-| Store files | camelCase, `Store` suffix | `userStore.ts` |
-| Type files | camelCase | `types.ts` |
-| Barrel files | always `index.ts` | `index.ts` |
-| Route pages | always `page.tsx` | `page.tsx` |
-| Constants | SCREAMING_SNAKE in file, camelCase file name | `constants.ts` |
-
----
-
-## Import Alias Setup
-
-Configure `@/` to point to `src/` so imports are always absolute and refactor-safe:
-
-```ts
-// tsconfig.json
-"paths": { "@/*": ["./src/*"] }
-
-// vite.config.js
-alias: [{ find: "@", replacement: "/src" }]
-```
-
-Usage:
-```ts
-import { Button } from '@/components/ui';
-import { useUser } from '@/features/auth';
-import { agent } from '@/services/canister/agent';
-```
-
-Never use relative `../../` imports that cross feature boundaries.
+7. **Existing code** can be migrated to the new structure (if applicable) without breaking functionality.

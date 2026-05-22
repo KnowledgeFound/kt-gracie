@@ -1,6 +1,7 @@
 import { motion, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import type { Question, UserAnswer } from '../types';
+import { BackMenu } from '@/components/ui';
 
 interface QuizScreenProps {
 	question: Question;
@@ -62,13 +63,14 @@ const QuizScreen = ({
 		>
 			{/* Progress header */}
 			<motion.div
-				className="w-full max-w-3xl mx-auto px-4 pt-8 md:pt-12"
+				className="w-full max-w-3xl mx-auto px-4 pt-4"
 				variants={itemVariants}
 			>
+				<BackMenu />
 				<div className="mb-6 md:mb-8">
 					<div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-4">
 						<motion.div
-							className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+							className="h-full bg-gradient-to-r from-brand-500 to-purple-500 rounded-full"
 							initial={{ width: 0 }}
 							animate={{ width: `${progress}%` }}
 							transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -79,9 +81,6 @@ const QuizScreen = ({
 						<span className="text-gray-600 font-semibold">
 							Question {currentIndex + 1} of {totalQuestions}
 						</span>
-						<span className="text-purple-600 font-bold">
-							Score: {score}/{totalQuestions}
-						</span>
 					</div>
 				</div>
 			</motion.div>
@@ -89,11 +88,11 @@ const QuizScreen = ({
 			{/* Question card */}
 			<motion.div className="w-full max-w-3xl mx-auto px-4 flex-1 flex flex-col justify-center">
 				<motion.div
-					className="bg-white rounded-xl p-6 md:p-10 shadow-lg border-l-4 border-indigo-500"
+					className="bg-white rounded-xl p-6 md:p-10 shadow-lg"
 					variants={itemVariants}
 				>
 					<motion.div
-						className="inline-block px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white rounded-full text-xs md:text-sm font-bold mb-6 uppercase tracking-wide"
+						className="inline-block px-4 py-2 bg-gradient-to-r from-brand-500 to-indigo-700 text-white rounded-full text-xs md:text-sm font-bold mb-6 uppercase tracking-wide"
 						variants={optionVariants}
 					>
 						{typeIsMCQ ? 'Multiple Choice' : 'True / False'}
@@ -123,7 +122,7 @@ const QuizScreen = ({
 									className={classnames(
 										'w-full p-4 md:p-5 text-left rounded-lg font-medium text-base md:text-lg transition-all duration-300 cursor-pointer',
 										{
-											'bg-indigo-50 border-2 border-indigo-500 text-indigo-700 shadow-md':
+											'bg-indigo-50 border-2 border-brand-500 text-indigo-700 shadow-md':
 												isSelected,
 											'bg-white border-2 border-gray-200 text-gray-700 hover:border-indigo-400 hover:bg-gray-50':
 												!isSelected,
@@ -142,9 +141,7 @@ const QuizScreen = ({
 												: 'F'}
 									</span>
 									<span>{option}</span>
-									{isSelected && (
-										<span className="float-right text-xl">✓</span>
-									)}
+									{isSelected && <span className="float-right text-xl">✓</span>}
 								</motion.button>
 							);
 						})}
@@ -154,7 +151,7 @@ const QuizScreen = ({
 
 			{/* Navigation */}
 			<motion.div
-				className="w-full max-w-3xl mx-auto px-4 mt-8"
+				className="w-full max-w-3xl mx-auto px-4 mt-2 md:mt-4"
 				variants={itemVariants}
 			>
 				<div className="flex gap-4 md:gap-6">
@@ -181,7 +178,7 @@ const QuizScreen = ({
 						className={classnames(
 							'flex-1 py-3 md:py-4 px-6 font-bold text-lg rounded-lg transition-all duration-300 uppercase tracking-wide text-white',
 							{
-								'bg-gradient-to-r from-indigo-500 to-indigo-700 hover:shadow-lg':
+								'bg-gradient-to-r from-brand-500 to-indigo-700 hover:shadow-lg':
 									selectedAnswer !== null,
 								'bg-gray-300 cursor-not-allowed opacity-50':
 									selectedAnswer === null,

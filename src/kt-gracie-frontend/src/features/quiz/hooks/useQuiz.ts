@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import type { Question, UserAnswer, QuizScreen } from '../types';
 import { shuffleArray, calcScore } from '../utils';
 import { QUIZ_QUESTION_COUNT } from '../constants';
+import { useUser } from '@/features/auth';
 import data from '@/lib/gracie-qa-corpus.json';
 
 export function useQuiz() {
+	const { updateProgression, user } = useUser();
+
 	const [screen, setScreen] = useState<QuizScreen>('welcome');
 	const [questions, setQuestions] = useState<Question[]>([]);
 	const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
@@ -27,8 +30,6 @@ export function useQuiz() {
 	const startQuiz = () => {
 		if (questions.length === 0) return;
 		const selected = shuffleArray(questions).slice(0, QUIZ_QUESTION_COUNT);
-		// Set all derived state before switching screen so the first render
-		// after setScreen('quiz') always has a valid currentQuestion.
 		setQuizQuestions(selected);
 		setUserAnswers(new Array(selected.length).fill(null));
 		setCurrentIndex(0);
@@ -45,6 +46,8 @@ export function useQuiz() {
 	};
 
 	const nextQuestion = () => {
+		// If we're on the last question, submit the quiz
+		// setScore((prev) => prev + 1);
 		if (currentIndex === quizQuestions.length - 1) {
 			submitQuiz();
 		} else {
@@ -57,8 +60,20 @@ export function useQuiz() {
 	};
 
 	const submitQuiz = () => {
-		setScore(calcScore(quizQuestions, userAnswers));
+		const finalScore = calcScore(quizQuestions, userAnswers);
+		setScore(finalScore);
 		setScreen('results');
+
+		// Persist progression to localStorage via the shared user context
+		if (user) {
+			const prev = user.progression;
+			updateProgression({
+				quizzesCompleted: prev.quizzesCompleted + 1,
+				totalCorrect: prev.totalCorrect + finalScore,
+				totalAnswered: prev.totalAnswered + quizQuestions.length,
+				highScore: Math.max(prev.highScore, finalScore),
+			});
+		}
 	};
 
 	const retakeQuiz = () => {
@@ -86,7 +101,6 @@ export function useQuiz() {
 	};
 
 	return {
-		// state
 		screen,
 		loading,
 		score,
@@ -96,7 +110,6 @@ export function useQuiz() {
 		userAnswers,
 		currentQuestion: quizQuestions[currentIndex] ?? null,
 		reviewQuestion: quizQuestions[reviewIndex] ?? null,
-		// actions
 		startQuiz,
 		selectOption,
 		nextQuestion,

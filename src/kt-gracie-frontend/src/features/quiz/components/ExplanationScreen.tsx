@@ -1,6 +1,7 @@
 import { motion, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import type { Question, UserAnswer } from '../types';
+import { BackMenu } from '@/components/ui';
 
 interface ExplanationScreenProps {
 	question: Question;
@@ -71,6 +72,7 @@ const ExplanationScreen = ({
 				className="w-full max-w-3xl mx-auto px-4 pt-8 md:pt-12"
 				variants={itemVariants}
 			>
+				<BackMenu />
 				<h2 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-6">
 					Question {currentIndex + 1} of {totalQuestions}
 				</h2>
@@ -153,7 +155,7 @@ const ExplanationScreen = ({
 				<div className="flex gap-4 md:gap-6 flex-col md:flex-row">
 					<motion.button
 						onClick={onBack}
-						className="flex-1 py-3 md:py-4 px-6 bg-gray-100 text-indigo-600 font-bold text-lg rounded-lg border-2 border-indigo-500 hover:bg-indigo-500 hover:text-white transition-all duration-300 uppercase tracking-wide"
+						className="flex-1 py-3 md:py-4 px-6 bg-gray-100 text-indigo-600 font-bold text-base rounded-lg border-2 border-brand-500 hover:bg-brand-500 hover:text-white transition-all duration-300 uppercase tracking-wide"
 						whileHover={{ scale: 1.02 }}
 						whileTap={{ scale: 0.98 }}
 					>
@@ -164,7 +166,7 @@ const ExplanationScreen = ({
 						onClick={onPrevious}
 						disabled={currentIndex === 0}
 						className={classnames(
-							'flex-1 py-3 md:py-4 px-6 font-bold text-lg rounded-lg transition-all duration-300 uppercase tracking-wide',
+							'flex-1 py-3 md:py-4 px-6 font-bold text-base rounded-lg transition-all duration-300 uppercase tracking-wide',
 							{
 								'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50':
 									currentIndex === 0,
@@ -179,7 +181,7 @@ const ExplanationScreen = ({
 
 					<motion.button
 						onClick={onNext}
-						className="flex-1 py-3 md:py-4 px-6 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold text-lg rounded-lg hover:shadow-lg transition-all duration-300 uppercase tracking-wide"
+						className="flex-1 py-3 md:py-4 px-6 bg-gradient-to-r from-brand-500 to-indigo-700 text-white font-bold text-base rounded-lg hover:shadow-lg transition-all duration-300 uppercase tracking-wide"
 						whileHover={{ scale: 1.02, y: -3 }}
 						whileTap={{ scale: 0.98 }}
 					>

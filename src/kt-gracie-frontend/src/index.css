@@ -2,34 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+/* ── Base layer ───────────────────────────────────────────────────────────── */
 @layer base {
-  body {
-    @apply bg-gray-50 text-gray-900 font-sans;
-  }
+	html {
+		@apply scroll-smooth;
+	}
 
-  img {
-    @apply max-w-[50vw] max-h-[25vw] block mx-auto;
-  }
+	body {
+		@apply bg-surface-page text-ink-deep font-sans antialiased;
+	}
 
-  form {
-    @apply flex justify-center gap-2 flex-wrap max-w-[40vw] mx-auto items-baseline;
-  }
+	/* Remove default form styles that conflict with our design system */
+	form {
+		@apply m-0 p-0;
+	}
 
-  button[type='submit'] {
-    @apply px-5 py-2 m-2.5 float-right;
-  }
+	button {
+		@apply font-sans;
+	}
 }
 
+/* ── Component layer — reusable patterns ─────────────────────────────────── */
 @layer components {
-  #greeting {
-    @apply m-2.5 p-[10px_60px] border border-gray-800;
-  }
+	/* Glass badge pill — shared by all city header badges */
+	.badge-pill {
+		@apply flex items-center gap-[10px]
+           bg-surface-glass backdrop-blur-badge
+           border border-ocean-border rounded-pill
+           px-badge-x py-badge-y
+           shadow-badge
+           transition-[transform,box-shadow] duration-200
+           cursor-default;
+	}
 
-  #greeting:empty {
-    @apply hidden;
-  }
+	.badge-pill:hover {
+		@apply shadow-badge-hover -translate-y-px;
+	}
 
-  .browser-warning {
-    @apply hidden;
-  }
+	/* Badge label (uppercase small caps above value) */
+	.badge-label {
+		@apply text-badge-label text-ink-muted uppercase tracking-[0.6px];
+	}
+
+	/* Badge value (bold number / name below label) */
+	.badge-value {
+		@apply text-badge-value text-ink-deep;
+	}
+
+	/* Standard content card */
+	.card {
+		@apply bg-surface-card rounded-card shadow-card p-card-sm md:p-card;
+	}
+
+	/* Brand gradient button */
+	.btn-brand {
+		@apply bg-gradient-to-r from-brand-500 to-brand-600
+           text-white font-bold rounded-lg
+           shadow-md hover:shadow-lg
+           transition-all duration-300;
+	}
+
+	/* Suppress the browser warning div shown when JS is disabled */
+	.browser-warning {
+		@apply hidden;
+	}
+}
+.debug {
+	border: 1px red solid;
 }

@@ -1,14 +1,9 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-	useUser,
-	CreateUserForm,
-	EditUserForm,
-	UserCard,
-	DeleteConfirm,
-} from '@/features/auth';
-
-type View = 'profile' | 'create' | 'edit' | 'delete';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useUser, CreateUserForm } from '@/features/auth';
+import type { CreateUserInput } from '@/features/auth';
+import { MainLayout } from '@/components/layout';
 
 const fade = {
 	initial: { opacity: 0, y: 16 },
@@ -17,67 +12,39 @@ const fade = {
 	transition: { duration: 0.25 },
 };
 
-/**
- * Auth page — thin route wrapper.
- * All state lives in useUser(); this file only drives the view state machine.
- */
 export default function AuthPage() {
-	const { user, createUser, updateUser, deleteUser } = useUser();
-	const [view, setView] = useState<View>(user ? 'profile' : 'create');
+	const navigate = useNavigate();
+	const location = useLocation();
+	const { user, createUser } = useUser();
+
+	// Where to send the user after profile creation.
+	// ProtectedRoute passes the blocked path via location.state.from — fall back to /city.
+	const from: string =
+		(location.state as { from?: string } | null)?.from ?? '/city';
+
+	// Already has a profile — skip straight to the destination
+	useEffect(() => {
+		if (user) navigate(from, { replace: true });
+	}, [user, from, navigate]);
+
+	function handleCreate(input: CreateUserInput) {
+		createUser(input);
+		// navigate happens via the useEffect above once user state updates
+	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center justify-center px-4 py-12">
-			<AnimatePresence mode="wait">
-				{/* ── No user: show create form ── */}
-				{view === 'create' && (
-					<motion.div key="create" {...fade}>
-						<CreateUserForm
-							onSubmit={(input) => {
-								createUser(input);
-								setView('profile');
-							}}
-						/>
+		<MainLayout>
+			<div className="h-full w-full">
+				<AnimatePresence mode="wait">
+					<motion.div
+						key="create"
+						{...fade}
+						className="min-h-screen flex items-center justify-center px-4 py-12"
+					>
+						<CreateUserForm onSubmit={handleCreate} />
 					</motion.div>
-				)}
-
-				{/* ── Has user: show profile card ── */}
-				{view === 'profile' && user && (
-					<motion.div key="profile" {...fade}>
-						<UserCard
-							user={user}
-							onEdit={() => setView('edit')}
-							onDelete={() => setView('delete')}
-						/>
-					</motion.div>
-				)}
-
-				{/* ── Edit form ── */}
-				{view === 'edit' && user && (
-					<motion.div key="edit" {...fade}>
-						<EditUserForm
-							user={user}
-							onSubmit={(updates) => {
-								updateUser(updates);
-								setView('profile');
-							}}
-							onCancel={() => setView('profile')}
-						/>
-					</motion.div>
-				)}
-
-				{/* ── Delete confirmation ── */}
-				{view === 'delete' && (
-					<motion.div key="delete" {...fade}>
-						<DeleteConfirm
-							onConfirm={() => {
-								deleteUser();
-								setView('create');
-							}}
-							onCancel={() => setView('profile')}
-						/>
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</div>
+				</AnimatePresence>
+			</div>
+		</MainLayout>
 	);
 }

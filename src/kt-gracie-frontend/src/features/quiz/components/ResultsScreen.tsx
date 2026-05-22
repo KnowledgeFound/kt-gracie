@@ -1,3 +1,4 @@
+import { BackMenu } from '@/components/ui';
 import { motion, type Variants } from 'framer-motion';
 
 interface ResultsScreenProps {
@@ -70,10 +71,11 @@ const ResultsScreen = ({
 			exit={{ opacity: 0 }}
 		>
 			<motion.div className="w-full max-w-2xl mx-auto text-center">
+				<BackMenu />
 				{/* Score circle */}
 				<motion.div className="mb-10" variants={itemVariants}>
 					<motion.div
-						className="w-48 h-48 md:w-56 md:h-56 mx-auto rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex flex-col items-center justify-center text-white shadow-2xl"
+						className="w-48 h-48 md:w-56 md:h-56 mx-auto rounded-full bg-gradient-to-r from-brand-500 to-indigo-700 flex flex-col items-center justify-center text-white shadow-2xl"
 						initial={{ scale: 0 }}
 						animate={{ scale: [0, 1.1, 1] }}
 						transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -142,7 +144,7 @@ const ResultsScreen = ({
 				>
 					<motion.button
 						onClick={onRetake}
-						className="flex-1 py-4 px-6 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 uppercase tracking-wide"
+						className="flex-1 py-4 px-6 bg-gradient-to-r from-brand-500 to-indigo-700 text-white font-bold text-base rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 uppercase tracking-wide"
 						whileHover={{ scale: 1.05, y: -3 }}
 						whileTap={{ scale: 0.98 }}
 					>
@@ -150,7 +152,7 @@ const ResultsScreen = ({
 					</motion.button>
 					<motion.button
 						onClick={onReview}
-						className="flex-1 py-4 px-6 bg-gray-100 text-indigo-600 font-bold text-lg rounded-lg border-2 border-indigo-500 hover:bg-indigo-500 hover:text-white transition-all duration-300 uppercase tracking-wide"
+						className="flex-1 py-4 px-6 bg-gray-100 text-indigo-600 font-bold text-base rounded-lg border-2 border-brand-500 hover:bg-brand-500 hover:text-white transition-all duration-300 uppercase tracking-wide"
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.98 }}
 					>
