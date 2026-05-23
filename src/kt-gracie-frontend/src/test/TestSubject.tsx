@@ -2,7 +2,7 @@ import { FormEvent } from "react";
 import { useCreateSubjectHook } from "../hooks/subjectHooks";
 import { CreateSubjectInput } from "../types/types";
 
-export default function TestForm() {
+export default function TestSubject() {
 
     const createSubject = useCreateSubjectHook()
 

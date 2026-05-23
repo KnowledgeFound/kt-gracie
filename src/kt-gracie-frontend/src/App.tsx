@@ -1,8 +1,8 @@
 import { useState } from "react";
 import HomePage from "./app/home/page";
 import GreetingForm from "./features/greeting/components/GreetingForm";
-import TestForm from "./test/TestForm";
 import TestUser from "./test/TestUser";
+import TestCity from "./test/TestCity";
 
 export default function App() {
   const [showTest, setShowTest] = useState(false);
@@ -20,9 +20,9 @@ export default function App() {
           opacity: 0.7,
         }}
       >
-        {showTest ? "Home" : "User Test"}
+        {showTest ? "Home" : "Testing"}
       </button>
-      {showTest ? <TestUser /> : <HomePage />}
+      {showTest ? <TestCity /> : <HomePage />}
     </>
   );
 }

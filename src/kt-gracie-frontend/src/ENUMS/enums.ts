@@ -15,3 +15,10 @@ export enum AgeBucket {
 export enum Region {
     PLACEHOLDER = "PLACEHOLDER",
 }
+
+
+export enum CityState {
+    VIBRANT = "Vibrant",
+    NORMAL = "Normal",
+    CORRUPT = "Corrupt",
+}
