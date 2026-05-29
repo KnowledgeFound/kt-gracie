@@ -1,15 +1,11 @@
 import {
 	ArrowLeft,
 	Pencil,
-	Trash2,
 	Trophy,
-	Zap,
 	Target,
 	Flame,
 	BookOpen,
-	ShieldCheck,
 	LogOut,
-	Heart,
 	Coins,
 } from 'lucide-react';
 import type { User } from '../types';
@@ -114,77 +110,6 @@ export default function ProfileCard({
 				/>
 			</div>
 
-			{/* ── Progress bar ── */}
-			<Section title="Overall Progress">
-				<div className="space-y-3">
-					<ProgressRow
-						label="Quiz Accuracy"
-						value={accuracy}
-						max={100}
-						color="bg-brand-500"
-					/>
-					<ProgressRow
-						label="City Health"
-						value={user.city.health}
-						max={100}
-						color="bg-brand-500"
-					/>
-					<ProgressRow
-						label="Gracie Integrity"
-						value={user.gracie.integrityScore}
-						max={100}
-						color="bg-success-600"
-					/>
-				</div>
-			</Section>
-
-			{/* ── Gracie ── */}
-			<Section title="Gracie">
-				<div className="flex items-center gap-4 bg-brand-50 rounded-badge p-4">
-					<div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-brand-800 flex items-center justify-center text-2xl shrink-0">
-						🛡️
-					</div>
-					<div className="min-w-0">
-						<p className="font-semibold text-ink-deep">{user.gracie.name}</p>
-						<div className="flex items-center gap-3 mt-1 text-sm text-ink-muted">
-							<span className="flex items-center gap-1">
-								<ShieldCheck className="w-3.5 h-3.5" />
-								{user.gracie.integrityScore}/100
-							</span>
-							<span className="flex items-center gap-1">
-								<Zap className="w-3.5 h-3.5" />
-								{user.gracie.interactionCount} interactions
-							</span>
-						</div>
-					</div>
-				</div>
-			</Section>
-
-			{/* ── City ── */}
-			<Section title="Knowledge City">
-				<div className="flex items-center gap-4 bg-brand-50 rounded-badge p-4">
-					<div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center text-2xl shrink-0">
-						🏙️
-					</div>
-					<div className="flex-1 min-w-0">
-						<div className="flex items-center justify-between">
-							<p className="font-semibold text-ink-deep">
-								Tier {user.city.tier}
-							</p>
-							<span className="text-sm text-ink-muted flex items-center gap-1">
-								<Heart className="w-3.5 h-3.5 text-brand-400" />
-								{user.city.health}/100
-							</span>
-						</div>
-						<div className="mt-2 h-2 bg-brand-200 rounded-full overflow-hidden">
-							<div
-								className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full transition-[width] duration-500"
-								style={{ width: `${user.city.health}%` }}
-							/>
-						</div>
-					</div>
-				</div>
-			</Section>
 
 			{/* ── Demographics ── */}
 			<Section title="About">
@@ -208,10 +133,10 @@ export default function ProfileCard({
 			</Section>
 
 			{/* ── Badges ── */}
-			{user.progression.badges.length > 0 && (
+			{user.progression.achievements.length > 0 && (
 				<Section title="Badges">
 					<div className="flex flex-wrap gap-2">
-						{user.progression.badges.map((badge) => (
+						{user.progression.achievements.map((badge) => (
 							<span
 								key={badge}
 								className="px-3 py-1 bg-warning-50 text-warning-400 border border-warning-300 rounded-pill text-xs font-semibold"
@@ -256,36 +181,6 @@ function StatCard({
 			<div>
 				<p className="text-xl font-bold text-ink-deep leading-none">{value}</p>
 				<p className="text-xs text-ink-muted mt-0.5">{label}</p>
-			</div>
-		</div>
-	);
-}
-
-function ProgressRow({
-	label,
-	value,
-	max,
-	color,
-}: {
-	label: string;
-	value: number;
-	max: number;
-	color: string;
-}) {
-	const pct = Math.min(Math.round((value / max) * 100), 100);
-	return (
-		<div>
-			<div className="flex justify-between text-sm mb-1">
-				<span className="text-ink-muted">{label}</span>
-				<span className="font-semibold text-ink-deep">
-					{value}/{max}
-				</span>
-			</div>
-			<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-				<div
-					className={`h-full ${color} rounded-full transition-[width] duration-500`}
-					style={{ width: `${pct}%` }}
-				/>
 			</div>
 		</div>
 	);

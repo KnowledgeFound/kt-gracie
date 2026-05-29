@@ -54,17 +54,32 @@ export interface Progression {
 	streakDays: number;
 	/** Highest single-session score */
 	highScore: number;
-	/** Badges / achievements earned */
-	badges: string[];
+	/** Achievements earned */
+	achievements: [],
+	subjectsStarted: [],
+	subjectsCompleted: [],
+	contentCompleted: [],
+	assessmentResults: [],
+ 	currentSubjectId: string | null;
+    currentContentId: string | null;
+
+	/** ISO timestamp of last of last activity date: new Date().toISOString() */
+    lastActivityDate:string;
 }
 
+
+// --- City sub-object shape (owned by Agape — #21) ---
+
+export type CityTier = "pristine" | "healthy" | "fading" | "neglected" | "ruined";
+/** City tier level 1–5 */
+
 export interface City {
-	/** City tier level 1–5 */
-	tier: number;
+	tier: CityTier;
 	/** Integrity health 0–100 — decays after 24 h of inactivity */
 	health: number;
 	/** ISO timestamp of last health update */
 	lastDecayAt: string;
+    updatedAt: string;
 }
 
 // ─── Core User model ──────────────────────────────────────────────────────────

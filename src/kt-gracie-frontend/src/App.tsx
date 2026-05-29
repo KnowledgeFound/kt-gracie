@@ -14,6 +14,7 @@ import QuizPage from './app/quiz/page';
 import LeaderboardPage from './app/leaderboard/page';
 import ProfilePage from './app/profile/page';
 import CityScene from './app/city/page';
+import SubjectPage from './app/subject/page';
 
 // ─── Protected route guard ────────────────────────────────────────────────────
 
@@ -58,6 +59,7 @@ export default function App() {
 							<Route path="/quiz" element={<QuizPage />} />
 							<Route path="/leaderboard" element={<LeaderboardPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
+							<Route path="/subjects" element={<SubjectPage />} />
 						</Route>
 					</Route>
 

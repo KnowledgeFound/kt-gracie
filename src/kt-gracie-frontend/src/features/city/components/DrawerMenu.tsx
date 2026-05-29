@@ -1,15 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Brain, Trophy, User, LogOut, Home } from 'lucide-react';
+import { X, Brain, Trophy, User, LogOut, Home, BookOpen } from 'lucide-react';
 import { useUser } from '@/features/auth';
 
 // ─── Menu items ───────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-	{ icon: Home, label: 'City', path: '/city' },
-	{ icon: Brain, label: 'Quiz', path: '/quiz' },
-	{ icon: Trophy, label: 'Leaderboard', path: '/leaderboard' },
-	{ icon: User, label: 'Profile', path: '/profile' },
+	{ icon: Home,     label: 'City',        path: '/city' },
+	{ icon: BookOpen, label: 'Subjects',     path: '/subjects' },
+	{ icon: Brain,    label: 'Quiz',         path: '/quiz' },
+	{ icon: Trophy,   label: 'Leaderboard',  path: '/leaderboard' },
+	{ icon: User,     label: 'Profile',      path: '/profile' },
 ] as const;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -52,12 +53,13 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 					/>
 
 					{/* ── Drawer panel ── */}
+					{/* Panel — slides in from the right */}
 					<motion.aside
 						key="drawer"
-						className="fixed top-0 left-0 h-full w-72 z-50 flex flex-col bg-surface-white shadow-card-lg"
-						initial={{ x: '-100%' }}
+						className="fixed top-0 right-0 h-full w-72 z-50 flex flex-col bg-surface-white shadow-card-lg"
+						initial={{ x: '100%' }}
 						animate={{ x: 0 }}
-						exit={{ x: '-100%' }}
+						exit={{ x: '100%' }}
 						transition={{ type: 'spring', stiffness: 320, damping: 32 }}
 					>
 						{/* Header */}

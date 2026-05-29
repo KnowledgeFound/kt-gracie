@@ -12,21 +12,21 @@ const MOCK_ENTRIES: LeaderboardEntry[] = [
 		rank: 1,
 		displayName: 'Alice',
 		score: 95,
-		completedAt: '2023-06-01',
+		completedAt: '2026-06-01',
 	},
 	{
 		principal: 'def456',
 		rank: 2,
 		displayName: 'Bob',
 		score: 90,
-		completedAt: '2023-06-01',
+		completedAt: '2026-06-01',
 	},
 	{
 		principal: 'ghi789',
 		rank: 3,
 		displayName: 'Charlie',
 		score: 85,
-		completedAt: '2023-06-01',
+		completedAt: '2026-06-01',
 	},
 ];
 
@@ -36,13 +36,14 @@ export default function LeaderboardPage() {
 	return (
 		<MainLayout>
 			<div className="max-w-3xl mx-auto px-4 py-12 w-full">
-				<div className="flex items-center justify-start gap-4 mb-8 debug">
+				<div className="flex items-center justify-start gap-4 mb-8">
 					<button
 						onClick={() => navigate(-1)}
-						className="flex items-center gap-1.5 text-ink-muted hover:text-ink-deep transition-colors text-sm font-medium"
-					>
+						className="p-2 rounded-full hover:bg-brand-100 text-ink-muted hover:text-ink-deep transition-colors"
+								aria-label="Go back"
+							>
 						<ArrowLeft className="w-4 h-4" />
-						Back
+					
 					</button>
 					<h1 className="text-3xl md:text-4xl font-bold text-indigo-600 text-center">
 						🏆 Leaderboard

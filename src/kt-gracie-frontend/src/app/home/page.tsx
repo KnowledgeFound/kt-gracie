@@ -7,7 +7,7 @@ export default function HomePage() {
 
 	return (
 		<MainLayout>
-			<div className="flex justify-center mt-6 items-center">
+			<div className="flex justify-center items-center mt-6 items-center h-[70vh]">
 				<Button size="lg" onClick={() => navigate('/auth')}>
 					Get Started
 				</Button>

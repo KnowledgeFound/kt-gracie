@@ -1,17 +1,21 @@
 import '@pixi/unsafe-eval';
 import { useState } from 'react';
-import { CloudLayer, CityHeader, DrawerMenu } from '@/features/city';
+import { CloudLayer, CityHeader, DrawerMenu, CityMenu } from '@/features/city';
 import { useUser } from '@/features/auth';
 
 const CITY_BG_SRC = '/assets/city/city.png';
 
 /**
  * Top-level city page.
- * Manages the drawer open/close state; all other logic lives in child components.
+ *
+ * Two panels:
+ *  - DrawerMenu  (left)  — navigation, opened by the username badge
+ *  - CityMenu    (right) — city/progression stats, opened by the health badge
  */
 export default function CityScene() {
 	const { user } = useUser();
 	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [statsOpen, setStatsOpen] = useState(false);
 
 	return (
 		<div className="relative w-screen h-screen overflow-hidden font-sans">
@@ -27,18 +31,25 @@ export default function CityScene() {
 				<CloudLayer />
 			</div>
 
-			{/* Header — user badge opens the drawer */}
+			{/* Header badges */}
 			<CityHeader
 				health={user?.city?.health ?? 100}
 				tokens={user?.tokenBalance ?? 0}
 				username={user?.firstName ?? '—'}
+				onClickHealth={() => setStatsOpen(true)}
 				onClickUser={() => setDrawerOpen(true)}
 			/>
 
-			{/* Slide-in navigation drawer */}
+			{/* Left nav drawer — opened by username badge */}
 			<DrawerMenu
 				open={drawerOpen}
 				onClose={() => setDrawerOpen(false)}
+			/>
+
+			{/* Right stats panel — opened by health badge */}
+			<CityMenu
+				open={statsOpen}
+				onClose={() => setStatsOpen(false)}
 			/>
 		</div>
 	);

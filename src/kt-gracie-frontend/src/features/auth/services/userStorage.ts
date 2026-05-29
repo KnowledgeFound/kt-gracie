@@ -26,7 +26,14 @@ function defaultProgression(): Progression {
 		totalAnswered: 0,
 		streakDays: 0,
 		highScore: 0,
-		badges: [],
+        subjectsStarted: [],
+        subjectsCompleted: [],
+        contentCompleted: [],
+        assessmentResults: [],
+        achievements: [],
+        currentSubjectId: null,
+        currentContentId: null,
+        lastActivityDate: new Date().toISOString(),
 	};
 }
 
@@ -56,7 +63,7 @@ export function createUser(input: CreateUserInput): User {
 		lastActiveAt: timestamp,
 		gracie: defaultGracie(),
 		progression: defaultProgression(),
-		city: { tier: 1, health: 100, lastDecayAt: timestamp },
+		city: { tier: 'pristine', health: 100, lastDecayAt: timestamp,updatedAt: timestamp },
 		tokenBalance: 0,
 	};
 
