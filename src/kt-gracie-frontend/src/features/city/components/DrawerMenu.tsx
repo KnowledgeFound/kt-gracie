@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Brain, Trophy, User, LogOut, Home, BookOpen } from 'lucide-react';
+import { X, Trophy, User, LogOut, Home, BookOpen } from 'lucide-react';
 import { useUser } from '@/features/auth';
 
 // ─── Menu items ───────────────────────────────────────────────────────────────
@@ -8,7 +8,6 @@ import { useUser } from '@/features/auth';
 const NAV_ITEMS = [
 	{ icon: Home,     label: 'City',        path: '/city' },
 	{ icon: BookOpen, label: 'Subjects',     path: '/subjects' },
-	{ icon: Brain,    label: 'Quiz',         path: '/quiz' },
 	{ icon: Trophy,   label: 'Leaderboard',  path: '/leaderboard' },
 	{ icon: User,     label: 'Profile',      path: '/profile' },
 ] as const;

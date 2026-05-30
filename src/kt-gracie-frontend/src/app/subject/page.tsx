@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, BookOpen, ArrowLeft, AlertCircle, Loader2 } from 'lucide-react';
+import {
+	Plus,
+	BookOpen,
+	ArrowLeft,
+	Brain,
+	AlertCircle,
+	Loader2,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
 	useSubjects,
@@ -14,7 +21,7 @@ import { Button } from '@/components/ui';
 const fade = {
 	initial: { opacity: 0, y: 12 },
 	animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
-	exit:    { opacity: 0, y: -8,  transition: { duration: 0.15 } },
+	exit: { opacity: 0, y: -8, transition: { duration: 0.15 } },
 };
 
 export default function SubjectPage() {
@@ -26,6 +33,7 @@ export default function SubjectPage() {
 	const { data: subjects, isLoading, isError, error } = useSubjects();
 	const createMutation = useCreateSubject();
 
+	console.log('subbjects', subjects);
 	// ── Handlers ──────────────────────────────────────────────────────────────
 	function handleCreate(input: CreateSubjectInput) {
 		createMutation.mutate(input, {
@@ -37,7 +45,6 @@ export default function SubjectPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-brand-50 via-surface-page to-quiz-50">
 			<div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-
 				{/* ── Header ── */}
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
@@ -51,7 +58,9 @@ export default function SubjectPage() {
 						<div>
 							<h1 className="text-2xl font-bold text-ink-deep">Subjects</h1>
 							<p className="text-sm text-ink-muted">
-								{subjects ? `${subjects.length} subject${subjects.length !== 1 ? 's' : ''}` : 'Loading…'}
+								{subjects
+									? `${subjects?.length} subject${subjects?.length !== 1 ? 's' : ''}`
+									: 'Loading…'}
 							</p>
 						</div>
 					</div>
@@ -119,7 +128,9 @@ export default function SubjectPage() {
 										<BookOpen className="w-8 h-8 text-brand-400" />
 									</div>
 									<div>
-										<p className="font-semibold text-ink-deep">No subjects yet</p>
+										<p className="font-semibold text-ink-deep">
+											No subjects yet
+										</p>
 										<p className="text-sm text-ink-muted mt-1">
 											Create your first subject to get started.
 										</p>
@@ -156,6 +167,7 @@ function SubjectDetail({
 	subject: Subject;
 	onBack: () => void;
 }) {
+	const navigate = useNavigate();
 	return (
 		<div className="space-y-4">
 			{/* Back */}
@@ -169,6 +181,7 @@ function SubjectDetail({
 
 			{/* Hero */}
 			<div className="bg-gradient-to-br from-brand-500 to-quiz-600 rounded-card p-6 text-white shadow-card-lg">
+				<div className="flex items-center justify-between">
 				<div className="flex items-center gap-3 mb-3">
 					<div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
 						<BookOpen className="w-5 h-5" />
@@ -177,7 +190,15 @@ function SubjectDetail({
 						{subject.code}
 					</span>
 				</div>
-				<h2 className="text-xl font-bold">{subject.name}</h2>
+					<button
+						onClick={() => navigate(`/quiz/${subject.id.toString()}`)}
+						className="p-2 rounded-full bg-white/20 hover:bg-brand-100 text-ink-muted hover:text-ink-deep transition-colors"
+						aria-label="Go back"
+					>
+						<Brain className="w-4 h-4" />
+					</button>
+				</div>
+					<h2 className="text-xl font-bold">{subject.name}</h2>
 				{subject.description && (
 					<p className="mt-2 text-white/80 text-sm leading-relaxed">
 						{subject.description}
@@ -206,7 +227,9 @@ function SubjectDetail({
 						>
 							<div>
 								<p className="font-semibold text-ink-deep text-sm">{a.title}</p>
-								<p className="text-xs text-ink-muted mt-0.5">{a.assessmentType}</p>
+								<p className="text-xs text-ink-muted mt-0.5">
+									{a.assessmentType}
+								</p>
 							</div>
 							<div className="text-right shrink-0">
 								<p className="text-sm font-bold text-brand-600">

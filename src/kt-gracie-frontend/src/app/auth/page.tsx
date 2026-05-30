@@ -42,7 +42,7 @@ export default function AuthPage() {
 						{...fade}
 						className="min-h-screen flex flex-col items-center justify-center px-4 py-12"
 					>
-						<div className="max-w-lg flex justify-start items-start py-4 my-2 gap-3">
+						<div className="max-w-lg w-full flex justify-start  py-4 my-2 gap-3">
 							<button
 								onClick={() => navigate(-1)}
 								className="p-2 rounded-full hover:bg-brand-100 text-ink-muted hover:text-ink-deep transition-colors"

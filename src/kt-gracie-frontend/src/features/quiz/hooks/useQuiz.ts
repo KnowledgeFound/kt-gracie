@@ -3,10 +3,23 @@ import type { Question, UserAnswer, QuizScreen } from '../types';
 import { shuffleArray, calcScore } from '../utils';
 import { QUIZ_QUESTION_COUNT } from '../constants';
 import { useUser } from '@/features/auth';
+import { useSubjectById } from '@/features/subject';
 import data from '@/lib/gracie-qa-corpus.json';
 
-export function useQuiz() {
+/**
+ * Core quiz state machine.
+ *
+ * @param subjectId  Optional route param from /quiz/:id.
+ *                   When provided, the subject is fetched and shown on the
+ *                   welcome screen. Questions are still drawn from the local
+ *                   corpus and shuffled randomly — subject context is display-only
+ *                   until the backend serves per-subject questions.
+ */
+export function useQuiz(subjectId?: string) {
 	const { updateProgression, user } = useUser();
+
+	// Fetch the subject when an id is present — skip otherwise
+	const subjectQuery = useSubjectById(subjectId);
 
 	const [screen, setScreen] = useState<QuizScreen>('welcome');
 	const [questions, setQuestions] = useState<Question[]>([]);
@@ -29,6 +42,7 @@ export function useQuiz() {
 
 	const startQuiz = () => {
 		if (questions.length === 0) return;
+		// Always shuffle so every session is different
 		const selected = shuffleArray(questions).slice(0, QUIZ_QUESTION_COUNT);
 		setQuizQuestions(selected);
 		setUserAnswers(new Array(selected.length).fill(null));
@@ -46,8 +60,6 @@ export function useQuiz() {
 	};
 
 	const nextQuestion = () => {
-		// If we're on the last question, submit the quiz
-		// setScore((prev) => prev + 1);
 		if (currentIndex === quizQuestions.length - 1) {
 			submitQuiz();
 		} else {
@@ -64,7 +76,6 @@ export function useQuiz() {
 		setScore(finalScore);
 		setScreen('results');
 
-		// Persist progression to localStorage via the shared user context
 		if (user) {
 			const prev = user.progression;
 			updateProgression({
@@ -101,15 +112,20 @@ export function useQuiz() {
 	};
 
 	return {
+		// quiz state
 		screen,
-		loading,
+		loading: loading || subjectQuery.isLoading,
 		score,
 		currentIndex,
 		reviewIndex,
 		quizQuestions,
 		userAnswers,
-		currentQuestion: quizQuestions[currentIndex] ?? null,
-		reviewQuestion: quizQuestions[reviewIndex] ?? null,
+		currentQuestion:  quizQuestions[currentIndex]  ?? null,
+		reviewQuestion:   quizQuestions[reviewIndex]   ?? null,
+		// subject context (null when no subjectId given)
+		subject:          subjectQuery.data ?? null,
+		subjectLoading:   subjectQuery.isLoading,
+		// actions
 		startQuiz,
 		selectOption,
 		nextQuestion,

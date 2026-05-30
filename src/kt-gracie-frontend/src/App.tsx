@@ -56,10 +56,10 @@ export default function App() {
 						{/* Protected routes — require a user profile */}
 						<Route element={<ProtectedRoute />}>
 							<Route path="/city" element={<CityScene />} />
-							<Route path="/quiz" element={<QuizPage />} />
 							<Route path="/leaderboard" element={<LeaderboardPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route path="/subjects" element={<SubjectPage />} />
+							<Route path="/quiz/:id" element={<QuizPage />} />
 						</Route>
 					</Route>
 
