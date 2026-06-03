@@ -181,24 +181,24 @@ function SubjectDetail({
 
 			{/* Hero */}
 			<div className="bg-gradient-to-br from-brand-500 to-quiz-600 rounded-card p-6 text-white shadow-card-lg">
-				<div className="flex items-center justify-between">
-				<div className="flex items-center gap-3 mb-3">
-					<div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-						<BookOpen className="w-5 h-5" />
+				<div className="flex items-start justify-between gap-3 mb-3">
+					<div className="flex items-center gap-3">
+						<div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+							<BookOpen className="w-5 h-5" />
+						</div>
+						<span className="text-sm font-mono bg-white/15 px-2 py-0.5 rounded-badge">
+							{subject.code}
+						</span>
 					</div>
-					<span className="text-sm font-mono bg-white/15 px-2 py-0.5 rounded-badge">
-						{subject.code}
-					</span>
-				</div>
 					<button
 						onClick={() => navigate(`/quiz/${subject.id.toString()}`)}
-						className="p-2 rounded-full bg-white/20 hover:bg-brand-100 text-ink-muted hover:text-ink-deep transition-colors"
-						aria-label="Go back"
+						className="flex items-center gap-2 bg-white text-brand-600 font-bold text-sm px-4 py-2 rounded-pill hover:bg-brand-50 transition-colors shrink-0 shadow"
 					>
 						<Brain className="w-4 h-4" />
+						Start Quiz
 					</button>
 				</div>
-					<h2 className="text-xl font-bold">{subject.name}</h2>
+				<h2 className="text-xl font-bold">{subject.name}</h2>
 				{subject.description && (
 					<p className="mt-2 text-white/80 text-sm leading-relaxed">
 						{subject.description}

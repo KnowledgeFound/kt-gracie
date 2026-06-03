@@ -21,6 +21,11 @@ node_modules/
 dist/
 .svelte-kit/
 
+# test artifacts
+test-results/
+playwright-report/
+coverage/
+
 # environment variables
 .env
 

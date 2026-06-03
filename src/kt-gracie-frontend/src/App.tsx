@@ -59,6 +59,7 @@ export default function App() {
 							<Route path="/leaderboard" element={<LeaderboardPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route path="/subjects" element={<SubjectPage />} />
+							<Route path="/quiz" element={<QuizPage />} />
 							<Route path="/quiz/:id" element={<QuizPage />} />
 						</Route>
 					</Route>

@@ -16,6 +16,7 @@ persistent actor {
 
   transient var SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
   transient var SUBJECT_NOT_CREATED = "subject not created";
+  var subjectIdCounter: Nat = 0;
 
   public query func greet(name : Text) : async Text {
     let person : Types.person = { name = name; age = 30 };

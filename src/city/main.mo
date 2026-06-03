@@ -6,14 +6,14 @@ import Types "../commons/types";
 
 persistent actor City {
 
-  var subjectIdCounter: Nat = 0;
-  
+  var subjectIdCounter : Nat = 0;
+
   public query func greet() : async Text {
     return "Hello from City!";
   };
 
-  public func createSubject(name: Text, code: Text, duration: Nat, description: Text) : async Types.Subject{
-    let newSubject: Types.Subject = {
+  public func createSubject(name : Text, code : Text, duration : Nat, description : Text) : async Types.Subject {
+    let newSubject : Types.Subject = {
       id = subjectIdCounter;
       name = name;
       code = code;
@@ -26,4 +26,5 @@ persistent actor City {
 
     return newSubject;
   };
+
 };

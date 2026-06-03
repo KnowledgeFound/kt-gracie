@@ -39,3 +39,21 @@ button[type="submit"] {
 .browser-warning {
   display: none;
 }
+
+.homePageLayer {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.homePagePixiLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.homePageContentLayer {
+  position: relative;
+  z-index: 2;
+}

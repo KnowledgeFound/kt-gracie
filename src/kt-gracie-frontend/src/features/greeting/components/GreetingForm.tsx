@@ -26,11 +26,11 @@ export default function GreetingForm() {
 					name="name"
 					type="text"
 					placeholder="Enter your name"
-					className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+					className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-400"
 				/>
 				<button
 					type="submit"
-					className="px-5 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
+					className="px-5 py-2 bg-brand-500 text-white rounded-lg font-semibold hover:bg-brand-600 transition"
 				>
 					Greet
 				</button>
@@ -38,7 +38,7 @@ export default function GreetingForm() {
 			{greet.data && (
 				<p
 					id="greeting"
-					className="mt-4 px-6 py-3 border border-gray-300 rounded-lg text-gray-800"
+					className="mt-4 px-6 py-3 border border-gray-200 rounded-lg text-ink-deep"
 				>
 					{greet.data}
 				</p>
