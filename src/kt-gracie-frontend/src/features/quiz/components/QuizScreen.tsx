@@ -66,7 +66,7 @@ const QuizScreen = ({
 				className="w-full max-w-3xl mx-auto px-4 pt-4"
 				variants={itemVariants}
 			>
-				<BackMenu />
+				<BackMenu to="/"/>
 				<div className="mb-6 md:mb-8">
 					<div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-4">
 						<motion.div

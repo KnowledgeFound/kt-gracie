@@ -71,7 +71,7 @@ const ResultsScreen = ({
 			exit={{ opacity: 0 }}
 		>
 			<motion.div className="w-full max-w-2xl mx-auto text-center">
-				<BackMenu />
+				<BackMenu to="/"/>
 				{/* Score circle */}
 				<motion.div className="mb-10" variants={itemVariants}>
 					<motion.div

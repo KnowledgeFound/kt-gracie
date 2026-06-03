@@ -2,12 +2,12 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const BackMenu = () => {
+const BackMenu = ({ to = -1 }: { to?: string | number }) => {
 	const navigate = useNavigate();
 	return (
 		<div className="flex items-center justify-start gap-4 px-4 py-12 mb-8">
 			<button
-				onClick={() => navigate(-1)}
+				onClick={() => navigate(to)}
 				className="flex items-center gap-1.5 text-ink-muted hover:text-ink-deep transition-colors text-sm font-medium"
 			>
 				<ArrowLeft className="w-4 h-4" />

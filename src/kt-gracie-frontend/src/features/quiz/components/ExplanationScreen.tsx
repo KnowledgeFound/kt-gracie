@@ -72,7 +72,7 @@ const ExplanationScreen = ({
 				className="w-full max-w-3xl mx-auto px-4 pt-8 md:pt-12"
 				variants={itemVariants}
 			>
-				<BackMenu />
+				<BackMenu to="/" />
 				<h2 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-6">
 					Question {currentIndex + 1} of {totalQuestions}
 				</h2>
