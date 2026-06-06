@@ -6,10 +6,10 @@ import { useUser } from '@/features/auth';
 // ─── Menu items ───────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-	{ icon: Home,     label: 'City',        path: '/city' },
-	{ icon: BookOpen, label: 'Subjects',     path: '/subjects' },
-	{ icon: Trophy,   label: 'Leaderboard',  path: '/leaderboard' },
-	{ icon: User,     label: 'Profile',      path: '/profile' },
+	{ icon: Home, label: 'City', path: '/city' },
+	{ icon: BookOpen, label: 'Subjects', path: '/subjects' },
+	{ icon: Trophy, label: 'Leaderboard', path: '/leaderboard' },
+	{ icon: User, label: 'Profile', path: '/profile' },
 ] as const;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
