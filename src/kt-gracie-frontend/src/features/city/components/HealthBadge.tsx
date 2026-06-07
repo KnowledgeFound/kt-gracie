@@ -27,9 +27,7 @@ export default function HealthBadge({ health, onClick }: HealthBadgeProps) {
 
 			{/* Label + progress bar */}
 			<div className="flex flex-col gap-1">
-				<span className="badge-label text-ink-mid">
-					CITY HEALTH: {health}%
-				</span>
+				<span className="badge-label text-ink-mid">CITY HEALTH: {health}%</span>
 				<div className="w-[140px] h-[14px] bg-ocean-track rounded-lg overflow-hidden border border-ocean-border">
 					<div
 						className="h-full rounded-lg transition-[width] duration-[600ms] ease-in-out bg-gradient-to-r from-brand-400 to-brand-600"

@@ -13,15 +13,13 @@ const BackMenu = ({ to }: { to?: string | number }) => {
 	}
 
 	return (
-		<div className="flex items-center justify-start gap-4 px-4 py-12 mb-8">
-			<button
-				onClick={handleBack}
-				className="flex items-center gap-1.5 text-ink-muted hover:text-ink-deep transition-colors text-sm font-medium"
-			>
-				<ArrowLeft className="w-4 h-4" />
-				Back
-			</button>
-		</div>
+		<button
+			onClick={handleBack}
+			className="flex items-center gap-1.5 text-ink-muted hover:text-ink-deep transition-colors text-sm font-medium"
+		>
+			<ArrowLeft className="w-4 h-4" />
+			Back
+		</button>
 	);
 };
 
