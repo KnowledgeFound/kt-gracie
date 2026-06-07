@@ -14,8 +14,8 @@ persistent actor {
 
   var arr_subjects : [Types.Subject] = [];
 
-  transient let SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
-  transient let SUBJECT_NOT_CREATED = "subject not created";
+  transient var SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
+  transient var SUBJECT_NOT_CREATED = "subject not created";
   var subjectIdCounter: Nat = 0;
 
   public query func greet(name : Text) : async Text {
@@ -51,7 +51,7 @@ persistent actor {
 
   public func createSubjectMediator(name : Text, code : Text, duration : Nat, description : Text) : async Result.Result<Text, Text> {
     try {
-      let newSubject = await createSubject(name, code, duration, description);
+      let newSubject = await City.createSubject(name, code, duration, description);
 
       await addSubject(newSubject);
 
@@ -60,21 +60,6 @@ persistent actor {
       Debug.print("Unable to create subject: " # Error.message(err));
       return #err(SUBJECT_NOT_CREATED);
     };
-  };
-
-  public func createSubject(name: Text, code: Text, duration: Nat, description: Text) : async Types.Subject{
-    let newSubject: Types.Subject = {
-      id = subjectIdCounter;
-      name = name;
-      code = code;
-      duration = duration;
-      description = description;
-      assessments = [];
-    };
-
-    subjectIdCounter := subjectIdCounter + 1;
-
-    return newSubject;
   };
 
   public func testCreateSubject() : async Result.Result<Text, Text> {

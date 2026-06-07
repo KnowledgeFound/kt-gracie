@@ -1,5 +1,5 @@
 export interface GreetInput {
-  name: string;
+	name: string;
 }
 
 export type GreetOutput = string;

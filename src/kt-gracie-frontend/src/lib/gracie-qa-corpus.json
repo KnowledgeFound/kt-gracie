@@ -1,0 +1,216 @@
+{
+	"questions": [
+		{
+			"id": 1,
+			"type": "mcq",
+			"question": "What is corruption?",
+			"options": [
+				"A) The abuse of power for personal gain",
+				"B) Following government rules strictly",
+				"C) Working hard in your job",
+				"D) Paying taxes on time"
+			],
+			"correctAnswer": "A",
+			"explanation": "Corruption is the dishonest and illegal conduct by public officials or private individuals, involving the abuse of entrusted power for personal and financial gain."
+		},
+		{
+			"id": 2,
+			"type": "truefalse",
+			"question": "Bribery is a form of corruption.",
+			"correctAnswer": true,
+			"explanation": "Yes, bribery is one of the most common forms of corruption - offering or giving something of value to influence decisions or actions."
+		},
+		{
+			"id": 3,
+			"type": "mcq",
+			"question": "Which of the following is NOT an example of corruption?",
+			"options": [
+				"A) A police officer accepting money to ignore a traffic violation",
+				"B) A teacher giving fair grades based on student performance",
+				"C) A government official awarding contracts to family members",
+				"D) An employee stealing company funds"
+			],
+			"correctAnswer": "B",
+			"explanation": "A teacher grading fairly based on performance is proper conduct. All other options are examples of corruption involving abuse of authority."
+		},
+		{
+			"id": 4,
+			"type": "truefalse",
+			"question": "Corruption only affects wealthy countries.",
+			"correctAnswer": false,
+			"explanation": "Corruption is a global issue affecting countries at all income levels. It undermines development, destabilizes societies, and harms individuals everywhere."
+		},
+		{
+			"id": 5,
+			"type": "mcq",
+			"question": "What is nepotism?",
+			"options": [
+				"A) Hiring the most qualified candidate",
+				"B) Showing favoritism to family members in hiring or promotions",
+				"C) Following fair hiring practices",
+				"D) Training employees for better performance"
+			],
+			"correctAnswer": "B",
+			"explanation": "Nepotism is a form of corruption where officials or employers favor relatives regardless of their qualifications, leading to unfair advantages."
+		},
+		{
+			"id": 6,
+			"type": "truefalse",
+			"question": "Whistleblowers who report corruption risk their careers and safety.",
+			"correctAnswer": true,
+			"explanation": "True. Whistleblowers often face retaliation, job loss, legal threats, and safety concerns, which is why many countries have laws to protect them."
+		},
+		{
+			"id": 7,
+			"type": "mcq",
+			"question": "What can young people do to fight corruption?",
+			"options": [
+				"A) Report unethical behavior through proper channels",
+				"B) Participate in transparency initiatives",
+				"C) Support anti-corruption organizations",
+				"D) All of the above"
+			],
+			"correctAnswer": "D",
+			"explanation": "Youth play a crucial role in fighting corruption through reporting, participation, advocacy, and supporting organizations working for transparency and accountability."
+		},
+		{
+			"id": 8,
+			"type": "truefalse",
+			"question": "Embezzlement is when a person steals money or assets entrusted to them.",
+			"correctAnswer": true,
+			"explanation": "Embezzlement is a specific form of corruption where someone misappropriates funds or assets placed under their control or care."
+		},
+		{
+			"id": 9,
+			"type": "mcq",
+			"question": "How does corruption harm society?",
+			"options": [
+				"A) It reduces public trust in institutions",
+				"B) It diverts resources from education, healthcare, and infrastructure",
+				"C) It increases inequality",
+				"D) All of the above"
+			],
+			"correctAnswer": "D",
+			"explanation": "Corruption has devastating societal impacts - it erodes institutional trust, steals resources needed for public services, and deepens socioeconomic inequality."
+		},
+		{
+			"id": 10,
+			"type": "mcq",
+			"question": "What is transparency in governance?",
+			"options": [
+				"A) Keeping government decisions secret from the public",
+				"B) Open access to government records and decision-making processes",
+				"C) Allowing officials to act without oversight",
+				"D) Limiting information available to journalists"
+			],
+			"correctAnswer": "B",
+			"explanation": "Transparency means public access to information about government operations, decisions, and budgets, which helps prevent corruption and enables accountability."
+		},
+		{
+			"id": 11,
+			"type": "truefalse",
+			"question": "Conflict of interest occurs when a public official makes decisions that benefit their personal interests rather than the public.",
+			"correctAnswer": true,
+			"explanation": "Conflict of interest is when personal or financial interests could compromise objective decision-making, and must be disclosed and managed properly."
+		},
+		{
+			"id": 12,
+			"type": "mcq",
+			"question": "Which international organization works to combat corruption globally?",
+			"options": [
+				"A) Transparency International",
+				"B) The World Bank",
+				"C) The United Nations",
+				"D) All of the above"
+			],
+			"correctAnswer": "D",
+			"explanation": "Multiple organizations work together on anti-corruption efforts, including Transparency International, World Bank, UN, and various national and regional bodies."
+		},
+		{
+			"id": 13,
+			"type": "truefalse",
+			"question": "Young people cannot make a difference in fighting corruption.",
+			"correctAnswer": false,
+			"explanation": "Young people are essential to fighting corruption through activism, advocacy, voting, and building ethical institutions for the future."
+		},
+		{
+			"id": 14,
+			"type": "mcq",
+			"question": "What does 'petty corruption' refer to?",
+			"options": [
+				"A) Small bribes or unauthorized payments to low-level officials",
+				"B) Only corruption in developing countries",
+				"C) Corruption that affects wealthy people",
+				"D) Legal forms of payments to government"
+			],
+			"correctAnswer": "A",
+			"explanation": "Petty corruption involves small-scale bribes or payments made by everyday people to officials to access basic services, contrasting with grand corruption at higher levels."
+		},
+		{
+			"id": 15,
+			"type": "mcq",
+			"question": "How can technology help reduce corruption?",
+			"options": [
+				"A) By providing transparent tracking of government spending",
+				"B) By creating secure whistleblower reporting systems",
+				"C) By automating fair and objective decision-making",
+				"D) All of the above"
+			],
+			"correctAnswer": "D",
+			"explanation": "Technology enables transparency, secure reporting, blockchain tracking of assets, and AI-based fair decision-making systems to combat corruption effectively."
+		},
+		{
+			"id": 16,
+			"type": "truefalse",
+			"question": "Corruption is inevitable and nothing can be done about it.",
+			"correctAnswer": false,
+			"explanation": "While challenging, corruption is not inevitable. Evidence shows that strong institutions, transparency, accountability, and civic engagement can significantly reduce it."
+		},
+		{
+			"id": 17,
+			"type": "mcq",
+			"question": "What is integrity?",
+			"options": [
+				"A) Following rules only when caught or monitored",
+				"B) Being honest and having strong moral principles consistently",
+				"C) Making decisions based on what benefits you most",
+				"D) Keeping secrets from colleagues and supervisors"
+			],
+			"correctAnswer": "B",
+			"explanation": "Integrity means practicing honesty and strong moral principles consistently, regardless of circumstances or whether anyone is watching - it's the foundation against corruption."
+		},
+		{
+			"id": 18,
+			"type": "truefalse",
+			"question": "Public funds belong to citizens and should be spent for their benefit.",
+			"correctAnswer": true,
+			"explanation": "Government resources come from taxpayers and must be used for public good, not personal enrichment - this is a core principle preventing corruption."
+		},
+		{
+			"id": 19,
+			"type": "mcq",
+			"question": "What role do independent media play in fighting corruption?",
+			"options": [
+				"A) Investigating and exposing corrupt practices",
+				"B) Holding public officials accountable through reporting",
+				"C) Informing citizens about corruption and governance",
+				"D) All of the above"
+			],
+			"correctAnswer": "D",
+			"explanation": "Independent media are crucial anti-corruption tools - they investigate abuses, expose wrongdoing, hold power accountable, and inform citizens about governance issues."
+		},
+		{
+			"id": 20,
+			"type": "mcq",
+			"question": "Which of these is a sign of good governance?",
+			"options": [
+				"A) Clear accountability structures and performance oversight",
+				"B) Transparent budget allocation and procurement processes",
+				"C) Protection for whistleblowers and investigative bodies",
+				"D) All of the above"
+			],
+			"correctAnswer": "D",
+			"explanation": "Good governance includes clear accountability, transparent processes, protected reporting mechanisms, and independent oversight - all work together to prevent corruption."
+		}
+	]
+}
