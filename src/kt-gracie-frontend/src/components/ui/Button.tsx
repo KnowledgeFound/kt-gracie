@@ -12,10 +12,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
 	primary:
-		'bg-gradient-to-r from-indigo-500 to-indigo-700 text-white shadow-md hover:shadow-lg',
+		'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-md hover:shadow-lg',
 	secondary:
-		'bg-gray-100 text-indigo-600 border-2 border-indigo-500 hover:bg-indigo-500 hover:text-white',
-	ghost: 'bg-transparent text-indigo-600 hover:bg-indigo-50',
+		'bg-gray-100 text-brand-600 border-2 border-brand-500 hover:bg-brand-500 hover:text-white',
+	ghost: 'bg-transparent text-brand-600 hover:bg-brand-50',
 	danger: 'bg-red-400 text-white hover:bg-red-500',
 };
 
@@ -42,7 +42,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			ref={ref}
 			disabled={disabled || isLoading}
 			className={classnames(
-				'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+				'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
 				variantClasses[variant],
 				sizeClasses[size],
 				className,

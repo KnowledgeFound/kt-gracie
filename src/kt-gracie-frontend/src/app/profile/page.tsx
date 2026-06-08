@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useUser, EditUserForm, DeleteConfirm, ProfileCard} from '@/features/auth';
+import { useUser, EditUserForm, DeleteConfirm, ProfileCard } from '@/features/auth';
 import { MainLayout } from '@/components/layout';
 
 type View = 'profile' | 'edit' | 'delete';
 
 const slide = {
-	initial:    { opacity: 0, y: 20 },
-	animate:    { opacity: 1, y: 0, transition: { duration: 0.25 } },
-	exit:       { opacity: 0, y: -12, transition: { duration: 0.18 } },
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0, transition: { duration: 0.25 } },
+	exit: { opacity: 0, y: -12, transition: { duration: 0.18 } },
 };
 
 export default function ProfilePage() {
@@ -64,7 +64,7 @@ export default function ProfilePage() {
 							<DeleteConfirm
 								onConfirm={() => {
 									deleteUser();
-									navigate('/auth');
+									navigate('/');
 								}}
 								onCancel={() => setView('profile')}
 							/>

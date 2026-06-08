@@ -33,9 +33,9 @@ export default function CreateUserForm({ onSubmit }: CreateUserFormProps) {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="space-y-5 bg-white rounded-2xl shadow-lg p-8 max-w-lg w-full"
+			className="space-y-4 bg-white rounded-2xl shadow-lg p-6 max-w-md w-full"
 		>
-			<h2 className="text-2xl font-bold text-indigo-700">Create Profile</h2>
+			<h2 className="text-2xl font-bold text-brand-600">Create Account</h2>
 
 			{error && (
 				<p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
@@ -100,7 +100,7 @@ export default function CreateUserForm({ onSubmit }: CreateUserFormProps) {
 			</Field>
 
 			<Button type="submit" size="lg" className="w-full justify-center">
-				Create Profile →
+				Explore City →
 			</Button>
 		</form>
 	);
@@ -109,7 +109,7 @@ export default function CreateUserForm({ onSubmit }: CreateUserFormProps) {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const inputCls =
-	'w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition';
+	'w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-400 transition';
 
 function Field({
 	label,
