@@ -7,6 +7,7 @@ import {
 	CityMenu,
 	ModuleDrawer,
 	Modules,
+	BalloonCursor,
 } from '@/features/city';
 import { useUser } from '@/features/auth';
 
@@ -66,6 +67,9 @@ export default function CityScene() {
 			<CityMenu open={statsOpen} onClose={() => setStatsOpen(false)} />
 
 			<Modules onClickModule={handleModuleClick} />
+
+			{/* Hot-air balloon that follows the mouse */}
+			<BalloonCursor />
 		</div>
 	);
 }
