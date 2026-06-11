@@ -9,7 +9,6 @@ import {
 import { UserProvider, useOptionalUser } from '@/features/auth';
 import RootLayout from './app/layout';
 import HomePage from './app/home/page';
-import AuthPage from './app/auth/page';
 import QuizPage from './app/quiz/page';
 import LeaderboardPage from './app/leaderboard/page';
 import ProfilePage from './app/profile/page';
@@ -29,7 +28,7 @@ function ProtectedRoute() {
 	return user ? (
 		<Outlet />
 	) : (
-		<Navigate to="/auth" state={{ from: location.pathname }} replace />
+		<Navigate to="/" state={{ from: location.pathname }} replace />
 	);
 }
 
@@ -51,7 +50,6 @@ export default function App() {
 					<Route element={<RootLayout />}>
 						{/* Public routes */}
 						<Route path="/" element={<HomePage />} />
-						<Route path="/auth" element={<AuthPage />} />
 
 						{/* Protected routes — require a user profile */}
 						<Route element={<ProtectedRoute />}>
