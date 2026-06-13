@@ -33,7 +33,7 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 	function handleLogOut() {
 		onClose();
 		deleteUser();
-		navigate('/auth');
+		navigate('/');
 	}
 
 	return (

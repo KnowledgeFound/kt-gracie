@@ -173,7 +173,7 @@ function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
 				) : (
 					<div className="py-4 ">
 						{/* Description */}
-						<p className="text-xs font-semibold mb-2 text-white leading-tight">
+						<p className="text-sm mb-2 text-white leading-tight tracking-widest">
 							{module.description}
 						</p>
 					</div>

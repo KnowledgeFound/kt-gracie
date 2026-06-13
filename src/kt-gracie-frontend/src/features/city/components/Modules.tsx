@@ -144,7 +144,7 @@ function ModuleCard({
 			].join(' ')}
 		>
 			{/* Icon + progress ring */}
-			<span className="relative shrink-0 mr-2">
+			<span className="relative shrink-0 mr-1">
 				{isStarted && <ProgressRing pct={pct} size={36} stroke={3} />}
 				<Icon className="w-4 h-4 text-brand-600 group-hover:text-white transition-colors" />
 			</span>
@@ -161,6 +161,50 @@ function ModuleCard({
 				</span>
 			)}
 		</button>
+	);
+}
+
+// ─── Progress ring ────────────────────────────────────────────────────────────
+
+interface ProgressRingProps {
+	pct: number;
+	size: number;
+	stroke: number;
+}
+
+function ProgressRing({ pct, size, stroke }: ProgressRingProps) {
+	const r = (size - stroke) / 2;
+	const circ = 2 * Math.PI * r;
+	const dash = circ * (pct / 100);
+
+	return (
+		<svg
+			width={size}
+			height={size}
+			className="absolute inset-0 -rotate-90 -top-1.5 -left-1.5"
+			aria-hidden="true"
+		>
+			<circle
+				cx={size / 2}
+				cy={size / 2}
+				r={r}
+				fill="none"
+				stroke="currentColor"
+				strokeWidth={stroke}
+				className="text-blue-100"
+			/>
+			<circle
+				cx={size / 2}
+				cy={size / 2}
+				r={r}
+				fill="none"
+				stroke="currentColor"
+				strokeWidth={stroke}
+				strokeDasharray={`${dash} ${circ}`}
+				strokeLinecap="round"
+				className="text-blue-500 transition-[stroke-dasharray] duration-700"
+			/>
+		</svg>
 	);
 }
 
@@ -189,49 +233,5 @@ function MapButtonInner({ module, isStarted, pct }: MapButtonInnerProps) {
 				</span>
 			)}
 		</>
-	);
-}
-
-// ─── Progress ring ────────────────────────────────────────────────────────────
-
-interface ProgressRingProps {
-	pct: number;
-	size: number;
-	stroke: number;
-}
-
-function ProgressRing({ pct, size, stroke }: ProgressRingProps) {
-	const r = (size - stroke) / 2;
-	const circ = 2 * Math.PI * r;
-	const dash = circ * (pct / 100);
-
-	return (
-		<svg
-			width={size}
-			height={size}
-			className="absolute inset-0 -rotate-90 -top-2 -left-2"
-			aria-hidden="true"
-		>
-			<circle
-				cx={size / 2}
-				cy={size / 2}
-				r={r}
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={stroke}
-				className="text-blue-100"
-			/>
-			<circle
-				cx={size / 2}
-				cy={size / 2}
-				r={r}
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={stroke}
-				strokeDasharray={`${dash} ${circ}`}
-				strokeLinecap="round"
-				className="text-blue-500 transition-[stroke-dasharray] duration-700"
-			/>
-		</svg>
 	);
 }
