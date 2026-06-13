@@ -25,6 +25,7 @@ export default function AuthPage() {
 
 	// Already has a profile — skip straight to the destination
 	useEffect(() => {
+		console.log('AuthPage useEffect: checking user state', { user, from });
 		if (user) navigate(from, { replace: true });
 	}, [user, from, navigate]);
 

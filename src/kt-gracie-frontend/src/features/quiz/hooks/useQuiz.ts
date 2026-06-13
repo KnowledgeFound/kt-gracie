@@ -78,12 +78,12 @@ export function useQuiz(subjectId?: string) {
 
 		if (user) {
 			const prev = user.progression;
-			updateProgression({
-				quizzesCompleted: prev.quizzesCompleted + 1,
-				totalCorrect: prev.totalCorrect + finalScore,
-				totalAnswered: prev.totalAnswered + quizQuestions.length,
-				highScore: Math.max(prev.highScore, finalScore),
-			});
+			// updateProgression({
+			// 	quizzesCompleted: prev.quizzesCompleted + 1,
+			// 	totalCorrect: prev.totalCorrect + finalScore,
+			// 	totalAnswered: prev.totalAnswered + quizQuestions.length,
+			// 	highScore: Math.max(prev.highScore, finalScore),
+			// });
 		}
 	};
 

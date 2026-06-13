@@ -8,7 +8,7 @@ import {
 	LogOut,
 	Coins,
 } from 'lucide-react';
-import type { User } from '../types';
+import type { User } from '../../../types/user';
 import { AGE_BUCKET_LABELS, GENDER_LABELS, REGION_LABELS } from '../constants';
 import { Button } from '@/components/ui';
 
@@ -133,7 +133,7 @@ export default function ProfileCard({
 			</Section>
 
 			{/* ── Badges ── */}
-			{user.progression.achievements.length > 0 && (
+			{/* {user.progression.achievements.length > 0 && (
 				<Section title="Badges">
 					<div className="flex flex-wrap gap-2">
 						{user.progression.achievements.map((badge) => (
@@ -146,7 +146,7 @@ export default function ProfileCard({
 						))}
 					</div>
 				</Section>
-			)}
+			)} */}
 			<div className="flex gap-3 pt-2 pb-8">
 				<Button
 					variant="danger"

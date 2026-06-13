@@ -11,7 +11,6 @@ export type {
 	GracieConfig,
 	Progression,
 	City,
-	AgeBucket,
-	Gender,
-	Region,
-} from './types';
+} from '../../types/user';
+
+export {AgeBucket,Gender,Region} from '../../ENUMS/enums';

@@ -14,6 +14,14 @@ export interface GracieConfig {
     pace: Pace;
     mood: Mood;
     createdAt: string;
+    /** Gracie character name chosen by the user */
+	name: string;
+	/** Gracie avatar variant */
+	avatarId: string;
+	/** Integrity score 0–100 */
+	integrityScore: number;
+	/** Total interactions with Gracie */
+	interactionCount: number;
 }
 
 // --- Progression sub-object shape (owned by Amanda — #20) ---
@@ -51,6 +59,15 @@ export interface Progression {
     currentContentId: string | null;
     streakDays: number;
     lastActivityDate: string;
+    	/** Total quiz sessions completed */
+	quizzesCompleted: number;
+	/** Cumulative correct answers across all sessions */
+	totalCorrect: number;
+	/** Cumulative questions answered */
+	totalAnswered: number;
+	/** Highest single-session score */
+	highScore: number;
+	/** Achievements earned */
 }
 
 // --- City sub-object shape (owned by Agape — #21) ---
@@ -88,6 +105,8 @@ export interface CreateUserInput {
     firstName: string;
     ageBucket: AgeBucket;
     gender: Gender;
+    region?: Region;
+    country?: string;
 }
 
 export type UpdateUserInput = Partial<

@@ -1,5 +1,6 @@
 import { FormEvent } from 'react';
-import type { User, UpdateUserInput, AgeBucket, Gender, Region } from '../types';
+import type { User, UpdateUserInput} from '../../../types/user';
+import {AgeBucket, Gender, Region } from '../../../ENUMS/enums';
 import {
 	AGE_BUCKET_LABELS,
 	GENDER_LABELS,
