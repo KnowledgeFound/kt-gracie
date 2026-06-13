@@ -17,6 +17,10 @@ export function createDefaultGracie(ageBucket: AgeBucket): GracieConfig {
         pace: "standard",
         mood: "encouraging",
         createdAt: new Date().toISOString(),
+        name: "Gracie",
+        avatarId: `default-${ageBand}-avatar`,
+        integrityScore: 100,
+        interactionCount: 0,
     };
 }
 
@@ -31,6 +35,10 @@ export function createDefaultProgression(): Progression {
         currentContentId: null,
         streakDays: 0,
         lastActivityDate: new Date().toISOString(),
+        quizzesCompleted: 0,
+        totalCorrect: 0,
+        totalAnswered: 0,
+        highScore: 0,
     };
 }
 

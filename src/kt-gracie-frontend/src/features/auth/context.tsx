@@ -5,14 +5,14 @@ import {
 	useCallback,
 	type ReactNode,
 } from 'react';
-import type {
+import * as userServices from '../../services/userServices';
+import type { 
 	User,
 	CreateUserInput,
 	UpdateUserInput,
 	GracieConfig,
 	Progression,
-} from './types';
-import * as storage from './services/userStorage';
+} from '../../types/user';
 
 // ─── Shape ────────────────────────────────────────────────────────────────────
 
@@ -32,28 +32,28 @@ const UserContext = createContext<UserContextValue | null>(null);
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function UserProvider({ children }: { children: ReactNode }) {
-	const [user, setUser] = useState<User | null>(() => storage.getUser());
+	const [user, setUser] = useState<User | null>(() => userServices.getUser());
 
 	const createUser = useCallback((input: CreateUserInput): User => {
-		const created = storage.createUser(input);
+		const created = userServices.createUser(input);
 		setUser(created);
 		return created;
 	}, []);
 
 	const updateUser = useCallback((updates: UpdateUserInput): User => {
-		const updated = storage.updateUser(updates);
+		const updated = userServices.updateUser(updates);
 		setUser(updated);
 		return updated;
 	}, []);
 
 	const deleteUser = useCallback((): void => {
-		storage.deleteUser();
+		userServices.deleteUser();
 		setUser(null);
 	}, []);
 
 	const updateProgression = useCallback(
 		(progression: Partial<Progression>): User => {
-			const updated = storage.updateProgression(progression);
+			const updated = userServices.updateProgression(progression);
 			setUser(updated);
 			return updated;
 		},
@@ -61,7 +61,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 	);
 
 	const updateGracie = useCallback((gracie: Partial<GracieConfig>): User => {
-		const updated = storage.updateGracie(gracie);
+		const updated = userServices.updateGracie(gracie);
 		setUser(updated);
 		return updated;
 	}, []);
