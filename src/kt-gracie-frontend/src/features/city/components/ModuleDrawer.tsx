@@ -171,16 +171,16 @@ function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
 						</div>
 					</div>
 				) : (
-					<div className="py-4 ">
+					<div className="mt-4">
 						{/* Description */}
-						<p className="text-sm mb-2 text-white leading-tight tracking-widest">
+						<p className="text-sm text-white leading-tight">
 							{module.description}
 						</p>
 					</div>
 				)}
 			</div>
 			{/* Video Frame */}
-			<div className="relative w-full bg-blue-50 overflow-hidden max-h-[250px]">
+			<div className="relative w-full bg-blue-50 overflow-hidden max-h-[250px] ">
 				<img src={CITY_SRC} alt="city image" className="w-full h-full" />
 			</div>
 		</>

@@ -88,6 +88,7 @@ export const MOCK_PROGRESS: Record<number, ModuleProgress> = {
 	]),
 };
 
+
 /** Returns progress for a module, or null if never started. */
 export function getModuleProgress(moduleId: number): ModuleProgress | null {
 	const p = MOCK_PROGRESS[moduleId] ?? null;
