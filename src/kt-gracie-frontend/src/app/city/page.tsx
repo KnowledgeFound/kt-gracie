@@ -1,6 +1,14 @@
 import '@pixi/unsafe-eval';
 import { useState } from 'react';
-import { CloudLayer, CityHeader, DrawerMenu, CityMenu } from '@/features/city';
+import {
+	CloudLayer,
+	CityHeader,
+	DrawerMenu,
+	CityMenu,
+	ModuleDrawer,
+	Modules,
+	BalloonCursor,
+} from '@/features/city';
 import { useUser } from '@/features/auth';
 
 const CITY_BG_SRC = '/assets/city/city.png';
@@ -16,6 +24,11 @@ export default function CityScene() {
 	const { user } = useUser();
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [statsOpen, setStatsOpen] = useState(false);
+	const [moduleId, setModuleId] = useState<number | null>(null);
+
+	const handleModuleClick = (id: number) => {
+		setModuleId(id);
+	};
 
 	return (
 		<div className="relative w-screen h-screen overflow-hidden font-sans">
@@ -41,16 +54,22 @@ export default function CityScene() {
 			/>
 
 			{/* Left nav drawer — opened by username badge */}
-			<DrawerMenu
-				open={drawerOpen}
-				onClose={() => setDrawerOpen(false)}
+			<DrawerMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+			{/* Module detail drawer — opened by clicking a Module on the map */}
+			<ModuleDrawer
+				open={moduleId !== null}
+				onClose={() => setModuleId(null)}
+				moduleId={moduleId}
 			/>
 
 			{/* Right stats panel — opened by health badge */}
-			<CityMenu
-				open={statsOpen}
-				onClose={() => setStatsOpen(false)}
-			/>
+			<CityMenu open={statsOpen} onClose={() => setStatsOpen(false)} />
+
+			<Modules onClickModule={handleModuleClick} />
+
+			{/* Hot-air balloon that follows the mouse */}
+			<BalloonCursor />
 		</div>
 	);
 }

@@ -44,18 +44,7 @@ export default function QuizPage() {
 			</div>
 
 			<div className="relative z-10">
-				{/* Quit — only during active quiz */}
-				{quiz.screen !== 'welcome' && (
-					<div className="absolute top-4 right-4 z-50">
-						<Button
-							variant="danger"
-							size="sm"
-							onClick={() => (id ? navigate(`/subjects`) : navigate('/'))}
-						>
-							✕ Quit
-						</Button>
-					</div>
-				)}
+				
 
 				<AnimatePresence mode="wait">
 					{quiz.screen === 'welcome' && (

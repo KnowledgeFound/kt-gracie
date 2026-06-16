@@ -3,3 +3,6 @@ export { default as CloudLayer } from './components/CloudLayer';
 export { default as DriftingCloud } from './components/DriftingCloud';
 export { default as DrawerMenu } from './components/DrawerMenu';
 export { default as CityMenu } from './components/CityMenu';
+export { default as ModuleDrawer } from './components/ModuleDrawer';
+export { default as Modules } from './components/Modules';
+export { default as BalloonCursor } from './components/BalloonCursor';

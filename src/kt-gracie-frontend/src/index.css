@@ -30,7 +30,7 @@
 	/* Glass badge pill — shared by all city header badges */
 	.badge-pill {
 		@apply flex items-center gap-[10px]
-           bg-surface-glass backdrop-blur-badge
+           bg-surface-glass/30 backdrop-blur-badge
            border border-ocean-border rounded-pill
            px-badge-x py-badge-y
            shadow-badge

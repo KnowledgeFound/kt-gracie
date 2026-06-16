@@ -30,13 +30,13 @@ export default function CloudLayer() {
 		<Stage width={dims.w} height={dims.h} options={{ backgroundAlpha: 0 }}>
 			<DriftingCloud
 				imageSrc={CLOUD1_SRC}
-				drift={-60}
+				drift={-40}
 				stageWidth={dims.w}
 				stageHeight={dims.h}
 			/>
 			<DriftingCloud
 				imageSrc={CLOUD2_SRC}
-				drift={60}
+				drift={40}
 				stageWidth={dims.w}
 				stageHeight={dims.h}
 			/>
