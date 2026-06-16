@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
-import type { CreateUserInput, AgeBucket, Gender, Region } from '../types';
+import type { CreateUserInput } from '../../../types/user';
+import {AgeBucket, Gender, Region} from '../../../ENUMS/enums';
 import { AGE_BUCKET_LABELS, GENDER_LABELS, REGION_LABELS } from '../constants';
 import { Button } from '@/components/ui';
 
