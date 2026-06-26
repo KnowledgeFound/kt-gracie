@@ -14,7 +14,13 @@
 // skips itself and the mock falls back to a harmless stub.
 
 import { describe, it, expect, beforeAll, vi } from "vitest";
-import { randomUUID } from "crypto";
+
+// This integration test only runs under vitest (Node). The frontend build
+// (`tsc`) compiles everything under src/ and is typed for the browser
+// (types: ["vite/client"]), so declare the Node `process` we read here rather
+// than pulling in @types/node. `crypto.randomUUID()` is the DOM-typed global,
+// available in both the Node test runtime and the browser.
+declare const process: { env: Record<string, string | undefined> };
 
 vi.mock("declarations/kt-gracie-backend", async () => {
     const canisterId = process.env.CANISTER_ID_KT_GRACIE_BACKEND;
@@ -43,8 +49,8 @@ const live = !!process.env.CANISTER_ID_KT_GRACIE_BACKEND;
 
 describe.skipIf(!live)("tokenService <-> live canister", () => {
     // Fresh ids per run so repeated runs against a persistent replica don't collide.
-    const user = `it-${randomUUID()}`;
-    const other = `it-${randomUUID()}`;
+    const user = `it-${crypto.randomUUID()}`;
+    const other = `it-${crypto.randomUUID()}`;
 
     beforeAll(() => {
         expect(live).toBe(true);
