@@ -8,6 +8,7 @@ import {
     deleteUser,
     updateProgression,
     updateGracie,
+    updateTokenBalance,
 } from "../userServices";
 
 beforeEach(() => {
@@ -199,5 +200,36 @@ describe("updateGracie", () => {
         expect(() => updateGracie({ mood: "neutral" })).toThrow(
             "No user found"
         );
+    });
+});
+
+describe("updateTokenBalance", () => {
+    it("updates the cached token balance and persists it", () => {
+        createUser({
+            firstName: "Alice",
+            ageBucket: AgeBucket.AGE_20_22,
+            gender: Gender.FEMALE,
+        });
+
+        const updated = updateTokenBalance(120);
+        expect(updated.tokenBalance).toBe(120);
+
+        const stored = JSON.parse(localStorage.getItem(USER_STORAGE_KEY)!);
+        expect(stored.tokenBalance).toBe(120);
+    });
+
+    it("supports a negative balance (debt allowed)", () => {
+        createUser({
+            firstName: "Alice",
+            ageBucket: AgeBucket.AGE_20_22,
+            gender: Gender.FEMALE,
+        });
+
+        const updated = updateTokenBalance(-30);
+        expect(updated.tokenBalance).toBe(-30);
+    });
+
+    it("throws when no user exists", () => {
+        expect(() => updateTokenBalance(10)).toThrow("No user found");
     });
 });

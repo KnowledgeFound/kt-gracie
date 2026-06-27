@@ -87,6 +87,32 @@ export function updateProgression(updates: Partial<Progression>): User {
     return updated;
 }
 
+/**
+ * Sync the locally-cached token balance from the backend.
+ *
+ * The backend token canister is the source of truth for balances; `tokenBalance`
+ * on the user is only a display cache so the UI can render a number without an
+ * async call. Call this after a credit/debit (or on load) with the balance the
+ * backend returned.
+ */
+export function updateTokenBalance(tokenBalance: number): User {
+    const user = getUser();
+    if (!user) {
+        throw new Error("No user found.");
+    }
+
+    const now = new Date().toISOString();
+    const updated: User = {
+        ...user,
+        tokenBalance,
+        updatedAt: now,
+        lastActiveAt: now,
+    };
+
+    setLocalStorage(USER_STORAGE_KEY, updated);
+    return updated;
+}
+
 export function updateGracie(updates: Partial<GracieConfig>): User {
     const user = getUser();
     if (!user) {

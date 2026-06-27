@@ -1,5 +1,6 @@
 import Types "../commons/types";
 import Utils "../commons/utils";
+import TokenLedger "../commons/tokenLedger";
 import Result "mo:core/Result";
 import Text "mo:core/Text";
 import Buffer "mo:base/Buffer";
@@ -9,6 +10,7 @@ import Nat "mo:base/Nat";
 import City "canister:city";
 import Array "mo:base/Array";
 import Bool "mo:base/Bool";
+import Time "mo:base/Time";
 
 persistent actor {
 
@@ -186,5 +188,90 @@ persistent actor {
       i += 1;
     };
     return results;
+  };
+
+  ///////////////////////// TOKEN FUNCTIONS /////////////////////////////
+  /**
+  * Per-user token accounts, keyed by the user's anonymousId.
+  *
+  * All balance/transaction logic lives in the pure TokenLedger module so it can
+  * be unit-tested without a replica (see test/TokenLedger.test.mo). The methods
+  * below are thin wrappers: load the account, hand it to TokenLedger, store the
+  * result back.
+  *
+  * NOTE: the account is keyed by the client-supplied anonymousId, so this is
+  * identity-by-convention, not by authentication — every caller currently shares
+  * the anonymous principal. Replace the key with `msg.caller` once Internet
+  * Identity lands.
+  */
+  var arr_accounts : [Types.Account] = [];
+
+  // Find a user's account by anonymousId.
+  private func findAccount(userId : Text) : ?Types.Account {
+    for (account in arr_accounts.vals()) {
+      if (account.userId == userId) {
+        return ?account;
+      };
+    };
+    return null;
+  };
+
+  // Return the user's existing account, or a fresh empty one.
+  private func resolveAccount(userId : Text) : Types.Account {
+    switch (findAccount(userId)) {
+      case (?account) { account };
+      case null { TokenLedger.emptyAccount(userId) };
+    };
+  };
+
+  // Insert or replace an account, keyed by userId.
+  private func upsertAccount(updated : Types.Account) : () {
+    let buffer = Buffer.fromArray<Types.Account>(arr_accounts);
+    var found = false;
+    var i : Nat = 0;
+    for (account in arr_accounts.vals()) {
+      if (account.userId == updated.userId) {
+        buffer.put(i, updated);
+        found := true;
+      };
+      i += 1;
+    };
+    if (not found) {
+      buffer.add(updated);
+    };
+    arr_accounts := Buffer.toArray(buffer);
+  };
+
+  /**
+  * Credit tokens to a user. Returns the new balance.
+  */
+  public func credit(userId : Text, amount : Nat, txType : Text, reference : ?Text) : async Int {
+    let updated = TokenLedger.credit(resolveAccount(userId), amount, txType, reference, Time.now());
+    upsertAccount(updated);
+    return updated.balance;
+  };
+
+  /**
+  * Debit tokens from a user. The balance may go negative (debt allowed).
+  * Returns the new balance.
+  */
+  public func debit(userId : Text, amount : Nat, txType : Text, reference : ?Text) : async Int {
+    let updated = TokenLedger.debit(resolveAccount(userId), amount, txType, reference, Time.now());
+    upsertAccount(updated);
+    return updated.balance;
+  };
+
+  /**
+  * Get a user's current balance. Defaults to 0 for an unknown user.
+  */
+  public query func getBalance(userId : Text) : async Int {
+    return TokenLedger.getBalance(resolveAccount(userId));
+  };
+
+  /**
+  * Get a user's full transaction history (most-recent appended last).
+  */
+  public query func getTransactions(userId : Text) : async [Types.Transaction] {
+    return resolveAccount(userId).transactions;
   };
 };
