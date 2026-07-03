@@ -6,6 +6,7 @@ import {
 	type ReactNode,
 } from 'react';
 import * as userServices from '../../services/userServices';
+import * as cityServices from '../../services/cityService';
 import type { 
 	User,
 	CreateUserInput,
@@ -13,11 +14,13 @@ import type {
 	GracieConfig,
 	Progression,
 } from '../../types/user';
+import { City } from '@/models/City';
 
 // ─── Shape ────────────────────────────────────────────────────────────────────
 
 interface UserContextValue {
 	user: User | null;
+	city: City | null;
 	createUser: (input: CreateUserInput) => User;
 	updateUser: (updates: UpdateUserInput) => User;
 	deleteUser: () => void;
@@ -33,10 +36,18 @@ const UserContext = createContext<UserContextValue | null>(null);
 
 export function UserProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User | null>(() => userServices.getUser());
+	const [city, setCity] = useState(() => cityServices.getCityFromLocalStorage());
 
 	const createUser = useCallback((input: CreateUserInput): User => {
+		
+		// create user
 		const created = userServices.createUser(input);
 		setUser(created);
+		
+		//create city
+		const city = cityServices.createCity("UN City");
+		cityServices.saveCityToLocalStorage(city);
+
 		return created;
 	}, []);
 
@@ -70,6 +81,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 		<UserContext.Provider
 			value={{
 				user,
+				city,
 				createUser,
 				updateUser,
 				deleteUser,

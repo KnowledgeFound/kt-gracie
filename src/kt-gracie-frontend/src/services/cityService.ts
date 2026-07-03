@@ -11,6 +11,7 @@ export function saveCityToLocalStorage(city: City): void {
 
 export function getCityFromLocalStorage(): City | null {
     const cityData = getLocalStorage("city");
+
     if (cityData) {
         const parsed = JSON.parse(cityData);
 
@@ -21,6 +22,7 @@ export function getCityFromLocalStorage(): City | null {
         
         return city;
     }
+    
     return null;
 }
 

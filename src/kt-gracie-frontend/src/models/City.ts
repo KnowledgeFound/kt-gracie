@@ -2,7 +2,7 @@ import { CityState } from "../ENUMS/enums";
 
 export class City {
     private name: string;
-    private health: number = 100;
+    private health: number = 0;
     private decay: number = 5;
     private contentScore: number = 0;
     private finalAssessmentScore: number = 0;
