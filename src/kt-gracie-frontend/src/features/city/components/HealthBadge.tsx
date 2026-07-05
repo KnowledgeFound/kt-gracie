@@ -11,6 +11,7 @@ interface HealthBadgeProps {
  */
 export default function HealthBadge({ health, onClick }: HealthBadgeProps) {
 	// Clamp to [0, 100] so the bar never overflows
+	// console.log("HealthBadge health:", health);
 	const pct = Math.min(100, Math.max(0, health));
 
 	const baseClass = [

@@ -11,6 +11,8 @@ import {
 	BalloonCursor,
 } from '@/features/city';
 import { useUser } from '@/features/auth';
+import * as CityServices from '@/services/cityService';
+import { useEffect } from 'react';
 
 const BLOCK_CENTRAL_SRC = '/assets/city/block-central.png';
 const BLOCK_LEFT_UP_SRC = '/assets/city/block-left-up.png';
@@ -41,6 +43,17 @@ export default function CityScene() {
 	const [statsOpen, setStatsOpen] = useState(false);
 	const [moduleId, setModuleId] = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<BlockId | null>(null);
+	const [cityHealth, setCityHealth] = useState<number>(100);
+
+	useEffect(() => {
+		const loadCityHealth = async () => {
+			//console.log("Loaded city:", CityServices.getCityFromLocalStorage()?.getHealth());
+			const health = CityServices.getCityFromLocalStorage()?.getHealth() ?? 100;
+			setCityHealth(health);
+    	};
+
+		loadCityHealth();
+	}, []);
 
 	const handleModuleClick = (id: number) => {
 		setModuleId(id);
@@ -93,7 +106,7 @@ export default function CityScene() {
 
 			{/* Header badges */}
 			<CityHeader
-				health={user?.city?.health ?? 100}
+				health={cityHealth}
 				tokens={user?.tokenBalance ?? 0}
 				username={user?.firstName ?? '—'}
 				onClickHealth={() => setStatsOpen(true)}
