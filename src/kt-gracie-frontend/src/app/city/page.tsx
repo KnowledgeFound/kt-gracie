@@ -1,5 +1,6 @@
 import '@pixi/unsafe-eval';
 import { useState } from 'react';
+import './city.css';
 import {
 	CloudLayer,
 	CityHeader,
@@ -11,7 +12,21 @@ import {
 } from '@/features/city';
 import { useUser } from '@/features/auth';
 
-const CITY_BG_SRC = '/assets/city/city.png';
+const BLOCK_CENTRAL_SRC = '/assets/city/block-central.png';
+const BLOCK_LEFT_UP_SRC = '/assets/city/block-left-up.png';
+const BLOCK_LEFT_DOWN_SRC = '/assets/city/block-left-down.png';
+const BLOCK_RIGHT_UP_SRC = '/assets/city/block-right-up.png';
+const BLOCK_RIGHT_DOWN_SRC = '/assets/city/block-right-down.png';
+
+type BlockId = 'leftUp' | 'rightUp' | 'central' | 'leftDown' | 'rightDown';
+
+const BLOCKS: { id: BlockId; src: string; alt: string }[] = [
+	{ id: 'leftUp', src: BLOCK_LEFT_UP_SRC, alt: 'City block left up' },
+	{ id: 'rightUp', src: BLOCK_RIGHT_UP_SRC, alt: 'City block right up' },
+	{ id: 'central', src: BLOCK_CENTRAL_SRC, alt: 'Central city block' },
+	{ id: 'leftDown', src: BLOCK_LEFT_DOWN_SRC, alt: 'City block left down' },
+	{ id: 'rightDown', src: BLOCK_RIGHT_DOWN_SRC, alt: 'City block right down' },
+];
 
 /**
  * Top-level city page.
@@ -25,23 +40,55 @@ export default function CityScene() {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [statsOpen, setStatsOpen] = useState(false);
 	const [moduleId, setModuleId] = useState<number | null>(null);
+	const [hoveredBlock, setHoveredBlock] = useState<BlockId | null>(null);
 
 	const handleModuleClick = (id: number) => {
 		setModuleId(id);
 	};
 
 	return (
-		<div className="relative w-screen h-screen overflow-hidden font-sans">
+		<div
+			className={`cityScene${hoveredBlock ? ' cityScene--hovering' : ''}`}
+		>
 			{/* City background */}
-			<img
-				src={CITY_BG_SRC}
-				alt="Knowledge City — isometric city view"
-				className="absolute inset-0 w-full h-full max-w-none max-h-none m-0 object-cover object-center rounded-none z-0 animate-cityReveal"
-			/>
+			<div aria-hidden="true" className="cityBackground" />
 
 			{/* PixiJS cloud layer */}
-			<div className="absolute inset-0 z-[1] pointer-events-none">
+			<div className="cityCloudLayer">
 				<CloudLayer />
+			</div>
+
+			<div className="cityBlockGridWrapper">
+				<div className="cityBlocks">
+					{BLOCKS.map(({ id, src, alt }) => {
+						const isDimmed = hoveredBlock !== null && hoveredBlock !== id;
+						const isActive = hoveredBlock === id;
+
+						const variant = id.charAt(0).toUpperCase() + id.slice(1);
+
+						return (
+							<div
+								key={id}
+								className={[
+									'cityBlockItem',
+									`cityBlockItem--${id}`,
+									isActive ? 'cityBlockItem--active' : '',
+									isDimmed ? 'cityBlockItem--dimmed' : '',
+								]
+									.filter(Boolean)
+									.join(' ')}
+								onMouseEnter={() => setHoveredBlock(id)}
+								onMouseLeave={() => setHoveredBlock(null)}
+							>
+								<img
+									src={src}
+									alt={alt}
+									className={`cityBlock cityBlock--${id}`}
+								/>
+							</div>
+						);
+					})}
+				</div>
 			</div>
 
 			{/* Header badges */}

@@ -84,7 +84,7 @@ export default function BalloonCursor() {
 			<motion.img
 				src={BALLOON_SRC}
 				alt="balloon"
-				className="w-14 h-auto drop-shadow-lg select-none rounded "
+				className="w-40 h-auto drop-shadow-lg select-none rounded "
 				animate={{ y: [0, -10, 0] }}
 				transition={{
 					duration: 3,
