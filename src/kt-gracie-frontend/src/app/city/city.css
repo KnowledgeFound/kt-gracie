@@ -1,0 +1,172 @@
+.cityScene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.cityBackground {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-color: #d7f1ff;
+  transition: filter 0.35s ease;
+}
+
+.cityCloudLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.cityBlockGridWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cityBlocks {
+  position: relative;
+  width: clamp(600px, 65vw, 1000px);
+  height: clamp(480px, 52vw, 780px);
+}
+
+/* Wrapper handles position, hover, dimming, and scale */
+.cityBlockItem {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.35s ease, filter 0.35s ease, opacity 0.35s ease;
+  will-change: transform, filter;
+}
+
+.cityBlockItem--leftUp {
+  top: 10%;
+  left: -4%;
+  width: 50%;
+  height: 50%;
+}
+
+.cityBlockItem--rightUp {
+  top: 5%;
+  right: -4%;
+  width: 50%;
+  height: 50%;
+}
+
+.cityBlockItem--central {
+  top: 50%;
+  left: 50%;
+  width: 40%;
+  height: 40%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.cityBlockItem--leftDown {
+  bottom: 0;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+}
+
+.cityBlockItem--rightDown {
+  bottom: 0;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+}
+
+/* Image only handles size/fit + its own float animation */
+.cityBlock {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.cityBlock--leftUp {
+  animation: float 6s ease-in-out infinite;
+}
+
+.cityBlock--rightUp {
+  animation: float-reverse 8s ease-in-out infinite;
+}
+
+.cityBlock--central {
+  animation: float-slow 10s ease-in-out infinite;
+}
+
+.cityBlock--leftDown {
+  animation: float-reverse 8s ease-in-out infinite;
+}
+
+.cityBlock--rightDown {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* --- Hover highlight effect --- */
+
+.cityBlockItem--active {
+  transform: scale(1.12);
+  z-index: 10;
+  filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.85));
+}
+
+.cityBlockItem--central.cityBlockItem--active {
+  /* preserve the centering translate, just add scale on top */
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.cityBlockItem--dimmed {
+  filter: brightness(0.35) blur(1.5px);
+  opacity: 0.6;
+}
+
+.cityScene--hovering .cityBackground {
+  filter: brightness(0.55) blur(2px);
+}
+
+.cityScene--hovering .cityCloudLayer {
+  opacity: 0.4;
+  filter: blur(2px);
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes float-reverse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(calc(-50% + 10px), calc(-50% - 10px));
+  }
+}
