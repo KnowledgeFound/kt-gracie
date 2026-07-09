@@ -21,6 +21,7 @@ export class City {
 
     setContentScore(score: number): void {
         this.contentScore = score;
+        this.recalculateHealth();
     }
 
     getFinalAssessmentScore(): number {
@@ -29,10 +30,14 @@ export class City {
 
     setFinalAssessmentScore(score: number): void {
         this.finalAssessmentScore = score;
+        this.recalculateHealth();
     }
 
+    // `health` is the single source of truth. It starts at 0 and is derived
+    // from the scores (minus decay) whenever they change, or set/decayed
+    // directly. getHealth() always returns the stored value.
     public getHealth(): number {
-        return (0.5 * this.contentScore) + (0.5 * this.finalAssessmentScore) - this.decay;
+        return this.health;
     }
 
     public setHealth(health: number): void {
@@ -41,6 +46,10 @@ export class City {
 
     public decayCityHealth(): void {
         this.health -= this.decay;
+    }
+
+    private recalculateHealth(): void {
+        this.health = (0.5 * this.contentScore) + (0.5 * this.finalAssessmentScore) - this.decay;
     }
 
     public getCityState(): CityState {

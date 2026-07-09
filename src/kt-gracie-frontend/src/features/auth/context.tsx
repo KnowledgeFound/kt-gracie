@@ -39,14 +39,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
 	const [city, setCity] = useState(() => cityServices.getCityFromLocalStorage());
 
 	const createUser = useCallback((input: CreateUserInput): User => {
-		
-		// create user
+		// Create the user profile
 		const created = userServices.createUser(input);
 		setUser(created);
-		
-		//create city
-		const city = cityServices.createCity("UN City");
-		cityServices.saveCityToLocalStorage(city);
+
+		// Create and persist the city, and reflect it in context state so
+		// consumers (e.g. the auth redirect gate) see it without a page reload.
+		const newCity = cityServices.createCity('UN City');
+		cityServices.saveCityToLocalStorage(newCity);
+		setCity(newCity);
 
 		return created;
 	}, []);
@@ -60,6 +61,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 	const deleteUser = useCallback((): void => {
 		userServices.deleteUser();
 		setUser(null);
+		cityServices.deleteCityFromLocalStorage();
+		setCity(null);
 	}, []);
 
 	const updateProgression = useCallback(
