@@ -2,6 +2,7 @@ import { motion, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import type { Question, UserAnswer } from '../types';
 import { BackMenu } from '@/components/ui';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 interface ExplanationScreenProps {
 	question: Question;
@@ -15,17 +16,17 @@ interface ExplanationScreenProps {
 }
 
 const containerVariants: Variants = {
-	hidden: { opacity: 0, y: 20 },
+	hidden:  { opacity: 0, y: 16 },
 	visible: {
 		opacity: 1,
 		y: 0,
-		transition: { duration: 0.5, staggerChildren: 0.1, delayChildren: 0.2 },
+		transition: { duration: 0.4, staggerChildren: 0.08, delayChildren: 0.1 },
 	},
 };
 
 const itemVariants: Variants = {
-	hidden: { opacity: 0, x: -20 },
-	visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
+	hidden:  { opacity: 0, x: -16 },
+	visible: { opacity: 1, x: 0, transition: { duration: 0.35 } },
 };
 
 const ExplanationScreen = ({
@@ -45,9 +46,7 @@ const ExplanationScreen = ({
 		? (question.options[
 				typeof userAnswer === 'string' ? userAnswer.charCodeAt(0) - 65 : -1
 			] ?? '—')
-		: userAnswer
-			? 'True'
-			: 'False';
+		: userAnswer ? 'True' : 'False';
 
 	const correctAnswerText = typeIsMCQ
 		? (question.options[
@@ -55,13 +54,11 @@ const ExplanationScreen = ({
 					? correctAnswer.charCodeAt(0) - 65
 					: -1
 			] ?? '—')
-		: correctAnswer
-			? 'True'
-			: 'False';
+		: correctAnswer ? 'True' : 'False';
 
 	return (
 		<motion.div
-			className="min-h-screen flex flex-col justify-between pb-10"
+			className="min-h-screen bg-surface-page flex flex-col"
 			variants={containerVariants}
 			initial="hidden"
 			animate="visible"
@@ -69,125 +66,134 @@ const ExplanationScreen = ({
 		>
 			{/* Header */}
 			<motion.div
-				className="w-full max-w-3xl mx-auto px-4 pt-8 md:pt-12"
+				className="w-full max-w-3xl mx-auto px-4 pt-8 md:pt-10 pb-2"
 				variants={itemVariants}
 			>
 				<BackMenu to="/" />
-				<h2 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-6">
-					Question {currentIndex + 1} of {totalQuestions}
-				</h2>
+				<div className="flex items-center justify-between mt-4 mb-2">
+					<h2 className="text-xl md:text-2xl font-bold text-ink-deep">
+						Question {currentIndex + 1}
+						<span className="text-ink-subtle font-normal text-base ml-1">
+							of {totalQuestions}
+						</span>
+					</h2>
+					<span className={classnames(
+						'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold border',
+						isCorrect
+							? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+							: 'bg-rose-50 border-rose-200 text-rose-700',
+					)}>
+						{isCorrect
+							? <><CheckCircle2 className="size-4" /> Correct</>
+							: <><XCircle className="size-4" /> Incorrect</>
+						}
+					</span>
+				</div>
 			</motion.div>
 
 			{/* Card */}
-			<motion.div className="w-full max-w-3xl mx-auto px-4 flex-1 flex flex-col justify-center">
+			<motion.div
+				className="flex-1 w-full max-w-3xl mx-auto px-4 pb-4 flex flex-col gap-3"
+				variants={containerVariants}
+				initial="hidden"
+				animate="visible"
+			>
+				{/* Question */}
 				<motion.div
-					className="bg-white rounded-xl shadow-lg overflow-hidden mb-6"
+					className="bg-white rounded-2xl shadow-card border border-gray-100 p-6"
 					variants={itemVariants}
 				>
-					<div className="p-6 md:p-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-200">
-						<p className="text-lg md:text-xl font-semibold text-gray-900">
-							{question.question}
-						</p>
-					</div>
+					<p className="text-base md:text-lg font-semibold text-ink-deep leading-relaxed">
+						{question.question}
+					</p>
+				</motion.div>
 
-					<motion.div
-						className="p-6 md:p-8 border-b border-gray-200"
-						variants={itemVariants}
-						transition={{ delay: 0.1 }}
-					>
-						<h3 className="text-lg font-bold text-gray-900 mb-3">
-							Your Answer
-						</h3>
-						<p className="text-base md:text-lg text-gray-700 mb-4">
-							{userAnswerText}
-						</p>
-						<motion.span
-							className={classnames(
-								'inline-block px-4 py-2 rounded-lg font-bold text-sm md:text-base',
-								{
-									'bg-green-100 text-green-700': isCorrect,
-									'bg-red-100 text-red-700': !isCorrect,
-								},
-							)}
-							initial={{ scale: 0 }}
-							animate={{ scale: 1 }}
-							transition={{ delay: 0.3, type: 'spring' }}
-						>
-							{isCorrect ? '✓ Correct' : '✗ Incorrect'}
-						</motion.span>
-					</motion.div>
-
-					<motion.div
-						className="p-6 md:p-8 border-b border-gray-200"
-						variants={itemVariants}
-						transition={{ delay: 0.2 }}
-					>
-						<h3 className="text-lg font-bold text-gray-900 mb-3">
-							Explanation
-						</h3>
-						<p className="text-base md:text-lg text-gray-700 leading-relaxed">
-							{question.explanation}
-						</p>
-					</motion.div>
-
-					{!isCorrect && (
-						<motion.div
-							className="p-6 md:p-8 bg-green-50"
-							variants={itemVariants}
-							transition={{ delay: 0.3 }}
-						>
-							<h3 className="text-lg font-bold text-green-900 mb-3">
-								Correct Answer
-							</h3>
-							<p className="text-base md:text-lg text-green-800">
-								{correctAnswerText}
-							</p>
-						</motion.div>
+				{/* Your answer */}
+				<motion.div
+					className={classnames(
+						'rounded-2xl border p-5',
+						isCorrect
+							? 'bg-emerald-50 border-emerald-200'
+							: 'bg-rose-50 border-rose-200',
 					)}
+					variants={itemVariants}
+				>
+					<p className="text-[10px] font-bold tracking-widest uppercase mb-1.5 text-ink-subtle">
+						Your Answer
+					</p>
+					<p className={classnames(
+						'text-base font-semibold',
+						isCorrect ? 'text-emerald-800' : 'text-rose-800',
+					)}>
+						{userAnswerText}
+					</p>
+				</motion.div>
+
+				{/* Correct answer (only when wrong) */}
+				{!isCorrect && (
+					<motion.div
+						className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5"
+						variants={itemVariants}
+						initial={{ opacity: 0, scale: 0.97 }}
+						animate={{ opacity: 1, scale: 1 }}
+						transition={{ delay: 0.25, type: 'spring', stiffness: 260, damping: 22 }}
+					>
+						<p className="text-[10px] font-bold tracking-widest uppercase mb-1.5 text-ink-subtle">
+							Correct Answer
+						</p>
+						<p className="text-base font-semibold text-emerald-800">
+							{correctAnswerText}
+						</p>
+					</motion.div>
+				)}
+
+				{/* Explanation */}
+				<motion.div
+					className="bg-white rounded-2xl shadow-card border border-gray-100 p-6"
+					variants={itemVariants}
+				>
+					<p className="text-[10px] font-bold tracking-widest uppercase mb-2 text-ink-subtle">
+						Explanation
+					</p>
+					<p className="text-sm md:text-base text-ink-mid leading-relaxed">
+						{question.explanation}
+					</p>
 				</motion.div>
 			</motion.div>
 
 			{/* Navigation */}
 			<motion.div
-				className="w-full max-w-3xl mx-auto px-4 mt-8"
+				className="w-full max-w-3xl mx-auto px-4 pb-8 pt-2"
 				variants={itemVariants}
 			>
-				<div className="flex gap-4 md:gap-6 flex-col md:flex-row">
-					<motion.button
+				<div className="flex gap-3">
+					<button
 						onClick={onBack}
-						className="flex-1 py-3 md:py-4 px-6 bg-gray-100 text-indigo-600 font-bold text-base rounded-lg border-2 border-brand-500 hover:bg-brand-500 hover:text-white transition-all duration-300 uppercase tracking-wide"
-						whileHover={{ scale: 1.02 }}
-						whileTap={{ scale: 0.98 }}
+						className="px-5 py-3 bg-white border-2 border-brand-500 text-brand-600 font-bold text-sm rounded-xl hover:bg-brand-50 transition-colors uppercase tracking-wide"
 					>
-						← Back to Results
-					</motion.button>
+						← Results
+					</button>
 
-					<motion.button
+					<button
 						onClick={onPrevious}
 						disabled={currentIndex === 0}
 						className={classnames(
-							'flex-1 py-3 md:py-4 px-6 font-bold text-base rounded-lg transition-all duration-300 uppercase tracking-wide',
-							{
-								'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50':
-									currentIndex === 0,
-								'bg-gray-100 text-gray-700 hover:bg-gray-200': currentIndex > 0,
-							},
+							'px-5 py-3 font-bold text-sm rounded-xl transition-colors uppercase tracking-wide border-2',
+							currentIndex === 0
+								? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed'
+								: 'border-gray-200 bg-white text-ink-mid hover:bg-gray-50 hover:text-ink-deep',
 						)}
-						whileHover={currentIndex > 0 ? { scale: 1.02 } : {}}
-						whileTap={currentIndex > 0 ? { scale: 0.98 } : {}}
 					>
-						← Previous
-					</motion.button>
+						← Prev
+					</button>
 
 					<motion.button
 						onClick={onNext}
-						className="flex-1 py-3 md:py-4 px-6 bg-gradient-to-r from-brand-500 to-indigo-700 text-white font-bold text-base rounded-lg hover:shadow-lg transition-all duration-300 uppercase tracking-wide"
-						whileHover={{ scale: 1.02, y: -3 }}
+						className="flex-1 py-3 px-6 bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 text-white font-bold text-sm rounded-xl shadow-md uppercase tracking-wide transition-all"
+						whileHover={{ scale: 1.01, y: -1 }}
 						whileTap={{ scale: 0.98 }}
 					>
-						{currentIndex === totalQuestions - 1
-							? 'Back to Results'
-							: 'Next Answer →'}
+						{currentIndex === totalQuestions - 1 ? 'Back to Results →' : 'Next →'}
 					</motion.button>
 				</div>
 			</motion.div>
