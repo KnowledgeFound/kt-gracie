@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import {
-	Check,
 	CheckCircle2,
 	XCircle,
 	X,
 	RotateCcw,
 	ChevronDown,
 	ChevronUp,
-	CircleQuestionMark,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Question, UserAnswer } from '../types';
@@ -314,53 +312,175 @@ const ResultsScreen = ({
 
 	return (
 		<motion.div
-			className="flex items-center justify-center min-h-screen relative bg-cover bg-center bg-fixed"
+			className="flex items-center justify-center min-h-[100dvh] relative bg-cover bg-center bg-fixed"
 			style={{ backgroundImage: `url(${CITY_BG})` }}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 		>
-			{/* Light blur overlay — city still clearly visible */}
-			<div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
+			{/* Overlay */}
+			<div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
 
 			{/* Close */}
 			<button
 				onClick={() => navigate('/city')}
-				className="absolute top-5 right-5 z-10 p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
+				className="absolute top-4 right-4 z-20 p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
 				aria-label="Close"
 			>
 				<X className="size-4" />
 			</button>
-			{/* Quetion and Tips */}
-			<button
-				onClick={() => navigate('/city')}
-				className="absolute bottom-5 right-5 z-10 p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
-				aria-label="Info"
-			>
-				<CircleQuestionMark className="size-4" />
-			</button>
 
-			{/* Modal */}
+			{/* ═══════════════════════════════════════════════════════════
+			    MOBILE  (< md) — single scrollable sheet
+			═══════════════════════════════════════════════════════════ */}
 			<motion.div
-				className="relative z-10 w-full max-w-4xl max-h-[70vh] flex flex-col md:flex-row overflow-hidden bg-transparent md:gap-2"
+				className="md:hidden relative z-10 w-full h-[100dvh] flex flex-col bg-white overflow-y-auto"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"
 			>
-				{/* ── LEFT PANEL — Summary ──────────────────────────────── */}
-				<motion.div
-					className="flex-1 flex flex-col items-center justify-center p-6 border-b md:border-b-0 md:rounded-2xl border-gray-100 bg-white"
-					variants={itemVariants}
-				>
-					{/* Badge */}
-					<div className="mb-6 ">
+				{/* Summary section */}
+				<div className="flex flex-col items-center px-5 pt-14 pb-6 bg-white border-b border-gray-100">
+					<div className="mb-4">
 						<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-[10px] font-bold tracking-widest text-brand-600 uppercase">
-							<Check className="size-3" />
-							Assessment Complete
+							<CheckCircle2 className="size-3" /> Assessment Complete
 						</span>
 					</div>
 
-					{/* Rank emoji */}
+					<motion.div
+						className="text-5xl mb-2 select-none"
+						initial={{ scale: 0 }}
+						animate={{ scale: [0, 1.2, 1] }}
+						transition={{ duration: 0.5, ease: 'easeOut', delay: 0.15 }}
+					>
+						{rank.emoji}
+					</motion.div>
+
+					<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-0.5">
+						Rank Achieved
+					</p>
+					<h2
+						className={`text-2xl font-black tracking-widest mb-4 ${rank.color}`}
+					>
+						{rank.label}
+					</h2>
+
+					{/* KT earned */}
+					<div className="w-full rounded-xl border border-amber-200 bg-amber-50 py-3 px-5 text-center mb-4">
+						<p className="text-3xl font-black text-amber-600">◎ {ktEarned}</p>
+						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase">
+							Knowledge Tokens Earned
+						</p>
+					</div>
+
+					{/* Stats */}
+					<div className="w-full grid grid-cols-3 gap-2 mb-4">
+						{[
+							{
+								value: `${score}/${totalQuestions}`,
+								label: 'CORRECT',
+								color: 'text-brand-600',
+							},
+							{
+								value: `${percentage}%`,
+								label: 'ACCURACY',
+								color: 'text-brand-600',
+							},
+							{
+								value: formatTime(timeTaken),
+								label: 'TIME',
+								color: 'text-amber-600',
+							},
+						].map(({ value, label, color }) => (
+							<div
+								key={label}
+								className="flex flex-col items-center rounded-xl bg-gray-50 border border-gray-200 py-2.5"
+							>
+								<span
+									className={`text-sm font-black leading-none mb-1 ${color}`}
+								>
+									{value}
+								</span>
+								<span className="text-[9px] font-bold tracking-widest text-ink-subtle uppercase">
+									{label}
+								</span>
+							</div>
+						))}
+					</div>
+
+					{/* Strip */}
+					<div className="w-full mb-4">
+						<AnswerStrip questions={questions} userAnswers={userAnswers} />
+					</div>
+
+					{/* Retake */}
+					<motion.button
+						onClick={onRetake}
+						className="w-full py-3 rounded-xl font-bold text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700"
+						whileTap={{ scale: 0.98 }}
+						variants={itemVariants}
+					>
+						<RotateCcw className="size-4" /> Retake Assessment
+					</motion.button>
+				</div>
+
+				{/* Questions section */}
+				<div className="flex-1 px-4 py-4 space-y-2">
+					<p className="text-[11px] font-bold tracking-widest text-ink-mid uppercase mb-1">
+						All Questions
+						{missedCount > 0 && (
+							<span className="ml-1 text-rose-500">— {missedCount} Missed</span>
+						)}
+						{missedCount === 0 && (
+							<span className="ml-1 text-emerald-500">— All Correct 🎉</span>
+						)}
+					</p>
+					<p className="text-xs text-ink-muted mb-3">
+						Tap any question to see the explanation.
+					</p>
+					{questions.map((q, i) => (
+						<QuestionCard
+							key={q.id}
+							question={q}
+							index={i}
+							userAnswer={userAnswers[i] ?? null}
+							isExpanded={expandedIndex === i}
+							onToggle={() => toggleExpanded(i)}
+						/>
+					))}
+				</div>
+
+				{/* Footer */}
+				<div className="flex-shrink-0 px-4 py-4 border-t border-gray-100 bg-white">
+					<button
+						onClick={() => navigate('/city')}
+						className="w-full py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold hover:bg-gray-100"
+					>
+						← Back to City
+					</button>
+				</div>
+			</motion.div>
+
+			{/* ═══════════════════════════════════════════════════════════
+			    DESKTOP  (md+) — side-by-side modal
+			═══════════════════════════════════════════════════════════ */}
+			<motion.div
+				className="hidden md:flex relative z-10 w-full max-w-4xl mx-4 max-h-[90vh] flex-row rounded-2xl overflow-hidden gap-2"
+				variants={containerVariants}
+				initial="hidden"
+				animate="visible"
+			>
+				{/* Left panel */}
+				<motion.div
+					className="w-1/2 flex-shrink-0 flex flex-col items-center p-6 border rounded-2xl border-gray-100 bg-white overflow-y-auto shadow-card"
+					variants={itemVariants}
+				>
+					<div className="mb-6">
+						<h2 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-[10px] font-bold tracking-widest text-brand-600 uppercase">
+							<CheckCircle2 className="size-3" /> Assessment Complete
+						</h2>
+					</div>
+
 					<motion.div
 						className="text-6xl mb-3 select-none"
 						initial={{ scale: 0 }}
@@ -370,7 +490,6 @@ const ResultsScreen = ({
 						{rank.emoji}
 					</motion.div>
 
-					{/* Rank label */}
 					<motion.div className="text-center mb-6" variants={itemVariants}>
 						<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-1">
 							Rank Achieved
@@ -384,18 +503,16 @@ const ResultsScreen = ({
 						</div>
 					</motion.div>
 
-					{/* KT earned */}
 					<motion.div
 						className="w-full rounded-xl border border-amber-200 bg-amber-50 py-4 px-5 text-center mb-6"
 						variants={itemVariants}
 					>
-						<p className="text-4xl font-black text-amber-600">◎ {ktEarned}</p>
+						<p className="text-4xl font-semib text-amber-600">◎ {ktEarned}</p>
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase mb-1">
 							Knowledge Tokens Earned
 						</p>
 					</motion.div>
 
-					{/* Stats grid */}
 					<motion.div
 						className="w-full grid grid-cols-3 gap-2 mb-6"
 						variants={itemVariants}
@@ -433,12 +550,10 @@ const ResultsScreen = ({
 						))}
 					</motion.div>
 
-					{/* Answer strip */}
 					<motion.div className="w-full mb-6" variants={itemVariants}>
 						<AnswerStrip questions={questions} userAnswers={userAnswers} />
 					</motion.div>
 
-					{/* Retake */}
 					<motion.button
 						onClick={onRetake}
 						className="w-full py-3 rounded-xl font-bold text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800"
@@ -449,18 +564,16 @@ const ResultsScreen = ({
 						whileTap={{ scale: 0.98 }}
 						variants={itemVariants}
 					>
-						<RotateCcw className="size-4" />
-						Retake Assessment
+						<RotateCcw className="size-4" /> Retake Assessment
 					</motion.button>
 				</motion.div>
 
-				{/* ── RIGHT PANEL — All questions ───────────────────────── */}
+				{/* Right panel */}
 				<motion.div
 					className="flex-1 flex flex-col overflow-hidden bg-surface-page rounded-2xl border border-gray-100"
 					variants={itemVariants}
 				>
-					{/* Header */}
-					<div className="px-6 pt-6 pb-4 border-b border-gray-100">
+					<div className="flex-shrink-0 px-6 pt-6 pb-4 border-b border-gray-100">
 						<p className="text-[11px] font-bold tracking-widest text-ink-mid uppercase">
 							All Questions
 							{missedCount > 0 && (
@@ -477,7 +590,6 @@ const ResultsScreen = ({
 						</p>
 					</div>
 
-					{/* Question list */}
 					<div className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
 						{questions.map((q, i) => (
 							<QuestionCard
@@ -491,8 +603,7 @@ const ResultsScreen = ({
 						))}
 					</div>
 
-					{/* Bottom nav */}
-					<div className="px-6 py-4 border-t border-gray-100 bg-white">
+					<div className="flex-shrink-0 px-6 py-4 border-t border-gray-100 bg-white">
 						<button
 							onClick={() => navigate('/city')}
 							className="w-full py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold hover:bg-gray-100 hover:text-ink-deep transition-colors"

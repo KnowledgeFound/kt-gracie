@@ -9,7 +9,8 @@ import {
 	Medal,
 	Hash,
 	Zap,
-	CircleQuestionMark,
+	BookOpen,
+	Target,
 } from 'lucide-react';
 import { useOptionalUser } from '@/features/auth';
 import type {
@@ -25,7 +26,6 @@ import { CITY_BG } from '../constants';
 
 interface WelcomeScreenProps {
 	onStart: () => void;
-	/** Rich module data from city constants */
 	module?: Module | null;
 }
 
@@ -78,7 +78,6 @@ interface AssessmentCardProps {
 	index: number;
 	selected: boolean;
 	onSelect: () => void;
-	onStart: () => void;
 }
 
 function AssessmentCard({
@@ -86,7 +85,6 @@ function AssessmentCard({
 	index,
 	selected,
 	onSelect,
-	onStart,
 }: AssessmentCardProps) {
 	const isLocked = assessment.status === 'locked';
 	const isCompleted = assessment.status === 'completed';
@@ -95,12 +93,11 @@ function AssessmentCard({
 	return (
 		<motion.button
 			onClick={() => {
-				if (isLocked) return;
-				onSelect();
+				if (!isLocked) onSelect();
 			}}
 			disabled={isLocked}
 			className={`
-				w-full text-left p-4 rounded-xl border transition-all duration-200
+				w-full text-left p-3.5 rounded-xl border transition-all duration-200
 				${
 					isLocked
 						? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
@@ -132,9 +129,9 @@ function AssessmentCard({
 				</div>
 
 				<div className="flex-1 min-w-0">
-					<div className="flex flex-wrap items-center gap-2 mb-1">
+					<div className="flex flex-wrap items-center gap-1.5 mb-1">
 						<span
-							className={`font-semibold text-sm ${isLocked ? 'text-gray-400' : 'text-ink-deep'}`}
+							className={`font-semibold text-sm leading-snug ${isLocked ? 'text-gray-400' : 'text-ink-deep'}`}
 						>
 							{assessment.title}
 						</span>
@@ -147,40 +144,39 @@ function AssessmentCard({
 							</span>
 						)}
 					</div>
-
 					<p
-						className={`text-xs mb-3 leading-relaxed ${isLocked ? 'text-gray-300' : 'text-ink-muted'}`}
+						className={`text-xs leading-relaxed mb-2.5 ${isLocked ? 'text-gray-300' : 'text-ink-muted'}`}
 					>
 						{assessment.description}
 					</p>
+					<div
+						className={`flex items-center gap-3 text-[11px] ${isLocked ? 'text-gray-300' : 'text-ink-subtle'}`}
+					>
+						<span className="flex items-center gap-1">
+							<Hash className="size-3" />
+							{assessment.questionCount} Q
+						</span>
+						<span className="flex items-center gap-1">
+							<Circle className="size-2 fill-current" />
+							{assessment.durationLabel}
+						</span>
+						<span className="flex items-center gap-1">
+							<Zap className="size-3" />
+							{assessment.ktMax} KT
+						</span>
+						{assessment.ktEarned !== undefined && assessment.ktEarned > 0 && (
+							<span className="ml-auto text-amber-600 font-bold">
+								Earned: {assessment.ktEarned} KT
+							</span>
+						)}
+					</div>
 				</div>
-			</div>
-			<div
-				className={`flex items-center gap-4 text-[11px] border-t border-gray-100 pt-1 ${isLocked ? 'text-gray-300 border-gray-100 ' : 'text-ink-subtle border-gray-200 '}`}
-			>
-				<span className="flex items-center gap-1">
-					<Hash className="size-3" />
-					{assessment.questionCount} Q
-				</span>
-				<span className="flex items-center gap-1">
-					<Circle className="size-2 fill-current" />
-					{assessment.durationLabel}
-				</span>
-				<span className="flex items-center gap-1">
-					<Zap className="size-3" />
-					{assessment.ktMax} KT max
-				</span>
-				{assessment.ktEarned !== undefined && assessment.ktEarned > 0 && (
-					<span className="ml-auto text-amber-600 font-bold text-[11px]">
-						Earned: {assessment.ktEarned} KT
-					</span>
-				)}
 			</div>
 		</motion.button>
 	);
 }
 
-// ─── Fallback module (no moduleId in URL) ────────────────────────────────────
+// ─── Fallback objectives ──────────────────────────────────────────────────────
 
 const FALLBACK_OBJECTIVES = [
 	'Identify core definitions of corruption under UNCAC',
@@ -190,6 +186,10 @@ const FALLBACK_OBJECTIVES = [
 	'Recognise corporate compliance and due-diligence requirements',
 ];
 
+// ─── Mobile tab type ──────────────────────────────────────────────────────────
+
+type MobileTab = 'overview' | 'assessments';
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
@@ -198,11 +198,13 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 
 	const assessments = module?.assessments ?? [];
 	const [selectedIndex, setSelectedIndex] = useState(
-		// default to first non-locked assessment
-		assessments.findIndex((a) => a.status !== 'locked') === -1
-			? 0
-			: assessments.findIndex((a) => a.status !== 'locked'),
+		Math.max(
+			0,
+			assessments.findIndex((a) => a.status !== 'locked'),
+		),
 	);
+	const [mobileTab, setMobileTab] = useState<MobileTab>('overview');
+
 	const selectedAssessment = assessments[selectedIndex];
 
 	const highScore = user?.progression?.highScore ?? 0;
@@ -224,21 +226,116 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 
 	const objectives = module?.objectives ?? FALLBACK_OBJECTIVES;
 
+	const itemVariants: Variants = {
+		hidden: { opacity: 0, y: 10 },
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: { duration: 0.35, ease: 'easeOut' },
+		},
+	};
 	const containerVariants: Variants = {
 		hidden: { opacity: 0 },
 		visible: {
 			opacity: 1,
-			transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+			transition: { staggerChildren: 0.07, delayChildren: 0.05 },
 		},
 	};
-	const itemVariants: Variants = {
-		hidden: { opacity: 0, y: 12 },
-		visible: {
-			opacity: 1,
-			y: 0,
-			transition: { duration: 0.4, ease: 'easeOut' },
-		},
-	};
+
+	// ── Shared left-panel content (reused in both layouts) ────────────────────
+	const LeftPanelContent = (
+		<div className="bg-white h-full">
+			{/* Title block */}
+			<div className="mb-4 md:mb-0 md:bg-surface-page md:p-6 pb-4">
+				<span className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3 rounded-full bg-brand-50 border border-brand-200 text-[10px] font-bold tracking-widest text-brand-600 uppercase">
+					<CheckCircle2 className="size-3" />
+					Integrity Assessment Unit
+				</span>
+				<h1 className="text-2xl font-black text-ink-deep leading-tight">
+					{module?.name ?? 'Anti-Corruption'}
+				</h1>
+				<h2 className="text-xl font-black text-brand-500 leading-tight">
+					Knowledge Test
+				</h2>
+				<p className="text-ink-subtle text-xs mt-1">
+					{module?.audience ?? 'Private Sector & Civil Society'}
+				</p>
+			</div>
+			<div className="md:flex-1 md:p-6 md:pt-4 md:overflow-y-auto h-full md:border-t border-gray-100">
+				{/* Description */}
+				{module?.description && (
+					<p className="text-ink-muted text-xs leading-relaxed mb-4">
+						{module.description}
+					</p>
+				)}
+
+				{/* Progress bar */}
+				{module?.progress?.startedAt && (
+					<div className="mb-4">
+						<div className="flex items-center justify-between mb-1">
+							<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
+								Module Progress
+							</p>
+							<span className="text-xs font-bold text-brand-600">
+								{module.progress.percentComplete}%
+							</span>
+						</div>
+						<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+							<motion.div
+								className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full"
+								initial={{ width: 0 }}
+								animate={{ width: `${module.progress.percentComplete}%` }}
+								transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+							/>
+						</div>
+						<p className="text-[10px] text-ink-subtle mt-1">
+							{module.progress.completedLessons} /{' '}
+							{module.progress.totalLessons} lessons completed
+						</p>
+					</div>
+				)}
+
+				{/* Learning objectives */}
+				<div className="mb-4">
+					<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-2">
+						Learning Objectives
+					</p>
+					<ul className="space-y-2">
+						{objectives.map((obj, i) => (
+							<li
+								key={i}
+								className="flex items-start gap-2 text-xs text-ink-mid leading-relaxed"
+							>
+								<span className="mt-0.5 flex-shrink-0 size-4 rounded-full bg-brand-100 border border-brand-200 flex items-center justify-center">
+									<CheckCircle2 className="size-2.5 text-brand-500" />
+								</span>
+								{obj}
+							</li>
+						))}
+					</ul>
+				</div>
+
+				{/* Previous best */}
+				<div className="mt-auto rounded-xl border border-amber-200 bg-amber-50 p-3 flex items-center gap-3">
+					<Medal className="size-5 text-amber-500 flex-shrink-0" />
+					<div className="flex-1 min-w-0">
+						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase">
+							Previous Best · {lastDate}
+						</p>
+						<p className="text-sm font-black text-ink-deep">
+							{accuracy}% accuracy
+						</p>
+					</div>
+					<div className="text-right flex-shrink-0">
+						<p className="text-[10px] text-ink-subtle">Earned</p>
+						<span className="text-base font-black text-amber-600">
+							{highScore > 0 ? highScore : 325} KT
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 
 	return (
 		<motion.div
@@ -248,167 +345,143 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 		>
-			{/* Light blur overlay — city still clearly visible */}
-			<div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
+			<div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
 
-			{/* Close */}
+			{/* Close — always visible */}
 			<button
 				onClick={() => navigate('/city')}
-				className="absolute top-5 right-5 z-10 p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
+				className="absolute top-4 right-4 z-20 p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
 				aria-label="Close"
 			>
 				<X className="size-4" />
 			</button>
-			{/* Quetion and Tips */}
-			<button
-				onClick={() => navigate('/city')}
-				className="absolute bottom-5 right-5 z-10 p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
-				aria-label="Info"
-			>
-				<CircleQuestionMark className="size-4" />
-			</button>
 
-			{/* Modal */}
+			{/* ═══════════════════════════════════════════════════════════
+			    MOBILE LAYOUT  (< md)
+			    Full-screen sheet with tab switcher
+			═══════════════════════════════════════════════════════════ */}
 			<motion.div
-				className="relative z-10 w-full max-w-4xl max-h-[90vh] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-card-lg border border-gray-200 bg-surface-page"
+				className="md:hidden relative z-10 w-full h-[100dvh] flex flex-col bg-white"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"
 			>
-				{/* ── LEFT PANEL ─────────────────────────────────────────── */}
+				{/* Mobile header */}
+				<div className="flex-shrink-0 px-4 pt-12 pb-3 bg-white border-b border-gray-100">
+					<h1 className="text-lg font-black text-ink-deep leading-tight">
+						{module?.name ?? 'Anti-Corruption'}
+					</h1>
+					<p className="text-xs text-brand-500 font-bold">Knowledge Test</p>
+				</div>
+
+				{/* Tab bar */}
+				<div className="flex-shrink-0 flex border-b border-gray-100 bg-white">
+					{(
+						[
+							{ key: 'overview', label: 'Overview', Icon: BookOpen },
+							{ key: 'assessments', label: 'Assessments', Icon: Target },
+						] as { key: MobileTab; label: string; Icon: typeof Target }[]
+					).map(({ key, label, Icon }) => (
+						<button
+							key={key}
+							onClick={() => setMobileTab(key)}
+							className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-bold transition-colors border-b-2 ${
+								mobileTab === key
+									? 'border-brand-500 text-brand-600'
+									: 'border-transparent text-ink-muted hover:text-ink-mid'
+							}`}
+						>
+							<Icon className="size-3.5" />
+							{label}
+						</button>
+					))}
+				</div>
+
+				{/* Tab content — scrollable */}
+				<div className="flex-1 overflow-y-auto">
+					{mobileTab === 'assessments' ? (
+						<div className="p-4 space-y-3">
+							<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
+								Choose Assessment
+							</p>
+							<p className="text-xs text-ink-muted -mt-1">
+								Complete in order — some unlock after prerequisites are passed.
+							</p>
+							{assessments.map((assessment, index) => (
+								<motion.div key={assessment.id} variants={itemVariants}>
+									<AssessmentCard
+										assessment={assessment}
+										index={index}
+										selected={index === selectedIndex}
+										onSelect={() => setSelectedIndex(index)}
+									/>
+								</motion.div>
+							))}
+						</div>
+					) : (
+						<div className="p-4">{LeftPanelContent}</div>
+					)}
+				</div>
+
+				{/* Mobile sticky footer */}
+				<div className="flex-shrink-0 p-4 border-t border-gray-100 bg-white space-y-2 safe-area-bottom">
+					<motion.button
+						onClick={onStart}
+						disabled={selectedAssessment?.status === 'locked'}
+						className="w-full py-3.5 rounded-xl font-semibold text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700 disabled:opacity-50 disabled:cursor-not-allowed"
+						whileTap={{ scale: 0.98 }}
+					>
+						Start
+						{selectedAssessment ? ` — ${selectedAssessment.title}` : ' Quiz'}
+						<ChevronRight className="size-4" />
+					</motion.button>
+					<button
+						onClick={() => navigate('/city')}
+						className="w-full py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold"
+					>
+						← Back to City
+					</button>
+				</div>
+			</motion.div>
+
+			{/* ═══════════════════════════════════════════════════════════
+			    DESKTOP LAYOUT  (md+)
+			    Side-by-side modal, max-w-4xl, 90vh capped
+			═══════════════════════════════════════════════════════════ */}
+			<motion.div
+				className="hidden md:flex relative z-10 w-full max-w-4xl mx-4 max-h-[90vh] flex-row rounded-2xl overflow-hidden shadow-card-lg border border-gray-200 bg-surface-page"
+				variants={containerVariants}
+				initial="hidden"
+				animate="visible"
+			>
+				{/* ── Left panel ──────────────────────────────────────── */}
 				<motion.div
-					className="md:w-[400px] flex-shrink-0 flex flex-col overflow-hidden  border-b md:border-b-0 md:border-r border-gray-100 overflow-y-auto bg-surface-page"
+					className="w-[360px] flex-shrink-0 flex flex-col overflow-hidden border-r border-gray-100 bg-surface-page"
 					variants={itemVariants}
 				>
-					<div className="p-6 pb-4">
-						{/* Unit badge */}
-						<div className="mb-5 flex justify-between">
-							<h2 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-[10px] font-bold tracking-widest text-brand-600 uppercase">
-								<CheckCircle2 className="size-3" />
-								Integrity Assessment Unit
-							</h2>
-							{/* Close */}
-							<button
-								onClick={() => navigate('/city')}
-								className="hidden md:block p-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white transition-colors shadow-sm"
-								aria-label="Close"
-							>
-								<X className="size-4" />
-							</button>
-						</div>
-
-						{/* Title */}
-						<motion.div variants={itemVariants}>
-							<h1 className="text-2xl font-black text-ink-deep leading-tight mb-0.5">
-								{module?.name ?? 'Anti-Corruption'}
-							</h1>
-							<h2 className="text-xl font-black text-brand-500 leading-tight">
-								Knowledge Test
-							</h2>
-							<p className="text-ink-subtle text-xs mt-2">
-								{module?.audience ?? 'Private Sector & Civil Society'}
-							</p>
-						</motion.div>
+					{/* Scrollable body */}
+					<div className="flex-1 overflow-y-auto flex flex-col">
+						{LeftPanelContent}
 					</div>
-					<div className="flex-1 overflow-y-auto pb-4 p-6 space-y-2 border-t border-gray-100 bg-white">
-						{/* Description */}
-						{module?.description && (
-							<p className="text-ink-muted text-xs leading-relaxed mb-5">
-								{module.description}
-							</p>
-						)}
-						{/* Module progress bar (if started) */}
-						{module?.progress && module.progress.startedAt && (
-							<motion.div className="mb-5" variants={itemVariants}>
-								<div className="flex items-center justify-between mb-1.5">
-									<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
-										Module Progress
-									</p>
-									<span className="text-xs font-bold text-brand-600">
-										{module.progress.percentComplete}%
-									</span>
-								</div>
-								<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-									<motion.div
-										className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full"
-										initial={{ width: 0 }}
-										animate={{ width: `${module.progress.percentComplete}%` }}
-										transition={{
-											duration: 0.8,
-											ease: 'easeOut',
-											delay: 0.3,
-										}}
-									/>
-								</div>
-								<p className="text-[10px] text-ink-subtle mt-1">
-									{module.progress.completedLessons} /{' '}
-									{module.progress.totalLessons} lessons completed
-								</p>
-							</motion.div>
-						)}
-						{/* Learning objectives */}
-						<motion.div className="py-3" variants={itemVariants}>
-							<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-3">
-								Learning Objectives
-							</p>
-							<ul className="space-y-2 md:space-y-4">
-								{objectives.map((obj, i) => (
-									<li
-										key={i}
-										className="flex items-start gap-2 text-xs text-ink-mid leading-relaxed"
-									>
-										<span className="mt-0.5 flex-shrink-0 size-4 rounded-full bg-brand-100 border border-brand-200 flex items-center justify-center">
-											<CheckCircle2 className="size-2.5 text-brand-500" />
-										</span>
-										{obj}
-									</li>
-								))}
-							</ul>
-						</motion.div>
-
-						{/* Previous best */}
-						<motion.div
-							className="mt-auto rounded-xl border border-amber-200 bg-amber-50 p-3 flex items-center justify-between gap-2"
-							variants={itemVariants}
-						>
-							<Medal className="size-5 text-amber-500" />
-							<div className="flex-1  gap-2">
-								<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase ">
-									Previous Best · {lastDate}
-								</p>
-								<p className="text-base font-black text-ink-deep">
-									{accuracy}% accuracy
-								</p>
-							</div>
-							<div>
-								<p className="text-xs font-black text-right text-ink-subtle">
-									Earned
-								</p>
-								<span className="text-lg font-black text-amber-600">
-									{highScore > 0 ? highScore : 325} KT
-								</span>
-							</div>
-						</motion.div>
-					</div>
-					{/* Bottom nav */}
-					<div className="px-6 py-4 border-t border-gray-100 bg-white">
+					{/* Footer */}
+					<div className="flex-shrink-0 px-6 py-4 border-t border-gray-100 bg-white">
 						<button
 							onClick={() => navigate('/city')}
-							className="w-full text-center px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold hover:bg-gray-100 hover:text-ink-deep transition-colors whitespace-nowrap"
+							className="w-full py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold hover:bg-gray-100 hover:text-ink-deep transition-colors"
 						>
 							← Back to City
 						</button>
 					</div>
 				</motion.div>
 
-				{/* ── RIGHT PANEL ────────────────────────────────────────── */}
+				{/* ── Right panel ─────────────────────────────────────── */}
 				<motion.div
 					className="flex-1 flex flex-col overflow-hidden bg-surface-page"
 					variants={itemVariants}
 				>
 					{/* Header */}
-					<div className="px-6 pt-6 pb-4 border-b border-gray-100">
-						<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-1">
+					<div className="flex-shrink-0 px-6 pt-6 pb-4 border-b border-gray-100">
+						<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-0.5">
 							Choose Assessment
 						</p>
 						<p className="text-xs text-ink-muted">
@@ -426,18 +499,17 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 									index={index}
 									selected={index === selectedIndex}
 									onSelect={() => setSelectedIndex(index)}
-									onStart={onStart}
 								/>
 							</motion.div>
 						))}
 					</div>
 
-					{/* Bottom action bar */}
-					<div className="px-6 py-4 border-t border-gray-100 flex items-center gap-3 bg-white">
+					{/* Start CTA */}
+					<div className="flex-shrink-0 px-6 py-4 border-t border-gray-100 bg-white">
 						<motion.button
 							onClick={onStart}
 							disabled={selectedAssessment?.status === 'locked'}
-							className="flex-1 py-3 rounded-xl font-bold text-center text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 disabled:opacity-50 disabled:cursor-not-allowed"
+							className="w-full py-3 rounded-xl font-bold text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 disabled:opacity-50 disabled:cursor-not-allowed"
 							whileHover={{
 								scale: 1.02,
 								boxShadow: '0 6px 24px rgba(74,152,212,0.35)',

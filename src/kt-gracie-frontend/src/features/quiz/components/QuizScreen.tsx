@@ -143,21 +143,21 @@ const QuizScreen = ({
 
 	return (
 		<motion.div
-			className="flex justify-center items-center min-h-screen relative bg-cover bg-center bg-fixed"
+			className="min-h-[100dvh] flex flex-col justify-center relative bg-cover bg-center bg-fixed"
 			style={{ backgroundImage: `url(${CITY_BG})` }}
 			variants={containerVariants}
 			initial="hidden"
 			animate="visible"
 			exit="exit"
 		>
-			{/* Light blur overlay — city still clearly visible */}
-			<div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
+			{/* Overlay */}
+			<div className="absolute inset-0 bg-black/40 backdrop-blur-[3px]" />
 
 			{/* Close */}
 			<Button
 				variant="ghost"
 				size="sm"
-				className="p-1.5 absolute top-5 right-5 z-10 text-white/70 hover:text-white rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
+				className="p-1.5 absolute top-4 right-4 z-10 text-white/70 hover:text-white rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
 				onClick={() => navigate('/city')}
 				aria-label="Close quiz"
 			>
@@ -166,14 +166,14 @@ const QuizScreen = ({
 
 			{/* Help */}
 			<button
-				className="absolute bottom-5 right-5 z-10 p-1.5 rounded-full bg-white/10 border border-white/20 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
+				className="absolute bottom-4 right-4 z-10 p-1.5 rounded-full bg-white/10 border border-white/20 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
 				aria-label="Help"
 			>
 				<CircleQuestionMark className="size-4" />
 			</button>
 
 			{/* ── Main content ─────────────────────────────────────────── */}
-			<motion.div className="relative z-10 w-full max-w-2xl mx-auto p-4 md:p-6 space-y-3">
+			<motion.div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-16 md:px-6 md:py-8 space-y-3">
 				{/* ── Top bar ──────────────────────────────────────────── */}
 				<motion.div
 					className="flex items-center justify-between"
