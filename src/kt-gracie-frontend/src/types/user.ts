@@ -1,4 +1,4 @@
-import { Gender, AgeBucket, Region } from "../ENUMS/enums";
+import { Gender, AgeBucket, Region, CompletedScore } from "../ENUMS/enums";
 
 // --- Gracie sub-object shape (owned by Gracie contributor) ---
 
@@ -112,3 +112,10 @@ export interface CreateUserInput {
 export type UpdateUserInput = Partial<
     Pick<User, "firstName" | "ageBucket" | "gender" | "region" | "country">
 >;
+
+
+export interface Progress {
+    knowledgeUnitID: string;
+    teaching: CompletedScore | null;
+    assessment: CompletedScore | null;
+}

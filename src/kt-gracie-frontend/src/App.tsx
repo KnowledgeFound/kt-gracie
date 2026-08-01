@@ -14,6 +14,7 @@ import LeaderboardPage from './app/leaderboard/page';
 import ProfilePage from './app/profile/page';
 import CityScene from './app/city/page';
 import SubjectPage from './app/subject/page';
+import { TestProgress } from './test/TestProgress';
 
 // ─── Protected route guard ────────────────────────────────────────────────────
 
@@ -48,6 +49,9 @@ export default function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route element={<RootLayout />}>
+						{/* Test routes */}
+						<Route path="/tests/progress" element={<TestProgress />} />
+
 						{/* Public routes */}
 						<Route path="/" element={<HomePage />} />
 
