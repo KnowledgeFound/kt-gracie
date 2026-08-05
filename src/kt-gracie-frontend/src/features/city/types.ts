@@ -51,6 +51,7 @@ export interface Module {
 	/** Short audience label shown under the title */
 	audience: string;
 	icon: ComponentType<{ className?: string }>;
+	image: string;
 	position: {
 		top?: number;
 		left?: number;

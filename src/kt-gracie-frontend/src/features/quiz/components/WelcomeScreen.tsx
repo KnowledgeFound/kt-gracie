@@ -20,7 +20,6 @@ import type {
 	AssessmentDifficulty,
 } from '@/features/city/types';
 import { useNavigate } from 'react-router-dom';
-import { CITY_BG } from '../constants';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -340,7 +339,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 	return (
 		<motion.div
 			className="flex items-center justify-center min-h-screen relative bg-cover bg-center bg-fixed"
-			style={{ backgroundImage: `url(${CITY_BG})` }}
+			style={{ backgroundImage: `url(${module?.image})` }}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}

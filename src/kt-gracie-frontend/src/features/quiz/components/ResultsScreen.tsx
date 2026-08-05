@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import type { Question, UserAnswer } from '../types';
 import { CITY_BG } from '../constants';
+import { Module } from '@/features/city/types';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -25,6 +26,7 @@ interface ResultsScreenProps {
 	onReview?: () => void;
 	/** Elapsed quiz time in seconds */
 	timeTaken?: number;
+	module?: Module | null;
 }
 
 // ─── Rank helpers ─────────────────────────────────────────────────────────────
@@ -279,6 +281,7 @@ const ResultsScreen = ({
 	userAnswers,
 	onRetake,
 	timeTaken = 0,
+	module,
 }: ResultsScreenProps) => {
 	const navigate = useNavigate();
 	const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -313,7 +316,7 @@ const ResultsScreen = ({
 	return (
 		<motion.div
 			className="flex items-center justify-center min-h-[100dvh] relative bg-cover bg-center bg-fixed"
-			style={{ backgroundImage: `url(${CITY_BG})` }}
+			style={{ backgroundImage: `url(${module?.image})` }}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
@@ -507,7 +510,9 @@ const ResultsScreen = ({
 						className="w-full rounded-xl border border-amber-200 bg-amber-50 py-4 px-5 text-center mb-6"
 						variants={itemVariants}
 					>
-						<p className="text-4xl font-semib text-amber-600">◎ {ktEarned}</p>
+						<p className="text-4xl font-semibold text-amber-600">
+							◎ {ktEarned}
+						</p>
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase mb-1">
 							Knowledge Tokens Earned
 						</p>

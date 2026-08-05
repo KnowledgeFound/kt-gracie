@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CITY_BG } from '../constants';
+import { Module } from '@/features/city/types';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -29,6 +30,7 @@ interface QuizScreenProps {
 	score: number;
 	/** Live elapsed seconds from useQuiz hook */
 	elapsed?: number;
+	module?: Module | null;
 }
 
 // ─── Animation variants ───────────────────────────────────────────────────────
@@ -72,6 +74,7 @@ const QuizScreen = ({
 	onNext,
 	score,
 	elapsed = 0,
+	module,
 }: QuizScreenProps) => {
 	const navigate = useNavigate();
 
@@ -144,7 +147,7 @@ const QuizScreen = ({
 	return (
 		<motion.div
 			className="min-h-[100dvh] flex flex-col justify-center relative bg-cover bg-center bg-fixed"
-			style={{ backgroundImage: `url(${CITY_BG})` }}
+			style={{ backgroundImage: `url(${module?.image})` }}
 			variants={containerVariants}
 			initial="hidden"
 			animate="visible"

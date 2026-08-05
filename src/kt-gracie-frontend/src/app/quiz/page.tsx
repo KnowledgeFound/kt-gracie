@@ -60,6 +60,7 @@ export default function QuizPage() {
 							canGoPrevious={quiz.currentIndex > 0}
 							score={quiz.score}
 							elapsed={quiz.elapsed}
+							module={quiz.module}
 						/>
 					)}
 
@@ -72,6 +73,7 @@ export default function QuizPage() {
 							userAnswers={quiz.userAnswers}
 							onRetake={quiz.retakeQuiz}
 							timeTaken={quiz.timeTaken}
+							module={quiz.module}
 						/>
 					)}
 				</AnimatePresence>

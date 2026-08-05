@@ -16,8 +16,9 @@ import {
 	type ModuleProgress,
 	type Lesson,
 } from '../mockProgress';
+import { useState } from 'react';
 
-const CITY_SRC = '/assets/city/city.png';
+// const CITY_SRC = '/assets/city/city.png';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -118,6 +119,7 @@ interface ModuleHeaderProps {
 function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
 	const Icon = module.icon;
 	const pct = progress?.percentComplete ?? 0;
+	const [loading, setLoading] = useState(false);
 
 	return (
 		<>
@@ -180,8 +182,23 @@ function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
 				)}
 			</div>
 			{/* Video Frame */}
-			<div className="relative w-full bg-blue-50 overflow-hidden max-h-[250px] ">
-				<img src={CITY_SRC} alt="city image" className="w-full h-full" />
+			<div className="relative w-full h-[250px] bg-blue-50 overflow-hidden">
+				{/* Skeleton */}
+				{loading && (
+					<div className="absolute inset-0 animate-pulse bg-gray-200" />
+				)}
+
+				<img
+					src={module.image}
+					alt="Module"
+					loading="lazy"
+					decoding="async"
+					fetchPriority="low"
+					onLoad={() => setLoading(false)}
+					className={`w-full h-full object-cover transition-opacity duration-300 ${
+						loading ? 'opacity-0' : 'opacity-100'
+					}`}
+				/>
 			</div>
 		</>
 	);
