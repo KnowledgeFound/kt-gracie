@@ -1,57 +1,49 @@
 import { AnimatePresence } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
 	useQuiz,
 	WelcomeScreen,
 	QuizScreen,
 	ResultsScreen,
-	ExplanationScreen,
 } from '@/features/quiz';
-import { Button } from '@/components/ui';
 
 /**
  * Quiz route — /quiz/:id
  *
- * When :id is present the quiz is launched in the context of a subject:
- *   - The subject is fetched and shown on the welcome screen
- *   - Questions are still randomly drawn from the local corpus
+ * When :id is present the quiz is launched in the context of a module:
+ *   - Module data (name, objectives, assessments, progress) comes from city constants
+ *   - Questions are randomly drawn from the local corpus
  *
- * When there is no :id (standalone quiz) the welcome screen shows the
- * generic Gracie Quiz branding.
+ * When there is no :id (standalone quiz) the welcome screen shows generic branding.
  */
 export default function QuizPage() {
 	const { id } = useParams<{ id: string }>();
-	const navigate = useNavigate();
 	const quiz = useQuiz(id);
 
 	if (quiz.loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-gray-100">
-				<p className="text-2xl font-bold text-brand-600 animate-pulse">
-					Loading…
-				</p>
+			<div className="min-h-screen flex items-center justify-center bg-surface-page">
+				<p className="text-xl font-bold text-brand-600 animate-pulse">Loading…</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-gray-100 relative overflow-hidden">
+		<div className="min-h-screen bg-surface-page relative overflow-hidden">
 			{/* Decorative blobs */}
 			<div className="fixed inset-0 overflow-hidden pointer-events-none">
 				<div className="absolute top-0 left-0 w-96 h-96 bg-brand-200/20 rounded-full blur-3xl animate-float" />
-				<div className="absolute bottom-0 right-0 w-96 h-96 bg-quiz-100/20 rounded-full blur-3xl animate-float-reverse" />
+				<div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-100/20 rounded-full blur-3xl animate-float-reverse" />
 				<div className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float-slow" />
 			</div>
 
 			<div className="relative z-10">
-				
-
 				<AnimatePresence mode="wait">
 					{quiz.screen === 'welcome' && (
 						<WelcomeScreen
 							key="welcome"
 							onStart={quiz.startQuiz}
-							subject={quiz.subject}
+							module={quiz.module}
 						/>
 					)}
 
@@ -67,30 +59,21 @@ export default function QuizPage() {
 							onNext={quiz.nextQuestion}
 							canGoPrevious={quiz.currentIndex > 0}
 							score={quiz.score}
+							elapsed={quiz.elapsed}
+							module={quiz.module}
 						/>
 					)}
 
-					{quiz.screen === 'results' && (
+					{(quiz.screen === 'results' || quiz.screen === 'explanation') && (
 						<ResultsScreen
 							key="results"
 							score={quiz.score}
 							totalQuestions={quiz.quizQuestions.length}
+							questions={quiz.quizQuestions}
+							userAnswers={quiz.userAnswers}
 							onRetake={quiz.retakeQuiz}
-							onReview={quiz.viewAnswers}
-						/>
-					)}
-
-					{quiz.screen === 'explanation' && quiz.reviewQuestion && (
-						<ExplanationScreen
-							key="explanation"
-							question={quiz.reviewQuestion}
-							userAnswer={quiz.userAnswers[quiz.reviewIndex] ?? null}
-							correctAnswer={quiz.reviewQuestion.correctAnswer}
-							currentIndex={quiz.reviewIndex}
-							totalQuestions={quiz.quizQuestions.length}
-							onPrevious={quiz.previousExplanation}
-							onNext={quiz.nextExplanation}
-							onBack={quiz.backToResults}
+							timeTaken={quiz.timeTaken}
+							module={quiz.module}
 						/>
 					)}
 				</AnimatePresence>

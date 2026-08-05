@@ -1,9 +1,22 @@
-import { motion, type Variants } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import type { Question, UserAnswer } from '../types';
-import { BackMenu, Button } from '@/components/ui';
-import { Home } from 'lucide-react';
+import { Button } from '@/components/ui';
+import {
+	Clock,
+	ChevronLeft,
+	X,
+	Zap,
+	CircleQuestionMark,
+	CheckCircle2,
+	XCircle,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CITY_BG } from '../constants';
+import { Module } from '@/features/city/types';
+
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface QuizScreenProps {
 	question: Question;
@@ -15,27 +28,42 @@ interface QuizScreenProps {
 	onNext: () => void;
 	canGoPrevious: boolean;
 	score: number;
+	/** Live elapsed seconds from useQuiz hook */
+	elapsed?: number;
+	module?: Module | null;
 }
+
+// ─── Animation variants ───────────────────────────────────────────────────────
 
 const containerVariants: Variants = {
 	hidden: { opacity: 0, y: 20 },
 	visible: {
 		opacity: 1,
 		y: 0,
-		transition: { duration: 0.5, staggerChildren: 0.1, delayChildren: 0.2 },
+		transition: { duration: 0.4, staggerChildren: 0.08, delayChildren: 0.1 },
 	},
-	exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+	exit: { opacity: 0, y: -20, transition: { duration: 0.25 } },
 };
 
 const itemVariants: Variants = {
-	hidden: { opacity: 0, x: -20 },
-	visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
+	hidden: { opacity: 0, x: -16 },
+	visible: { opacity: 1, x: 0, transition: { duration: 0.35 } },
 };
 
 const optionVariants: Variants = {
-	hidden: { opacity: 0, x: -10 },
+	hidden: { opacity: 0, x: -8 },
 	visible: { opacity: 1, x: 0 },
 };
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function formatElapsed(s: number): string {
+	const m = Math.floor(s / 60);
+	const sec = s % 60;
+	return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 const QuizScreen = ({
 	question,
@@ -43,164 +71,280 @@ const QuizScreen = ({
 	totalQuestions,
 	selectedAnswer,
 	onSelectOption,
-	onPrevious,
 	onNext,
-	canGoPrevious,
 	score,
+	elapsed = 0,
+	module,
 }: QuizScreenProps) => {
+	const navigate = useNavigate();
+
+	/** Whether the user has clicked "Confirm Answer" for the current question */
+	const [confirmed, setConfirmed] = useState(false);
+
+	// Reset confirmed state when the question changes
+	// (framer-motion re-mounts the whole screen on question change via key,
+	//  but if it doesn't, this guard keeps state clean)
 	const typeIsMCQ = question.type === 'mcq';
 	const optionsList = typeIsMCQ ? question.options : ['True', 'False'];
 	const progress = ((currentIndex + 1) / totalQuestions) * 100;
-	const navigate = useNavigate();
 
 	const getOptionValue = (index: number): UserAnswer =>
 		typeIsMCQ ? String.fromCharCode(65 + index) : index === 0;
 
+	function handleConfirm() {
+		if (selectedAnswer === null) return;
+		setConfirmed(true);
+	}
+
+	function handleNext() {
+		setConfirmed(false);
+		onNext();
+	}
+
+	// Per-option appearance after confirmation
+	function getOptionStyle(optionValue: UserAnswer) {
+		const base =
+			'w-full p-3.5 text-left rounded-xl font-medium text-sm md:text-base transition-all duration-200 flex items-center gap-3';
+
+		if (!confirmed) {
+			const isSelected = selectedAnswer === optionValue;
+			return classnames(
+				base,
+				isSelected
+					? 'bg-brand-50 border-2 border-brand-500 text-brand-800 shadow-sm cursor-default'
+					: 'bg-gray-50 border-2 border-gray-200 text-ink-mid hover:border-brand-300 hover:bg-brand-50/50 cursor-pointer',
+			);
+		}
+
+		const isCorrect = optionValue === question.correctAnswer;
+		const isSelected = selectedAnswer === optionValue;
+
+		if (isCorrect)
+			return `${base} bg-emerald-50 border-2 border-emerald-400 text-emerald-800 cursor-default`;
+		if (isSelected && !isCorrect)
+			return `${base} bg-rose-50 border-2 border-rose-400 text-rose-800 cursor-default`;
+		return `${base} bg-gray-50 border-2 border-gray-200 text-gray-400 cursor-default opacity-60`;
+	}
+
+	function getLetterStyle(optionValue: UserAnswer) {
+		const base =
+			'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black';
+
+		if (!confirmed) {
+			const isSelected = selectedAnswer === optionValue;
+			return classnames(
+				base,
+				isSelected ? 'bg-brand-500 text-white' : 'bg-gray-200 text-gray-500',
+			);
+		}
+		const isCorrect = optionValue === question.correctAnswer;
+		const isSelected = selectedAnswer === optionValue;
+		if (isCorrect) return `${base} bg-emerald-500 text-white`;
+		if (isSelected && !isCorrect) return `${base} bg-rose-500 text-white`;
+		return `${base} bg-gray-200 text-gray-400`;
+	}
+
 	return (
 		<motion.div
-			className="min-h-screen h-full flex  justify-between items-center pb-10"
+			className="min-h-[100dvh] flex flex-col justify-center relative bg-cover bg-center bg-fixed"
+			style={{ backgroundImage: `url(${module?.image})` }}
 			variants={containerVariants}
 			initial="hidden"
 			animate="visible"
 			exit="exit"
 		>
-			<motion.div className="w-full max-w-3xl mx-auto p-4 md:p-6 gap-4 bg-white rounded-xl shadow-lg">
-				{/* Progress header */}
+			{/* Overlay */}
+			<div className="absolute inset-0 bg-black/40 backdrop-blur-[3px]" />
+
+			{/* Close */}
+			<Button
+				variant="ghost"
+				size="sm"
+				className="p-1.5 absolute top-4 right-4 z-10 text-white/70 hover:text-white rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
+				onClick={() => navigate('/city')}
+				aria-label="Close quiz"
+			>
+				<X className="size-4" />
+			</Button>
+
+			{/* Help */}
+			<button
+				className="absolute bottom-4 right-4 z-10 p-1.5 rounded-full bg-white/10 border border-white/20 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
+				aria-label="Help"
+			>
+				<CircleQuestionMark className="size-4" />
+			</button>
+
+			{/* ── Main content ─────────────────────────────────────────── */}
+			<motion.div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-16 md:px-6 md:py-8 space-y-3">
+				{/* ── Top bar ──────────────────────────────────────────── */}
 				<motion.div
-					className="w-full mx-auto px-4 py-2"
+					className="flex items-center justify-between"
 					variants={itemVariants}
 				>
-					<div className="flex justify-between items-center">
-						<BackMenu to="/" />
-						<Button
-							variant="ghost"
-							size="sm"
-							className="p-2"
-							onClick={() => navigate('/city')}
+					<div className="flex items-center gap-2">
+						{/* Quit */}
+						<button
+							className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-colors"
+							onClick={() => navigate('/')}
 						>
-							<Home className="size-5" />
-						</Button>
-					</div>
-					<div className="flex gap-2 items-center  text-sm md:text-base my-2">
-						<div className="h-2 bg-gray-200 rounded-full overflow-hidden w-full ">
-							<motion.div
-								className="h-full bg-gradient-to-r from-brand-500 to-purple-500 rounded-full"
-								initial={{ width: 0 }}
-								animate={{ width: `${progress}%` }}
-								transition={{ duration: 0.5, ease: 'easeOut' }}
-								style={{ boxShadow: '0 0 10px rgba(99,102,241,0.5)' }}
-							/>
-						</div>
-						<span className="text-gray-600 font-semibold whitespace-nowrap">
-							{currentIndex + 1}/{totalQuestions}
+							<ChevronLeft className="size-4" />
+							Quit
+						</button>
+
+						{/* Score */}
+						<span className="px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold text-white/80">
+							Score: <span className="text-amber-400 font-bold">{score}</span>
 						</span>
+					</div>
+
+					{/* Timer */}
+					<div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold">
+						<Clock className="size-4 text-brand-300" />
+						<span>{formatElapsed(elapsed)}</span>
 					</div>
 				</motion.div>
 
-				{/* Question card */}
-				<motion.div className="w-full mx-auto px-4 flex-1 flex flex-col justify-center">
-					<motion.div className="" variants={itemVariants}>
+				{/* ── Progress bar ──────────────────────────────────────── */}
+				<motion.div variants={itemVariants}>
+					<div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
 						<motion.div
-							className="inline-block px-4 py-2 bg-gradient-to-r from-brand-500 to-indigo-700 text-white rounded-full text-xs md:text-sm font-bold mb-6 uppercase tracking-wide"
-							variants={optionVariants}
-						>
-							{typeIsMCQ ? 'Multiple Choice' : 'True / False'}
-						</motion.div>
+							className="h-full bg-gradient-to-r from-brand-400 to-purple-400 rounded-full"
+							initial={{ width: 0 }}
+							animate={{ width: `${progress}%` }}
+							transition={{ duration: 0.5, ease: 'easeOut' }}
+						/>
+					</div>
+				</motion.div>
 
+				{/* ── Question card ─────────────────────────────────────── */}
+				<motion.div
+					className="bg-white rounded-2xl shadow-card border border-gray-100 overflow-hidden"
+					variants={itemVariants}
+				>
+					{/* Card header */}
+					<div className="px-5 pt-4 pb-3 border-b border-gray-100 flex items-center justify-between">
+						<span className="text-xs font-bold text-ink-subtle tracking-widest uppercase">
+							Q{String(currentIndex + 1).padStart(2, '0')} /{' '}
+							{String(totalQuestions).padStart(2, '0')}
+						</span>
+						<div className="flex items-center gap-2">
+							<span
+								className={classnames(
+									'px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase border',
+									typeIsMCQ
+										? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+										: 'bg-purple-50 border-purple-200 text-purple-600',
+								)}
+							>
+								{typeIsMCQ ? 'Easy' : 'T / F'}
+							</span>
+							<span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-amber-50 border border-amber-200 text-amber-600">
+								<Zap className="size-3" /> +50
+							</span>
+						</div>
+					</div>
+
+					{/* Question text */}
+					<div className="px-5 pt-5 pb-4">
 						<motion.h2
-							className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 leading-tight"
+							className="text-lg md:text-xl font-bold text-ink-deep leading-snug mb-5"
 							variants={optionVariants}
-							transition={{ delay: 0.1 }}
 						>
 							{question.question}
 						</motion.h2>
 
+						{/* Options */}
 						<motion.div
-							className="space-y-4 md:space-y-5"
+							className="space-y-2.5"
 							variants={containerVariants}
 							initial="hidden"
 							animate="visible"
 						>
 							{optionsList.map((option, index) => {
 								const optionValue = getOptionValue(index);
+								const isCorrect = optionValue === question.correctAnswer;
 								const isSelected = selectedAnswer === optionValue;
+								const letter = typeIsMCQ
+									? String.fromCharCode(65 + index)
+									: index === 0
+										? 'T'
+										: 'F';
+
 								return (
 									<motion.button
 										key={index}
-										onClick={() => onSelectOption(optionValue)}
-										className={classnames(
-											'w-full p-3 md:p-4 text-left rounded-lg font-medium text-base md:text-lg transition-all duration-300 cursor-pointer',
-											{
-												'bg-indigo-50 border-2 border-brand-500 text-indigo-700 shadow-md':
-													isSelected,
-												'bg-white border-2 border-gray-200 text-gray-700 hover:border-indigo-400 hover:bg-gray-50':
-													!isSelected,
-											},
-										)}
+										onClick={() => !confirmed && onSelectOption(optionValue)}
+										disabled={confirmed}
+										className={getOptionStyle(optionValue)}
 										variants={optionVariants}
-										transition={{ delay: index * 0.1 }}
-										whileHover={{ x: 5 }}
-										whileTap={{ scale: 0.98 }}
+										transition={{ delay: index * 0.06 }}
+										whileHover={!confirmed ? { x: 2 } : {}}
+										whileTap={!confirmed ? { scale: 0.99 } : {}}
 									>
-										<span className="font-bold mr-4">
-											{typeIsMCQ
-												? String.fromCharCode(65 + index)
-												: index === 0
-													? 'T'
-													: 'F'}
+										{/* Letter badge */}
+										<span className={getLetterStyle(optionValue)}>
+											{letter}
 										</span>
-										<span>{option}</span>
-										{isSelected && (
-											<span className="float-right text-xl">✓</span>
+
+										<span className="flex-1">{option}</span>
+
+										{/* Post-confirm icon */}
+										{confirmed && isCorrect && (
+											<CheckCircle2 className="flex-shrink-0 size-5 text-emerald-400" />
+										)}
+										{confirmed && isSelected && !isCorrect && (
+											<XCircle className="flex-shrink-0 size-5 text-rose-400" />
 										)}
 									</motion.button>
 								);
 							})}
 						</motion.div>
-					</motion.div>
-				</motion.div>
+					</div>
 
-				{/* Navigation */}
-				<motion.div
-					className="w-full mx-auto px-4 mt-4 md:mt-6"
-					variants={itemVariants}
-				>
-					<div className="flex gap-4 md:gap-6">
-						<motion.button
-							onClick={onPrevious}
-							disabled={!canGoPrevious}
-							className={classnames(
-								'flex-1 py-3 md:py-4 px-6 font-bold text-lg rounded-lg transition-all duration-300 uppercase tracking-wide',
-								{
-									'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50':
-										!canGoPrevious,
-									'bg-gray-100 text-indigo-600 hover:bg-gray-200':
-										canGoPrevious,
-								},
+					{/* ── Footer ───────────────────────────────────────────── */}
+					<div className="px-5 pb-5 pt-1">
+						<AnimatePresence mode="wait">
+							{!confirmed ? (
+								/* Confirm Answer button — disabled until an option is picked */
+								<motion.button
+									key="confirm"
+									onClick={handleConfirm}
+									disabled={selectedAnswer === null}
+									className={classnames(
+										'w-full py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-widest',
+										selectedAnswer !== null
+											? 'bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 text-white shadow-lg cursor-pointer'
+											: 'bg-gray-100 border border-white/10 text-gray-400 cursor-not-allowed',
+									)}
+									initial={{ opacity: 0, y: 6 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -6 }}
+									transition={{ duration: 0.2 }}
+									whileHover={selectedAnswer !== null ? { scale: 1.01 } : {}}
+									whileTap={selectedAnswer !== null ? { scale: 0.98 } : {}}
+								>
+									Confirm Answer
+								</motion.button>
+							) : (
+								/* Next Question button — appears after confirmation */
+								<motion.button
+									key="next"
+									onClick={handleNext}
+									className="w-full py-3.5 px-6 font-bold text-sm rounded-xl uppercase tracking-widest text-white shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 cursor-pointe"
+									initial={{ opacity: 0, y: 6 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -6 }}
+									transition={{ duration: 0.2 }}
+									whileHover={{ scale: 1.01 }}
+									whileTap={{ scale: 0.98 }}
+								>
+									{currentIndex === totalQuestions - 1
+										? 'Submit Quiz →'
+										: 'Next Question →'}
+								</motion.button>
 							)}
-							whileHover={canGoPrevious ? { scale: 1.02 } : {}}
-							whileTap={canGoPrevious ? { scale: 0.98 } : {}}
-						>
-							← Previous
-						</motion.button>
-
-						<motion.button
-							onClick={onNext}
-							disabled={selectedAnswer === null}
-							className={classnames(
-								'flex-1 py-3 md:py-4 px-6 font-bold text-lg rounded-lg transition-all duration-300 uppercase tracking-wide text-white',
-								{
-									'bg-gradient-to-r from-brand-500 to-indigo-700 hover:shadow-lg':
-										selectedAnswer !== null,
-									'bg-gray-300 cursor-not-allowed opacity-50':
-										selectedAnswer === null,
-								},
-							)}
-							whileHover={selectedAnswer !== null ? { scale: 1.02, y: -3 } : {}}
-							whileTap={selectedAnswer !== null ? { scale: 0.98 } : {}}
-						>
-							{currentIndex === totalQuestions - 1 ? 'Submit Quiz →' : 'Next →'}
-						</motion.button>
+						</AnimatePresence>
 					</div>
 				</motion.div>
 			</motion.div>
