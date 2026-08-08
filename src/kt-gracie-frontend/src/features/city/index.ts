@@ -6,3 +6,4 @@ export { default as CityMenu } from './components/CityMenu';
 export { default as ModuleDrawer } from './components/ModuleDrawer';
 export { default as Modules } from './components/Modules';
 export { default as BalloonCursor } from './components/BalloonCursor';
+export { default as GracieGuide } from './components/GracieGuide';

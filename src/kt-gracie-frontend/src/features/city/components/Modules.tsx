@@ -4,16 +4,22 @@ import { getModuleProgress } from '../mockProgress';
 
 interface Props {
 	onClickModule?: (id: number) => void;
+	/** Fired when a desktop map button is hovered (id) or un-hovered (null),
+	 *  so the district image underneath can keep its hover glow. */
+	onHoverModule?: (id: number | null) => void;
 }
 
-export default function Modules({ onClickModule }: Props) {
+export default function Modules({ onClickModule, onHoverModule }: Props) {
 	return (
 		<>
 			{/* ── Mobile: vertical timeline (< md) ── */}
 			<MobileTimeline onClickModule={onClickModule} />
 
 			{/* ── Desktop: absolute map overlay (md+) ── */}
-			<DesktopMap onClickModule={onClickModule} />
+			<DesktopMap
+				onClickModule={onClickModule}
+				onHoverModule={onHoverModule}
+			/>
 		</>
 	);
 }
@@ -78,7 +84,7 @@ function MobileTimeline({ onClickModule }: Props) {
 
 // ─── Desktop map overlay ──────────────────────────────────────────────────────
 
-function DesktopMap({ onClickModule }: Props) {
+function DesktopMap({ onClickModule, onHoverModule }: Props) {
 	return (
 		<div className="hidden md:block absolute inset-0 z-40 w-full h-full pointer-events-none">
 			{modules.map((module: Module) => {
@@ -90,6 +96,8 @@ function DesktopMap({ onClickModule }: Props) {
 					<button
 						key={module.id}
 						onClick={() => onClickModule?.(module.id)}
+						onMouseEnter={() => onHoverModule?.(module.id)}
+						onMouseLeave={() => onHoverModule?.(null)}
 						aria-label={`${module.name}${isStarted ? ` — ${pct}% complete` : ''}`}
 						className="pointer-events-auto group bg-white/80 backdrop-blur-sm hover:backdrop-blur-lg rounded-xl shadow-lg shadow-brand-500/20 hover:bg-brand-500/50 hover:text-white hover:shadow-brand-600 active:scale-95 px-3 py-3 flex items-center gap-1.5 absolute transition-all duration-150"
 						style={{
