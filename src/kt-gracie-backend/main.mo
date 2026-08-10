@@ -82,15 +82,21 @@ persistent actor {
     };
   };
 
-  /////////////////////////HELPER FUNCTIONS/////////////////////////////
-  public query func getNumberOfSubjects() : async Nat {
-    return arr_subjects.size();
+  ///////////////////////// CORPUS FUNCTIONS /////////////////////////////////
+
+  let defaultCorpus : Types.Corpus = {
+    schema = "https://json-schema.org/draft/2020-12/schema";
+    id = "https://knowledgefound.org/gracie/schemas/knowledge_unit.schema.json";
+    title = "GRACIE 1.0 Knowledge Unit Corpus";
+    description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
+    typeOfObject = "object";
+    additionalProperties = false;
   };
 
-  //PLEASE REMOVE IN PRODCUTION!///
-  public query func getSubjectArray() : async [Types.Subject] {
-    return arr_subjects;
+  public query func getCorpus() : async Types.Corpus {
+    return defaultCorpus;
   };
+
 
   ///////////////////////// ASSESSMENT FUNCTIONS /////////////////////////////
   // How to use:
@@ -274,4 +280,16 @@ persistent actor {
   public query func getTransactions(userId : Text) : async [Types.Transaction] {
     return resolveAccount(userId).transactions;
   };
+
+  
+  /////////////////////////HELPER FUNCTIONS/////////////////////////////
+  public query func getNumberOfSubjects() : async Nat {
+    return arr_subjects.size();
+  };
+
+  //PLEASE REMOVE IN PRODCUTION!///
+  public query func getSubjectArray() : async [Types.Subject] {
+    return arr_subjects;
+  };
+
 };

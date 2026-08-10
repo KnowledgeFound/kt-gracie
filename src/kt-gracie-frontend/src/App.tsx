@@ -15,6 +15,7 @@ import ProfilePage from './app/profile/page';
 import CityScene from './app/city/page';
 import SubjectPage from './app/subject/page';
 import { TestProgress } from './test/TestProgress';
+import TestSubject from './test/TestSubject';
 
 // ─── Protected route guard ────────────────────────────────────────────────────
 
@@ -50,7 +51,7 @@ export default function App() {
 				<Routes>
 					<Route element={<RootLayout />}>
 						{/* Test routes */}
-						<Route path="/tests/progress" element={<TestProgress />} />
+						<Route path="/tests/subject" element={<TestSubject />} />
 
 						{/* Public routes */}
 						<Route path="/" element={<HomePage />} />

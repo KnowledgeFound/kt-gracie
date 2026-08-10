@@ -9,6 +9,7 @@ import {
     getTeachingProgressTotal,
     updateProgress,
 } from "../services/progressService";
+
 import { CompletedScore } from "../ENUMS/enums";
 
 export function TestProgress() {
@@ -42,7 +43,10 @@ export function TestProgress() {
         const teachingTotal = getTeachingProgressTotal();
 
         setResult(JSON.stringify({ allProgress, byId, totals, assessmentTotal, teachingTotal }, null, 2));
+
     }, []);
+
+
 
     return (
         <div style={{ padding: "1rem" }}>

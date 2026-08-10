@@ -39,3 +39,12 @@ export type TokenAccount = {
   balance: bigint;
   transactions: Transaction[];
 };
+
+export type Corpus = {
+  schema: string;
+  id: string;
+  title: string;
+  description: string;
+  typeOfObject: string;
+  additionalProperties: boolean;
+}
