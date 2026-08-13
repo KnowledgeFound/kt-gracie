@@ -1,15 +1,28 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trophy, User, LogOut, Home, BookOpen } from 'lucide-react';
+import {
+	X,
+	Trophy,
+	BookOpen,
+	LogOut,
+	Home,
+	Map,
+	Settings,
+	ChevronRight,
+	Flame,
+	Zap,
+	ShieldCheck,
+} from 'lucide-react';
 import { useUser } from '@/features/auth';
 
-// ─── Menu items ───────────────────────────────────────────────────────────────
+// ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-	{ icon: Home, label: 'City', path: '/city' },
-	{ icon: BookOpen, label: 'Subjects', path: '/subjects' },
-	{ icon: Trophy, label: 'Leaderboard', path: '/leaderboard' },
-	{ icon: User, label: 'Profile', path: '/profile' },
+	{ icon: Home,     label: 'City',        path: '/city',        description: 'Return to the city map'        },
+	{ icon: Trophy,   label: 'Leaderboard', path: '/leaderboard', description: 'See how you rank'              },
+	{ icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
+	{ icon: BookOpen, label: 'Assessments', path: '/',        description: 'Take a knowledge assessment'   },
+	{ icon: Settings, label: 'Settings',    path: '/',    description: 'Manage your account'           },
 ] as const;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -25,6 +38,10 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 	const navigate = useNavigate();
 	const { user, deleteUser } = useUser();
 
+	const accuracy = user && user.progression.totalAnswered > 0
+		? Math.round((user.progression.totalCorrect / user.progression.totalAnswered) * 100)
+		: 0;
+
 	function handleNav(path: string) {
 		onClose();
 		navigate(path);
@@ -36,14 +53,16 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 		navigate('/');
 	}
 
+	const initial = user?.firstName?.charAt(0).toUpperCase() ?? '?';
+
 	return (
 		<AnimatePresence>
 			{open && (
 				<>
-					{/* ── Backdrop ── */}
+					{/* Backdrop */}
 					<motion.div
 						key="backdrop"
-						className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+						className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px]"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
@@ -51,74 +70,143 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 						onClick={onClose}
 					/>
 
-					{/* ── Drawer panel ── */}
-					{/* Panel — slides in from the right */}
+					{/* Drawer — slides from right */}
 					<motion.aside
 						key="drawer"
-						className="fixed top-0 right-0 h-full w-72 z-50 flex flex-col bg-surface-white shadow-card-lg"
+						role="dialog"
+						aria-modal="true"
+						aria-label="User menu"
+						className="fixed top-0 right-0 h-full w-full md:w-[50%] max-w-sm z-50 flex flex-col bg-white shadow-card-lg overflow-hidden"
 						initial={{ x: '100%' }}
 						animate={{ x: 0 }}
 						exit={{ x: '100%' }}
 						transition={{ type: 'spring', stiffness: 320, damping: 32 }}
 					>
-						{/* Header */}
-						<div
-							className="flex items-center justify-between px-5 py-4 border-b border-gray-100 rounded-r-md"
-							style={{
-								background:
-									'linear-gradient(135deg, rgba(74,152,212,0.12) 0%, rgba(99,102,241,0.08) 100%)',
-							}}
-						>
-							{/* User info */}
-							<div className="flex items-center gap-3 min-w-0">
-								<div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-800 flex items-center justify-center text-white font-bold text-lg shrink-0 select-none">
-									{user?.firstName?.charAt(0).toUpperCase() ?? '?'}
-								</div>
-								<div className="min-w-0">
-									<p className="font-semibold text-ink-deep truncate">
-										{user?.firstName ?? 'Guest'}
-									</p>
-									<p className="text-xs text-ink-muted">
-										{user?.tokenBalance ?? 0} KT Tokens
-									</p>
-								</div>
-							</div>
+						{/* ── Profile header ───────────────────────────────── */}
+						<div className="relative px-5 pt-10 pb-5 flex-shrink-0 bg-gradient-to-br from-brand-500 to-brand-700 text-white overflow-hidden">
+							{/* Decorative rings */}
+							<div className="absolute -top-8 -right-8 w-36 h-36 rounded-full border-[20px] border-white/10 pointer-events-none" />
+							<div className="absolute -bottom-10 -left-4 w-28 h-28 rounded-full border-[14px] border-white/8 pointer-events-none" />
 
-							{/* Close button */}
+							{/* Close */}.  
+
+
+
+							
 							<button
 								onClick={onClose}
 								aria-label="Close menu"
-								className="p-2 rounded-full hover:bg-gray-100 text-ink-muted hover:text-ink-deep transition-colors shrink-0"
+								className="absolute top-3 right-3 p-1.5 rounded-full bg-wßßßßßßite/15 hover:bg-white/25 transition-colors"
 							>
-								<X className="w-5 h-5" />
+								<X className="size-4" />
 							</button>
+
+							{/* Avatar */}
+							<div className="w-16 h-16 rounded-2xl bg-white/20 border-2 border-white/40 flex items-center justify-center text-2xl font-black select-none mb-3 shadow-md">
+								{initial}
+							</div>
+
+							{/* Name + role */}
+							<h2 className="text-xl font-black leading-tight">
+								{user ? `Mayor ${user.firstName}` : 'Guest'}
+							</h2>
+							<p className="text-sm text-white/70 mt-0.5">
+								{user?.anonymousId
+									? `ID: ${user.anonymousId.slice(0, 8)}…`
+									: 'No profile yet'}
+							</p>
+
+							{/* Quick stats strip */}
+							{user && (
+								<div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/20">
+									<div className="flex items-center gap-1.5 text-sm font-bold">
+										<Zap className="size-3.5 text-amber-300" />
+										<span>{user.tokenBalance.toLocaleString()} KT</span>
+									</div>
+									<div className="w-px h-3.5 bg-white/25" />
+									<div className="flex items-center gap-1.5 text-sm font-bold">
+										<Flame className="size-3.5 text-orange-300" />
+										<span>{user.progression.streakDays}d streak</span>
+									</div>
+									<div className="w-px h-3.5 bg-white/25" />
+									<div className="flex items-center gap-1.5 text-sm font-bold">
+										<ShieldCheck className="size-3.5 text-emerald-300" />
+										<span>{accuracy}%</span>
+									</div>
+								</div>
+							)}
 						</div>
 
-						{/* Nav items */}
-						<nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-							{NAV_ITEMS.map(({ icon: Icon, label, path }, i) => (
+						{/* ── Gracie companion card ─────────────────────────── */}
+						{user && (
+							<motion.div
+								className="mx-4 mt-4 mb-1 flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-50 border border-brand-100"
+								initial={{ opacity: 0, y: 6 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.12 }}
+							>
+								<span className="text-2xl select-none">🛡️</span>
+								<div className="flex-1 min-w-0">
+									<p className="text-sm font-bold text-ink-deep truncate">
+										{user.gracie.name || 'Gracie'}
+									</p>
+									<p className="text-xs text-ink-muted">
+										Integrity {user.gracie.integrityScore}/100
+									</p>
+								</div>
+								<div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+									<div
+										className="h-full bg-gradient-to-r from-brand-400 to-emerald-400 rounded-full"
+										style={{ width: `${user.gracie.integrityScore}%` }}
+									/>
+								</div>
+							</motion.div>
+						)}
+
+						{/* ── Nav items ─────────────────────────────────────── */}
+						<nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
+							<p className="px-3 pt-1 pb-2 text-[10px] font-black tracking-widest text-ink-subtle uppercase">
+								Navigate
+							</p>
+							{NAV_ITEMS.map(({ icon: Icon, label, path, description }, i) => (
 								<motion.button
 									key={path}
 									onClick={() => handleNav(path)}
-									className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-ink-deep hover:bg-brand-50 hover:text-brand-600 transition-colors group"
-									initial={{ opacity: 0, x: -16 }}
+									className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left hover:bg-brand-50 group transition-colors"
+									initial={{ opacity: 0, x: 16 }}
 									animate={{ opacity: 1, x: 0 }}
-									transition={{ delay: 0.05 + i * 0.04 }}
+									transition={{ delay: 0.06 + i * 0.04 }}
 								>
-									<Icon className="w-5 h-5 text-ink-muted group-hover:text-brand-500 transition-colors shrink-0" />
-									<span className="font-medium">{label}</span>
+									{/* Icon box */}
+									<div className="w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-brand-100 flex items-center justify-center flex-shrink-0 transition-colors">
+										<Icon className="size-4 text-ink-muted group-hover:text-brand-600 transition-colors" />
+									</div>
+
+									{/* Labels */}
+									<div className="flex-1 min-w-0">
+										<p className="text-sm font-semibold text-ink-deep group-hover:text-brand-700 leading-tight transition-colors">
+											{label}
+										</p>
+										<p className="text-[11px] text-ink-subtle leading-tight mt-0.5 truncate">
+											{description}
+										</p>
+									</div>
+
+									<ChevronRight className="size-4 text-gray-300 group-hover:text-brand-400 transition-colors flex-shrink-0" />
 								</motion.button>
 							))}
 						</nav>
 
-						{/* Footer — log out */}
-						<div className="px-3 py-4 border-t border-gray-100">
+						{/* ── Footer ────────────────────────────────────────── */}
+						<div className="flex-shrink-0 px-3 py-4 border-t border-gray-100 space-y-1">
 							<button
 								onClick={handleLogOut}
-								className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-danger-600 hover:bg-danger-50 transition-colors"
+								className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left text-rose-600 hover:bg-rose-50 transition-colors group"
 							>
-								<LogOut className="w-5 h-5 shrink-0" />
-								<span className="font-medium">Log Out</span>
+								<div className="w-9 h-9 rounded-xl bg-rose-50 group-hover:bg-rose-100 flex items-center justify-center flex-shrink-0 transition-colors">
+									<LogOut className="size-4 text-rose-500" />
+								</div>
+								<span className="text-sm font-semibold">Log Out</span>
 							</button>
 						</div>
 					</motion.aside>

@@ -10,6 +10,9 @@ import {
 	Modules,
 	BalloonCursor,
 	GracieGuide,
+	TokenModal,
+	ProgressModal,
+	HealthModal,
 } from '@/features/city';
 import { useUser } from '@/features/auth';
 
@@ -48,9 +51,11 @@ const MODULE_BLOCK: Record<number, BlockId> = {
  */
 export default function CityScene() {
 	const { user, city } = useUser();
-	const [drawerOpen, setDrawerOpen] = useState(false);
-	const [statsOpen, setStatsOpen] = useState(false);
-	const [moduleId, setModuleId] = useState<number | null>(null);
+	const [drawerOpen, setDrawerOpen]     = useState(false);
+	const [healthOpen, setHealthOpen]     = useState(false);
+	const [tokenOpen, setTokenOpen]       = useState(false);
+	const [progressOpen, setProgressOpen] = useState(false);
+	const [moduleId, setModuleId]         = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<BlockId | null>(null);
 
 	// Single source of truth: the city held in auth context (loaded from
@@ -118,22 +123,34 @@ export default function CityScene() {
 				health={cityHealth}
 				tokens={user?.tokenBalance ?? 0}
 				username={user?.firstName ?? '—'}
-				onClickHealth={() => setStatsOpen(true)}
+				onClickHealth={() => setHealthOpen(true)}
+				onClickToken={() => setTokenOpen(true)}
+				onClickTrend={() => setProgressOpen(true)}
 				onClickUser={() => setDrawerOpen(true)}
 			/>
 
-			{/* Left nav drawer — opened by username badge */}
+			{/* User profile drawer — right side */}
 			<DrawerMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-			{/* Module detail drawer — opened by clicking a Module on the map */}
+			{/* Module detail drawer */}
 			<ModuleDrawer
 				open={moduleId !== null}
 				onClose={() => setModuleId(null)}
 				moduleId={moduleId}
 			/>
 
-			{/* Right stats panel — opened by health badge */}
-			<CityMenu open={statsOpen} onClose={() => setStatsOpen(false)} />
+			{/* City health modal */}
+			<HealthModal
+				open={healthOpen}
+				onClose={() => setHealthOpen(false)}
+				health={cityHealth}
+			/>
+
+			{/* KT Wallet modal */}
+			<TokenModal open={tokenOpen} onClose={() => setTokenOpen(false)} />
+
+			{/* Progress modal */}
+			<ProgressModal open={progressOpen} onClose={() => setProgressOpen(false)} />
 
 			<Modules
 				onClickModule={handleModuleClick}
