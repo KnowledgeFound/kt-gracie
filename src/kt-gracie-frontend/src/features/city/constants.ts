@@ -102,10 +102,42 @@ function makeAssessments(base: string): ModuleAssessment[] {
  * images, their hover glow and the module buttons that sit on top of them are
  * all positioned from these numbers.
  *
- * `labelBias` is where on the image the module button clips on, as a fraction
- * of the box. The artwork is an island with a rock hanging below it, so the
- * default y of 0.7 lands the button on the island's front edge rather than on
- * top of its buildings.
+ * `labelBias` is where on a district its module button clips on, given as a
+ * fraction of that district's own `box` rather than of the stage:
+ *
+ *   x — 0 is the box's left edge, 0.5 its middle, 1 its right edge
+ *   y — 0 is the box's top edge,  0.5 its middle, 1 its bottom edge
+ *
+ * `cityBlocks` (below) resolves the pair against the box into `anchor`, an
+ * absolute point in stage percentages:
+ *
+ *   anchor.x = box.left + box.width  * labelBias.x
+ *   anchor.y = box.top  + box.height * labelBias.y
+ *
+ * The button is *centred* on that point — `.cityModuleAnchor` in city.css
+ * pulls it back by half its own width and height — so the bias marks where the
+ * middle of the pill lands, not a corner of it. Because the bias is a fraction
+ * of a box that is itself a percentage of the stage, the button keeps the same
+ * spot on the artwork at every viewport size; nothing here is in pixels.
+ *
+ * Why the default y sits at 0.7 rather than 0.5: each district is drawn as a
+ * floating island with a rock hanging underneath it. Roughly the top half of
+ * the image is the plateau and its buildings, and the lower part is rock and
+ * empty space. Dead centre would drop the pill on top of the buildings, so 0.7
+ * puts it across the island's front edge instead, where it reads as a label
+ * pinned to the district rather than something covering it.
+ *
+ * Districts whose artwork or surroundings don't suit the default override it
+ * (see `leftDown`, which has to clear Gracie's speech bubble). When tuning:
+ * lower y moves a button up, higher x moves it right, and values want to stay
+ * inside roughly 0.25–0.85 — beyond that the pill drifts onto the transparent
+ * margin of the PNG and stops looking attached to anything.
+ *
+ * One assumption worth knowing: the images are `object-fit: contain` inside
+ * their boxes, and the artwork's aspect ratio is close enough to the boxes'
+ * (both about 5:4) that a fraction of the box is effectively a fraction of the
+ * picture. Swapping in art with a very different shape would letterbox it
+ * inside the box and shift every button on that district.
  */
 const DEFAULT_LABEL_BIAS = { x: 0.5, y: 0.7 };
 
