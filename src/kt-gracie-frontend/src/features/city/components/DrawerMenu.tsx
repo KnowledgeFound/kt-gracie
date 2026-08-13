@@ -21,8 +21,8 @@ const NAV_ITEMS = [
 	{ icon: Home,     label: 'City',        path: '/city',        description: 'Return to the city map'        },
 	{ icon: Trophy,   label: 'Leaderboard', path: '/leaderboard', description: 'See how you rank'              },
 	{ icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
-	{ icon: BookOpen, label: 'Assessments', path: '/',        description: 'Take a knowledge assessment'   },
-	{ icon: Settings, label: 'Settings',    path: '/',    description: 'Manage your account'           },
+	{ icon: BookOpen, label: 'Assessments', path: '/',           description: 'Take a knowledge assessment'   },
+	{ icon: Settings, label: 'Settings',    path: '/settings',   description: 'Theme, guide audio and more'   },
 ] as const;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -88,15 +88,11 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 							<div className="absolute -top-8 -right-8 w-36 h-36 rounded-full border-[20px] border-white/10 pointer-events-none" />
 							<div className="absolute -bottom-10 -left-4 w-28 h-28 rounded-full border-[14px] border-white/8 pointer-events-none" />
 
-							{/* Close */}.  
-
-
-
-							
+							{/* Close */}
 							<button
 								onClick={onClose}
 								aria-label="Close menu"
-								className="absolute top-3 right-3 p-1.5 rounded-full bg-wßßßßßßite/15 hover:bg-white/25 transition-colors"
+								className="absolute top-3 right-3 p-1.5 rounded-full bg-white/15 hover:bg-white/25 transition-colors"
 							>
 								<X className="size-4" />
 							</button>

@@ -1,0 +1,74 @@
+/* Settings-only chrome. Everything colour-related resolves through the theme
+   tokens in styles/theme.css so both themes are covered by one rule. */
+
+/* ── Range input thumb (needs vendor pseudo-elements, no Tailwind hook) ───── */
+
+.settingsRange::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	border-radius: 9999px;
+	background: #fff;
+	border: 2px solid rgb(var(--brand-500));
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+	cursor: inherit;
+	transition: transform 0.15s ease;
+}
+
+.settingsRange:active::-webkit-slider-thumb {
+	transform: scale(1.15);
+}
+
+.settingsRange::-moz-range-thumb {
+	width: 16px;
+	height: 16px;
+	border-radius: 9999px;
+	background: #fff;
+	border: 2px solid rgb(var(--brand-500));
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+	cursor: inherit;
+}
+
+.settingsRange:focus-visible {
+	outline: 2px solid rgb(var(--brand-400));
+	outline-offset: 4px;
+}
+
+/* ── Page backdrop — a soft accent wash behind the cards ─────────────────── */
+
+.settingsPage {
+	background:
+		radial-gradient(
+			110% 80% at 50% -10%,
+			rgb(var(--brand-500) / 0.16),
+			transparent 60%
+		),
+		rgb(var(--surface-page));
+	min-height: 100vh;
+}
+
+/* ── Theme preview tiles ─────────────────────────────────────────────────── */
+
+.themePreview {
+	--preview-bg: #eaf4fd;
+	--preview-card: #ffffff;
+	--preview-ink: #1a3d5c;
+	--preview-line: rgba(26, 61, 92, 0.14);
+	background: var(--preview-bg);
+}
+
+.themePreview--dark {
+	--preview-bg: #101a29;
+	--preview-card: #1d2739;
+	--preview-ink: #e2ecf7;
+	--preview-line: rgba(226, 236, 247, 0.16);
+}
+
+/* The `system` tile shows both themes at once, split down the middle. The
+   miniature cards go translucent so each half stays readable through them. */
+.themePreview--system {
+	background: linear-gradient(to right, #eaf4fd 50%, #101a29 50%);
+	--preview-card: rgba(255, 255, 255, 0.5);
+	--preview-line: rgba(120, 140, 165, 0.45);
+}

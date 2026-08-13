@@ -7,6 +7,7 @@ import {
 	useLocation,
 } from 'react-router-dom';
 import { UserProvider, useOptionalUser } from '@/features/auth';
+import { SettingsProvider } from '@/features/settings';
 import RootLayout from './app/layout';
 import HomePage from './app/home/page';
 import QuizPage from './app/quiz/page';
@@ -14,6 +15,7 @@ import LeaderboardPage from './app/leaderboard/page';
 import ProfilePage from './app/profile/page';
 import CityScene from './app/city/page';
 import SubjectPage from './app/subject/page';
+import SettingsPage from './app/settings/page';
 import { TestProgress } from './test/TestProgress';
 
 // ─── Protected route guard ────────────────────────────────────────────────────
@@ -45,30 +47,33 @@ const NotFound = () => (
 
 export default function App() {
 	return (
-		<UserProvider>
-			<BrowserRouter>
-				<Routes>
-					<Route element={<RootLayout />}>
-						{/* Test routes */}
-						<Route path="/tests/progress" element={<TestProgress />} />
+		<SettingsProvider>
+			<UserProvider>
+				<BrowserRouter>
+					<Routes>
+						<Route element={<RootLayout />}>
+							{/* Test routes */}
+							<Route path="/tests/progress" element={<TestProgress />} />
 
-						{/* Public routes */}
-						<Route path="/" element={<HomePage />} />
+							{/* Public routes */}
+							<Route path="/" element={<HomePage />} />
 
-						{/* Protected routes — require a user profile */}
-						<Route element={<ProtectedRoute />}>
-							<Route path="/city" element={<CityScene />} />
-							<Route path="/leaderboard" element={<LeaderboardPage />} />
-							<Route path="/profile" element={<ProfilePage />} />
-							<Route path="/subjects" element={<SubjectPage />} />
-							<Route path="/quiz" element={<QuizPage />} />
-							<Route path="/quiz/:id" element={<QuizPage />} />
+							{/* Protected routes — require a user profile */}
+							<Route element={<ProtectedRoute />}>
+								<Route path="/city" element={<CityScene />} />
+								<Route path="/leaderboard" element={<LeaderboardPage />} />
+								<Route path="/profile" element={<ProfilePage />} />
+								<Route path="/subjects" element={<SubjectPage />} />
+								<Route path="/quiz" element={<QuizPage />} />
+								<Route path="/quiz/:id" element={<QuizPage />} />
+								<Route path="/settings" element={<SettingsPage />} />
+							</Route>
 						</Route>
-					</Route>
 
-					<Route path="*" element={<NotFound />} />
-				</Routes>
-			</BrowserRouter>
-		</UserProvider>
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</BrowserRouter>
+			</UserProvider>
+		</SettingsProvider>
 	);
 }

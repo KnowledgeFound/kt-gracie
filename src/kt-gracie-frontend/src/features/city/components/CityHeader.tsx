@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react';
+import { Settings, TrendingUp } from 'lucide-react';
 
 interface CityHeaderProps {
 	health: number;
@@ -8,6 +8,7 @@ interface CityHeaderProps {
 	onClickToken?: () => void;
 	onClickTrend?: () => void;
 	onClickUser?: () => void;
+	onClickSettings?: () => void;
 }
 
 export default function CityHeader({
@@ -18,6 +19,7 @@ export default function CityHeader({
 	onClickToken,
 	onClickTrend,
 	onClickUser,
+	onClickSettings,
 }: CityHeaderProps) {
 	const pct     = Math.min(100, Math.max(0, health));
 	const initial = username.charAt(0).toUpperCase();

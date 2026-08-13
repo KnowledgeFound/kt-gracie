@@ -2,6 +2,9 @@
   position: relative;
   width: 100vw;
   height: 100vh;
+  /* Mobile browsers hide/show their chrome as you scroll — dvh keeps the
+     scene matched to what is actually visible. */
+  height: 100dvh;
   overflow: hidden;
   font-family: inherit;
 }
@@ -12,8 +15,17 @@
   width: 100%;
   height: 100%;
   z-index: 0;
-  background-color: #d7f1ff;
-  transition: filter 0.35s ease;
+  /* Sky tone comes from the theme so the city dims with the rest of the app
+     (see --city-sky in styles/theme.css). */
+  background-color: var(--city-sky, #d7f1ff);
+  transition: filter 0.35s ease, background-color 0.35s ease;
+}
+
+/* Night city: the artwork is painted for a bright sky, so settle it down to
+   match the dark theme rather than glowing against it. */
+[data-theme='dark'] .cityBlock,
+[data-theme='dark'] .cityCloudLayer {
+  filter: brightness(0.78) saturate(0.88);
 }
 
 .cityCloudLayer {
@@ -24,14 +36,22 @@
   transition: opacity 0.35s ease, filter 0.35s ease;
 }
 
-.cityBlockGridWrapper {
+/* The districts and the module buttons are drawn in two separate layers that
+   each hold a `.cityBlocks` stage. The buttons are positioned in stage
+   percentages, so the two stages must be laid out *identically* or every
+   button drifts off its district — hence one shared rule, never two. */
+.cityBlockGridWrapper,
+.cityModuleLayer {
   position: absolute;
   inset: 0;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.cityBlockGridWrapper {
+  z-index: 1;
 }
 
 .cityBlocks {
@@ -40,50 +60,43 @@
   height: clamp(480px, 52vw, 780px);
 }
 
-/* Wrapper handles position, hover, dimming, and scale */
+/* Phones: the 600px floor above would overflow the screen, so size the stage
+   off the viewport instead — capped by height too, for landscape. Everything
+   inside is positioned in % of this box, so the whole map scales with it. */
+@media (max-width: 767px) {
+  .cityBlockGridWrapper,
+  .cityModuleLayer {
+    /* Sit under the header rather than dead-centre, leaving the lower half
+       of a portrait screen to Gracie. Both layers, or the buttons detach. */
+    align-items: flex-start;
+    padding-top: clamp(64px, 12vh, 120px);
+  }
+
+  .cityBlocks {
+    width: min(88vw, calc(58vh * 1.25));
+    height: auto;
+    aspect-ratio: 5 / 4;
+  }
+}
+
+/* Wrapper handles hover, dimming, and scale. Its box (left/top/width/height)
+   is set inline from the block geometry in features/city/constants.ts, so the
+   districts and their module buttons stay locked together. */
 .cityBlockItem {
   position: absolute;
+  padding: 0;
+  border: none;
+  background: none;
   pointer-events: auto;
   cursor: pointer;
   transition: transform 0.35s ease, filter 0.35s ease, opacity 0.35s ease;
   will-change: transform, filter;
 }
 
-.cityBlockItem--leftUp {
-  top: 10%;
-  left: -4%;
-  width: 50%;
-  height: 50%;
-}
-
-.cityBlockItem--rightUp {
-  top: 5%;
-  right: -4%;
-  width: 50%;
-  height: 50%;
-}
-
-.cityBlockItem--central {
-  top: 50%;
-  left: 50%;
-  width: 40%;
-  height: 40%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-}
-
-.cityBlockItem--leftDown {
-  bottom: 0;
-  left: -10%;
-  width: 50%;
-  height: 50%;
-}
-
-.cityBlockItem--rightDown {
-  bottom: 0;
-  right: -10%;
-  width: 50%;
-  height: 50%;
+.cityBlockItem:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -6px;
+  border-radius: 12px;
 }
 
 /* Image only handles size/fit + its own float animation */
@@ -94,37 +107,25 @@
   display: block;
 }
 
-.cityBlock--leftUp {
+/* --- Float animations, shared by a district and its module button --- */
+
+.cityFloat--float {
   animation: float 6s ease-in-out infinite;
 }
 
-.cityBlock--rightUp {
+.cityFloat--floatReverse {
   animation: float-reverse 8s ease-in-out infinite;
 }
 
-.cityBlock--central {
+.cityFloat--floatSlow {
   animation: float-slow 10s ease-in-out infinite;
-}
-
-.cityBlock--leftDown {
-  animation: float-reverse 8s ease-in-out infinite;
-}
-
-.cityBlock--rightDown {
-  animation: float 6s ease-in-out infinite;
 }
 
 /* --- Hover highlight effect --- */
 
 .cityBlockItem--active {
   transform: scale(1.05);
-  z-index: 10;
   filter: drop-shadow(0 0 19px rgba(255, 255, 255, 0.72));
-}
-
-.cityBlockItem--central.cityBlockItem--active {
-  /* preserve the centering translate, just add scale on top */
-  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .cityBlockItem--dimmed {
@@ -139,6 +140,48 @@
 .cityScene--hovering .cityCloudLayer {
   opacity: 0.7;
   filter: blur(1px);
+}
+
+/* --- Module buttons pinned to their districts --- */
+
+/* Layout is shared with .cityBlockGridWrapper (see the rule above it) so the
+   anchors below land on the district artwork; only the stacking differs. */
+.cityModuleLayer {
+  z-index: 40;
+}
+
+/* Anchor point on the district; the button is centred on it. */
+.cityModuleAnchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.cityModuleAnchor--dimmed {
+  opacity: 0.6;
+  filter: saturate(0.8);
+}
+
+/* Rides the same float keyframes as the district underneath. */
+.cityModuleFloat {
+  display: block;
+  will-change: transform;
+}
+
+.cityModuleBtn {
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Phones: a single-line label would be wider than the district it sits on, so
+   let the name wrap under the icon and cap how wide a pill can get — that
+   keeps neighbouring buttons from colliding on the smaller stage. */
+@media (max-width: 767px) {
+  .cityModuleBtn {
+    white-space: normal;
+    max-width: 5.5rem;
+    text-align: center;
+  }
 }
 
 @keyframes float {
@@ -164,10 +207,19 @@
 @keyframes float-slow {
   0%,
   100% {
-    transform: translate(-50%, -50%);
+    transform: translate(0, 0);
   }
   50% {
-    transform: translate(calc(-50% + 10px), calc(-50% - 10px));
+    transform: translate(10px, -10px);
+  }
+}
+
+/* Districts drift; users who asked for less motion get a still map. */
+@media (prefers-reduced-motion: reduce) {
+  .cityFloat--float,
+  .cityFloat--floatReverse,
+  .cityFloat--floatSlow {
+    animation: none;
   }
 }
 
@@ -178,9 +230,20 @@
   --gg-h: clamp(400px, 60vh, 780px);
   --gg-w: calc(var(--gg-h) * 9 / 16);
 
+  /* Docked resting place (lower-left). The intro positions are expressed as
+     transforms away from here, so docking is just `transform: none`. */
+  --gg-dock-left: clamp(24px, 4vw, 64px);
+  --gg-dock-bottom: -100px;
+
+  /* Offset that puts the guide dead-centre on screen. Percentages in a
+     translate resolve against the element's own box, so 50% == half its
+     width/height — no JS measuring needed. */
+  --gg-center-x: calc(50vw - var(--gg-dock-left) - 50%);
+  --gg-center-y: calc(-50vh + 50% + var(--gg-dock-bottom));
+
   position: absolute;
-  left: clamp(24px, 4vw, 64px);
-  bottom: -100px;
+  left: var(--gg-dock-left);
+  bottom: var(--gg-dock-bottom);
   z-index: 5;
   display: flex;
   /* Bubble aligns to her head; margin-top drops it to her mouth */
@@ -188,7 +251,88 @@
   gap: 14px;
   /* Never block hovers/clicks on the city blocks underneath */
   pointer-events: none;
-  transition: opacity 0.35s ease, filter 0.35s ease;
+  transition: transform 1150ms cubic-bezier(0.22, 0.75, 0.24, 1),
+    opacity 0.6s ease, filter 0.35s ease;
+}
+
+/* --- Intro choreography --- */
+
+/* Frame 0: parked below her centre mark and invisible. */
+.gracieGuide--enter {
+  transform: translate(var(--gg-center-x), calc(var(--gg-center-y) + 30vh));
+  opacity: 0;
+}
+
+/* Centre stage, above the veil, while the script plays. */
+.gracieGuide--center {
+  transform: translate(var(--gg-center-x), var(--gg-center-y));
+  opacity: 1;
+}
+
+/* Above the veil for the whole intro *and* the glide home, so she is never
+   caught behind the veil that is fading out under her. */
+.gracieGuide--elevated {
+  z-index: 60;
+}
+
+/* Home. `transform: none` glides her back to the lower-left corner. */
+.gracieGuide--docked {
+  transform: none;
+  opacity: 1;
+}
+
+/* Bigger, easier-to-read bubble while she has the whole screen. */
+.gracieGuide--intro .gracieGuide__bubble {
+  max-width: clamp(260px, 32vw, 460px);
+  padding: 18px 22px;
+  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
+}
+
+/* Soft spotlight behind her so she lifts off the dimmed city. */
+.gracieGuide__videoBox::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 150%;
+  height: 90%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    50% 50% at 50% 60%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.gracieGuide--intro .gracieGuide__videoBox::before {
+  opacity: 1;
+}
+
+/* Gradient veil that dims the city and focuses Gracie during the intro. */
+.gracieIntroVeil {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  background: radial-gradient(
+    115% 85% at 42% 58%,
+    rgba(4, 14, 38, 0.32) 0%,
+    rgba(4, 14, 38, 0.66) 45%,
+    rgba(2, 8, 26, 0.88) 100%
+  );
+  backdrop-filter: blur(3px) saturate(0.85);
+  -webkit-backdrop-filter: blur(3px) saturate(0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease, backdrop-filter 900ms ease;
+}
+
+.gracieIntroVeil--on {
+  opacity: 1;
+  /* Hold every click/hover until the intro is done. */
+  pointer-events: auto;
 }
 
 /* While a module drawer is open, sit above its blurred backdrop (z-40) but
@@ -198,6 +342,7 @@
 }
 
 .gracieGuide__videoBox {
+  position: relative;
   width: var(--gg-w);
   height: var(--gg-h);
   flex-shrink: 0;
@@ -247,11 +392,88 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.16);
 }
 
+/* Speaker toggle tucked into the bubble's top-right corner — the same switch
+   as "Read lines aloud" in Settings, within reach while she is talking. */
+.gracieGuide__audioBtn {
+  /* The guide container is pointer-events:none — re-enable for this control */
+  pointer-events: auto;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(31, 41, 55, 0.1);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4b5563;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+  transition: color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+}
+
+.gracieGuide__audioBtn:hover {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.gracieGuide__audioBtn:active {
+  transform: scale(0.94);
+}
+
+/* Step dots — how far through the intro the user is. */
+.gracieGuide__dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.gracieGuide__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(31, 41, 55, 0.2);
+  transition: background 0.25s ease, width 0.25s ease;
+}
+
+.gracieGuide__dot--on {
+  width: 18px;
+  background: #2563eb;
+}
+
+.gracieGuide__actions {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  gap: 6px;
+}
+
+.gracieGuide__skip {
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.gracieGuide__skip:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .gracieGuide__continue {
   /* Container is pointer-events:none — re-enable for this control */
   pointer-events: auto;
   cursor: pointer;
-  align-self: flex-end;
   padding: 8px 20px;
   border: none;
   border-radius: 999px;
@@ -293,5 +515,37 @@
   .gracieGuide__bubble {
     max-width: min(52vw, 240px);
     padding: 10px 13px;
+  }
+
+  /* Centre stage on a phone: shrink her so she and the bubble fit side by
+     side without pushing off-screen. */
+  .gracieGuide--intro {
+    --gg-h: clamp(190px, 32vh, 300px);
+  }
+
+  .gracieGuide--intro .gracieGuide__bubble {
+    max-width: min(52vw, 260px);
+    padding: 13px 16px;
+    font-size: 0.95rem;
+  }
+
+  .gracieGuide__skip {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Respect reduced-motion: keep the staging (centre → corner, veil on → off)
+   but drop the travel animation. */
+@media (prefers-reduced-motion: reduce) {
+  .gracieGuide,
+  .gracieIntroVeil,
+  .gracieGuide__videoBox::before {
+    transition-duration: 0.01ms;
+  }
+
+  .gracieGuide--enter {
+    transform: translate(var(--gg-center-x), var(--gg-center-y));
+    opacity: 1;
   }
 }
