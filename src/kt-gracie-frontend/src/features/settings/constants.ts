@@ -21,7 +21,9 @@ export const INTRO_SEEN_STORAGE_KEY = 'gracie_intro_seen';
 
 export const DEFAULT_SETTINGS: AppSettings = {
 	appearance: {
-		theme: 'system',
+		// Light unless the user asks for otherwise — the city artwork is painted
+		// for a bright sky, so that is the app's intended look out of the box.
+		theme: 'light',
 		accent: 'ocean',
 		textScale: 'medium',
 		reduceMotion: false,

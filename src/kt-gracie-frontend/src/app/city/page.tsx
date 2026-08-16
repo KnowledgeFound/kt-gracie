@@ -31,16 +31,12 @@ export default function CityScene() {
 	const { user, city } = useUser();
 	const { settings } = useSettings();
 	const navigate = useNavigate();
-	const [drawerOpen, setDrawerOpen]     = useState(false);
-	const [healthOpen, setHealthOpen]     = useState(false);
-	const [tokenOpen, setTokenOpen]       = useState(false);
+	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [healthOpen, setHealthOpen] = useState(false);
+	const [tokenOpen, setTokenOpen] = useState(false);
 	const [progressOpen, setProgressOpen] = useState(false);
-	const [moduleId, setModuleId]         = useState<number | null>(null);
+	const [moduleId, setModuleId] = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<CityBlockId | null>(null);
-	// The district Gracie is currently talking about. Separate from `moduleId`:
-	// tapping a district asks her for an overview, tapping its button opens the
-	// drawer — the two never trigger each other.
-	const [guideModuleId, setGuideModuleId] = useState<number | null>(null);
 	// Gracie's centre-stage intro runs on arrival; the city is inert behind its
 	// veil until she docks to the lower-left.
 	const [introDone, setIntroDone] = useState(false);
@@ -49,22 +45,19 @@ export default function CityScene() {
 	// local storage on mount, updated on account creation).
 	const cityHealth = city?.getHealth() ?? 0;
 
-	// Module button — opens the detail drawer.
+	// One entry point for both ways into a module — the district itself and the
+	// button sitting on it. Picking a module opens its drawer and hands it to
+	// Gracie together, so the two can never end up describing different places;
+	// closing the drawer clears both and returns her to her idle prompt.
 	const handleModuleClick = (id: number) => {
 		setModuleId(id);
-	};
-
-	// District itself — hands the module to Gracie. Tapping the district she is
-	// already on sends her back to her idle prompt.
-	const handleBlockClick = (id: number) => {
-		setGuideModuleId((current) => (current === id ? null : id));
 	};
 
 	// A module button sits on top of its district image. Hovering it would
 	// normally fire the block's mouseleave and kill the glow — so mirror the
 	// hover onto the district underneath it.
 	const handleModuleHover = (id: number | null) => {
-		setHoveredBlock(id === null ? null : getCityBlock(id)?.id ?? null);
+		setHoveredBlock(id === null ? null : (getCityBlock(id)?.id ?? null));
 	};
 
 	return (
@@ -85,15 +78,14 @@ export default function CityScene() {
 				<div className="cityBlocks">
 					{cityBlocks.map((block) => {
 						const isActive =
-							hoveredBlock === block.id || guideModuleId === block.moduleId;
+							hoveredBlock === block.id || moduleId === block.moduleId;
 						const isDimmed = hoveredBlock !== null && hoveredBlock !== block.id;
 
 						return (
 							<button
 								key={block.id}
 								type="button"
-								aria-label={`Ask Gracie about the ${block.alt}`}
-								aria-pressed={guideModuleId === block.moduleId}
+								aria-label={`Open the ${block.alt}`}
 								className={[
 									'cityBlockItem',
 									isActive ? 'cityBlockItem--active' : '',
@@ -108,7 +100,7 @@ export default function CityScene() {
 									height: `${block.box.height}%`,
 									zIndex: isActive ? 10 : block.z,
 								}}
-								onClick={() => handleBlockClick(block.moduleId)}
+								onClick={() => handleModuleClick(block.moduleId)}
 								onMouseEnter={() => setHoveredBlock(block.id)}
 								onMouseLeave={() => setHoveredBlock(null)}
 								onFocus={() => setHoveredBlock(block.id)}
@@ -162,7 +154,10 @@ export default function CityScene() {
 			<TokenModal open={tokenOpen} onClose={() => setTokenOpen(false)} />
 
 			{/* Progress modal */}
-			<ProgressModal open={progressOpen} onClose={() => setProgressOpen(false)} />
+			<ProgressModal
+				open={progressOpen}
+				onClose={() => setProgressOpen(false)}
+			/>
 
 			<Modules
 				onClickModule={handleModuleClick}
@@ -175,18 +170,14 @@ export default function CityScene() {
 			{/* Talking Gracie guide — enters centre stage, then docks lower-left.
 			    Hidden entirely when the user has turned the guide off. */}
 			{settings.guide.visible && (
-				<GracieGuide
-					moduleId={guideModuleId}
-					onIntroDone={() => setIntroDone(true)}
-				/>
+				<GracieGuide moduleId={moduleId} onIntroDone={() => setIntroDone(true)} />
 			)}
 
 			{/* Hot-air balloon that follows the mouse — would only compete with
 			    Gracie while she has the screen, so it waits for her to dock. With
 			    no guide on screen there is nothing to wait for. */}
-			{(introDone || !settings.guide.visible) && settings.city.balloonCursor && (
-				<BalloonCursor />
-			)}
+			{(introDone || !settings.guide.visible) &&
+				settings.city.balloonCursor && <BalloonCursor />}
 		</div>
 	);
 }

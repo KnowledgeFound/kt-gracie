@@ -167,9 +167,12 @@ export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 		v.play().catch(() => {});
 	}, [messageKey]);
 
-	// Read the line aloud when guide audio is on. Re-runs on every voice change
-	// so a tweak in Settings is heard on the next line, and cancels on unmount
-	// so she never talks over another screen.
+	// Read the line aloud when guide audio is on. Keyed on `messageKey` as well
+	// as the text so she restarts in step with the talking clip even when two
+	// messages happen to read the same, and the line she is part-way through is
+	// always interrupted by the new one. Re-runs on every voice change so a tweak
+	// in Settings is heard on the next line, and cancels on unmount so she never
+	// talks over another screen.
 	useEffect(() => {
 		if (!guide.audio || !speechSupported) return;
 		return speak(message, {
@@ -177,7 +180,8 @@ export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 			pace: guide.pace,
 			volume: guide.volume,
 		});
-	}, [message, guide.audio, guide.voiceURI, guide.pace, guide.volume]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [messageKey, message, guide.audio, guide.voiceURI, guide.pace, guide.volume]);
 
 	const handleEnded = () => {
 		const v = videoRef.current;

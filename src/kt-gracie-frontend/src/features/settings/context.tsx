@@ -141,9 +141,15 @@ export function useSettings(): SettingsContextValue {
 	const ctx = useContext(SettingsContext);
 	if (ctx) return ctx;
 
+	const fallbackTheme = DEFAULT_SETTINGS.appearance.theme;
 	return {
 		settings: DEFAULT_SETTINGS,
-		resolvedTheme: prefersDark() ? 'dark' : 'light',
+		resolvedTheme:
+			fallbackTheme === 'system'
+				? prefersDark()
+					? 'dark'
+					: 'light'
+				: fallbackTheme,
 		update: () => {},
 		reset: () => {},
 		isDirty: false,
