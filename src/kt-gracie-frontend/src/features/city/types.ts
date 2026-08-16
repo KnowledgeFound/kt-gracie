@@ -42,6 +42,40 @@ export interface ModuleAssessment {
 	status: AssessmentStatus;
 }
 
+// ─── City blocks (the floating districts on the map) ──────────────────────────
+
+/** The five floating districts, named by where they sit on the map. */
+export type CityBlockId =
+	| 'leftUp'
+	| 'rightUp'
+	| 'central'
+	| 'leftDown'
+	| 'rightDown';
+
+/** Float animation a district (and its module button) rides on. */
+export type CityBlockFloat = 'float' | 'floatReverse' | 'floatSlow';
+
+/**
+ * A district's geometry, in percentages of the `.cityBlocks` stage — the
+ * fixed-ratio box the whole map is laid out in. Both the district image and
+ * its module button are positioned from these numbers, so they can never
+ * drift apart.
+ */
+export interface CityBlock {
+	id: CityBlockId;
+	/** Module this district represents. */
+	moduleId: number;
+	src: string;
+	alt: string;
+	/** Image box within the stage. */
+	box: { left: number; top: number; width: number; height: number };
+	/** Where the module button clips onto the district. */
+	anchor: { x: number; y: number };
+	float: CityBlockFloat;
+	/** Stacking order within the stage (central overlaps its neighbours). */
+	z: number;
+}
+
 // ─── Module ───────────────────────────────────────────────────────────────────
 
 export interface Module {
@@ -52,12 +86,8 @@ export interface Module {
 	audience: string;
 	icon: ComponentType<{ className?: string }>;
 	image: string;
-	position: {
-		top?: number;
-		left?: number;
-		right?: number;
-		bottom?: number;
-	};
+	/** Which floating district on the city map this module lives on */
+	block: CityBlockId;
 	/** Learning objectives shown on WelcomeScreen left panel */
 	objectives: string[];
 	/** What learners will cover — shown in ModuleDrawer "not started" body */
