@@ -17,7 +17,6 @@ import CityScene from './app/city/page';
 import SubjectPage from './app/subject/page';
 import SettingsPage from './app/settings/page';
 import { TestProgress } from './test/TestProgress';
-import TestSubject from './test/TestSubject';
 
 // ─── Protected route guard ────────────────────────────────────────────────────
 
@@ -48,12 +47,13 @@ const NotFound = () => (
 
 export default function App() {
 	return (
-		<UserProvider>
-			<BrowserRouter>
-				<Routes>
-					<Route element={<RootLayout />}>
-						{/* Test routes */}
-						<Route path="/tests/subject" element={<TestSubject />} />
+		<SettingsProvider>
+			<UserProvider>
+				<BrowserRouter>
+					<Routes>
+						<Route element={<RootLayout />}>
+							{/* Test routes */}
+							<Route path="/tests/progress" element={<TestProgress />} />
 
 							{/* Public routes */}
 							<Route path="/" element={<HomePage />} />

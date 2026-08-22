@@ -7,7 +7,6 @@ import Buffer "mo:base/Buffer";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
 import Nat "mo:base/Nat";
-import City "canister:city";
 import Array "mo:base/Array";
 import Bool "mo:base/Bool";
 import Time "mo:base/Time";
@@ -53,7 +52,7 @@ persistent actor {
 
   public func createSubjectMediator(name : Text, code : Text, duration : Nat, description : Text) : async Result.Result<Text, Text> {
     try {
-      let newSubject = await City.createSubject(name, code, duration, description);
+      let newSubject = await createSubject(name, code, duration, description);
 
       await addSubject(newSubject);
 
@@ -62,6 +61,21 @@ persistent actor {
       Debug.print("Unable to create subject: " # Error.message(err));
       return #err(SUBJECT_NOT_CREATED);
     };
+  };
+
+  public func createSubject(name : Text, code : Text, duration : Nat, description : Text) : async Types.Subject {
+    let newSubject : Types.Subject = {
+      id = subjectIdCounter;
+      name = name;
+      code = code;
+      duration = duration;
+      description = description;
+      assessments = [];
+    };
+
+    subjectIdCounter := subjectIdCounter + 1;
+
+    return newSubject;
   };
 
   public func testCreateSubject() : async Result.Result<Text, Text> {
