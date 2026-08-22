@@ -1,6 +1,18 @@
+/**
+ * Colour tokens resolve through CSS custom properties defined in
+ * src/styles/theme.css, so the light/dark themes and the accent picker in
+ * Settings can repaint the whole app without touching component classes.
+ *
+ * Each variable holds a bare "R G B" triplet, which keeps Tailwind's alpha
+ * modifiers (`bg-brand-500/20`) working.
+ */
+const token = (name) => `rgb(var(${name}) / <alpha-value>)`;
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+
+  darkMode: ['class', '[data-theme="dark"]'],
 
   theme: {
     // ── Brand fonts ────────────────────────────────────────────────────────
@@ -39,45 +51,53 @@ export default {
       //   success / warning / danger → semantic
       //
       colors: {
-        // ── Primary brand blue ──────────────────────────────────────────
+        // ── Primary brand blue (accent-driven — see theme.css) ──────────
         brand: {
-          50:       '#eef7ff',
-          100:      '#d0eaff',
-          200:      '#b8d8f0',   // secondary / coin gradient start
-          300:      '#6ec6f0',   // heart icon fill, health bar accent
-          400:      '#5cb8e8',   // health bar fill start
-          500:      '#4a98d4',   // primary DEFAULT
-          600:      '#3a9ad9',   // health bar fill end, CTA hover
-          700:      '#6aafe0',   // primary dark / coin gradient mid
-          800:      '#3898d8',   // border accent
-          900:      '#1a3d5c',   // ink-deep / badge value text
+          50:       token('--brand-50'),
+          100:      token('--brand-100'),
+          200:      token('--brand-200'),   // secondary / coin gradient start
+          300:      token('--brand-300'),   // heart icon fill, health bar accent
+          400:      token('--brand-400'),   // health bar fill start
+          500:      token('--brand-500'),   // primary DEFAULT
+          600:      token('--brand-600'),   // health bar fill end, CTA hover
+          700:      token('--brand-700'),   // primary dark / coin gradient mid
+          800:      token('--brand-800'),   // border accent
+          900:      token('--brand-900'),   // ink-deep / badge value text
         },
 
         // ── Ocean UI tones (city badges, header, health bar) ────────────
         ocean: {
-          border:   'rgba(56, 152, 216, 0.35)',
-          shadow:   'rgba(56, 152, 216, 0.12)',
-          track:    '#c8dce8',   // health bar track background
-          label:    '#6b8faa',   // badge label text
-          heading:  '#3a6d8c',   // health label text
-          header:   'rgba(214, 238, 254, 0.85)', // city header gradient start
+          border:   'var(--ocean-border)',
+          shadow:   'var(--ocean-shadow)',
+          track:    token('--ocean-track'),   // health bar track background
+          label:    token('--ocean-label'),   // badge label text
+          heading:  token('--ocean-heading'), // health label text
+          header:   'var(--ocean-header)',    // city header gradient start
         },
 
         // ── Text / ink hierarchy ────────────────────────────────────────
         ink: {
-          deep:     '#1a3d5c',   // primary text on light bg
-          mid:      '#3a6d8c',   // secondary text
-          muted:    '#6b8faa',   // tertiary / labels
-          subtle:   '#94a3b8',   // placeholder / disabled
+          deep:     token('--ink-deep'),     // primary text on the page surface
+          mid:      token('--ink-mid'),      // secondary text
+          muted:    token('--ink-muted'),    // tertiary / labels
+          subtle:   token('--ink-subtle'),   // placeholder / disabled
         },
 
         // ── Surface / glass ─────────────────────────────────────────────
         surface: {
-          glass:    'rgba(255, 255, 255, 0.85)',
-          'glass-blue': 'rgba(235, 245, 255, 0.92)',
-          white:    '#ffffff',
-          page:     '#f8fafc',   // app background
-          card:     '#ffffff',
+          glass:    token('--surface-glass'),
+          'glass-blue': token('--surface-glass-blue'),
+          white:    token('--surface-white'),
+          page:     token('--surface-page'),   // app background
+          card:     token('--surface-card'),
+          muted:    token('--surface-muted'),  // inset rows, tracks, wells
+          raised:   token('--surface-raised'), // hovered/selected rows
+        },
+
+        // ── Hairlines ───────────────────────────────────────────────────
+        line: {
+          soft:     token('--line-soft'),
+          strong:   token('--line-strong'),
         },
 
         // ── Semantic ────────────────────────────────────────────────────

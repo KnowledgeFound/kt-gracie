@@ -1,5 +1,13 @@
 import { Users, Target, BookOpen, Globe, Lightbulb } from 'lucide-react';
-import type { Module, ModuleProgress, Lesson, ModuleAssessment } from './types';
+import type {
+	Module,
+	ModuleProgress,
+	Lesson,
+	ModuleAssessment,
+	CityBlock,
+	CityBlockId,
+	CityBlockFloat,
+} from './types';
 import city_img from '/assets/city/city.png';
 import anti_corruption_img from '/assets/city/anti-corruption.jpeg';
 import community_img from '/assets/city/community.jpeg';
@@ -86,6 +94,98 @@ function makeAssessments(base: string): ModuleAssessment[] {
 	];
 }
 
+// ─── City block layout ────────────────────────────────────────────────────────
+
+/**
+ * Geometry of the five floating districts, in percentages of the `.cityBlocks`
+ * stage. This is the only place the map layout is described: the district
+ * images, their hover glow and the module buttons that sit on top of them are
+ * all positioned from these numbers.
+ *
+ * `labelBias` is where on a district its module button clips on, given as a
+ * fraction of that district's own `box` rather than of the stage:
+ *
+ *   x — 0 is the box's left edge, 0.5 its middle, 1 its right edge
+ *   y — 0 is the box's top edge,  0.5 its middle, 1 its bottom edge
+ *
+ * `cityBlocks` (below) resolves the pair against the box into `anchor`, an
+ * absolute point in stage percentages:
+ *
+ *   anchor.x = box.left + box.width  * labelBias.x
+ *   anchor.y = box.top  + box.height * labelBias.y
+ *
+ * The button is *centred* on that point — `.cityModuleAnchor` in city.css
+ * pulls it back by half its own width and height — so the bias marks where the
+ * middle of the pill lands, not a corner of it. Because the bias is a fraction
+ * of a box that is itself a percentage of the stage, the button keeps the same
+ * spot on the artwork at every viewport size; nothing here is in pixels.
+ *
+ * Why the default y sits at 0.7 rather than 0.5: each district is drawn as a
+ * floating island with a rock hanging underneath it. Roughly the top half of
+ * the image is the plateau and its buildings, and the lower part is rock and
+ * empty space. Dead centre would drop the pill on top of the buildings, so 0.7
+ * puts it across the island's front edge instead, where it reads as a label
+ * pinned to the district rather than something covering it.
+ *
+ * Districts whose artwork or surroundings don't suit the default override it
+ * (see `leftDown`, which has to clear Gracie's speech bubble). When tuning:
+ * lower y moves a button up, higher x moves it right, and values want to stay
+ * inside roughly 0.25–0.85 — beyond that the pill drifts onto the transparent
+ * margin of the PNG and stops looking attached to anything.
+ *
+ * One assumption worth knowing: the images are `object-fit: contain` inside
+ * their boxes, and the artwork's aspect ratio is close enough to the boxes'
+ * (both about 5:4) that a fraction of the box is effectively a fraction of the
+ * picture. Swapping in art with a very different shape would letterbox it
+ * inside the box and shift every button on that district.
+ */
+const DEFAULT_LABEL_BIAS = { x: 0.5, y: 0.7 };
+
+const BLOCK_LAYOUT: Record<
+	CityBlockId,
+	{
+		src: string;
+		box: { left: number; top: number; width: number; height: number };
+		float: CityBlockFloat;
+		labelBias?: { x?: number; y?: number };
+		z?: number;
+	}
+> = {
+	leftUp: {
+		src: '/assets/city/block-left-up.png',
+		box: { left: -4, top: 10, width: 50, height: 50 },
+		float: 'float',
+		labelBias: { x: 0.42, y: 0.6 },
+	},
+	rightUp: {
+		src: '/assets/city/block-right-up.png',
+		box: { left: 54, top: 5, width: 50, height: 50 },
+		float: 'floatReverse',
+		labelBias: { x: 0.64, y: 0.4 },
+	},
+	central: {
+		src: '/assets/city/block-central.png',
+		box: { left: 30, top: 30, width: 40, height: 40 },
+		float: 'floatSlow',
+		z: 2,
+	},
+	leftDown: {
+		src: '/assets/city/block-left-down.png',
+		box: { left: -10, top: 50, width: 50, height: 50 },
+		float: 'floatReverse',
+		// Gracie docks on this corner and her speech bubble covers the island's
+		// front edge, so this button sits on the upper-right plateau instead.
+		labelBias: { x: 0.75, y: 0.3 },
+	},
+	rightDown: {
+		src: '/assets/city/block-right-down.png',
+		box: { left: 60, top: 50, width: 50, height: 50 },
+		float: 'float',
+		labelBias: { x: 0.75, y: 0.4 },
+		// labelBias: { x: 0.58, y: 0.6 },
+	},
+};
+
 // ─── Module definitions ───────────────────────────────────────────────────────
 
 export const modules: Module[] = [
@@ -95,7 +195,7 @@ export const modules: Module[] = [
 		audience: 'Private Sector & Civil Society',
 		image: anti_corruption_img,
 		icon: BookOpen,
-		position: { top: 30, left: 24 },
+		block: 'leftUp',
 		description:
 			'Learn about the importance of anti-corruption efforts and how to combat corruption across sectors.',
 		objectives: [
@@ -129,7 +229,7 @@ export const modules: Module[] = [
 		audience: 'Government & Public Sector',
 		image: policy_img,
 		icon: Target,
-		position: { top: 52, left: 18 },
+		block: 'leftDown',
 		description:
 			'Explore the world of policy-making, including how policies are developed, implemented, and evaluated.',
 		objectives: [
@@ -161,7 +261,7 @@ export const modules: Module[] = [
 		audience: 'Young People & Communities',
 		icon: Users,
 		image: youth_led_img,
-		position: { bottom: 20, left: 50 },
+		block: 'central',
 		description:
 			'Discover the power of youth-led initiatives and how young people are driving change in their communities.',
 		objectives: [
@@ -186,7 +286,7 @@ export const modules: Module[] = [
 		image: digital_innovation_img,
 		audience: 'Tech & Civil Society',
 		icon: Lightbulb,
-		position: { top: 34, right: 24 },
+		block: 'rightUp',
 		description:
 			'Delve into digital innovation and learn about the latest technologies and trends shaping our future.',
 		objectives: [
@@ -219,7 +319,7 @@ export const modules: Module[] = [
 		audience: 'Local Leaders & NGOs',
 		image: community_img,
 		icon: Globe,
-		position: { bottom: 42, right: 12 },
+		block: 'rightDown',
 		description:
 			'Connect with others and learn about the importance of community engagement and development.',
 		objectives: [
@@ -240,11 +340,48 @@ export const modules: Module[] = [
 	},
 ];
 
+// ─── City blocks ──────────────────────────────────────────────────────────────
+
+/**
+ * The districts to render on the map, derived from {@link modules} so every
+ * block always has a module behind it (and vice versa). Ordered by module id.
+ */
+export const cityBlocks: CityBlock[] = modules.map((m) => {
+	const layout = BLOCK_LAYOUT[m.block];
+	return {
+		id: m.block,
+		moduleId: m.id,
+		src: layout.src,
+		alt: `${m.name} district`,
+		box: layout.box,
+		anchor: {
+			x:
+				layout.box.left +
+				layout.box.width * (layout.labelBias?.x ?? DEFAULT_LABEL_BIAS.x),
+			y:
+				layout.box.top +
+				layout.box.height * (layout.labelBias?.y ?? DEFAULT_LABEL_BIAS.y),
+		},
+		float: layout.float,
+		z: layout.z ?? 1,
+	};
+});
+
 // ─── Lookup helpers ───────────────────────────────────────────────────────────
 
 /** Get a module by id, returns undefined if not found. */
 export function getModule(id: number): Module | undefined {
 	return modules.find((m) => m.id === id);
+}
+
+/** The district a module sits on, undefined if the module is unknown. */
+export function getCityBlock(moduleId: number): CityBlock | undefined {
+	return cityBlocks.find((b) => b.moduleId === moduleId);
+}
+
+/** The module a district represents, undefined if the block is unknown. */
+export function getBlockModule(blockId: CityBlockId): Module | undefined {
+	return modules.find((m) => m.block === blockId);
 }
 
 /** Get progress for a module, returns null if never started. */

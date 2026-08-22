@@ -3,6 +3,8 @@ import '@pixi/unsafe-eval';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
+// Theme tokens first — index.css (Tailwind) resolves its colours from them.
+import './styles/theme.css';
 import './index.css';
 
 const queryClient = new QueryClient();
