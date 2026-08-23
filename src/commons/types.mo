@@ -53,4 +53,13 @@ module Types{
         transactions: [Transaction];
     };
 
+    public type Corpus = {
+        schema: Text;
+        id: Text;
+        title: Text;
+        description: Text;
+        typeOfObject: Text;
+        additionalProperties: Bool;
+    };
+
 }

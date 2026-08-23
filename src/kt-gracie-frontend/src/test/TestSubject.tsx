@@ -1,6 +1,7 @@
 import { FormEvent } from "react";
 import { useCreateSubjectHook } from "../hooks/subjectHooks";
 import { CreateSubjectInput } from "../types/types";
+import * as CorpusService from "../services/corpusService";
 
 export default function TestSubject() {
 
@@ -15,9 +16,12 @@ export default function TestSubject() {
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>){
        event.preventDefault(); 
-       let res = await createSubject.mutateAsync(newSubject);
+        //  let res = await createSubject.mutateAsync(newSubject);
 
-       console.log(res);
+        //  console.log(res);
+
+        console.log(await CorpusService.getCorpus());
+
     }
 
     return (
