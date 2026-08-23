@@ -11,12 +11,12 @@ import Array "mo:base/Array";
 import Bool "mo:base/Bool";
 import Time "mo:base/Time";
 
-persistent actor {
+persistent actor Main {
 
   var arr_subjects : [Types.Subject] = [];
 
-  transient var SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
-  transient var SUBJECT_NOT_CREATED = "subject not created";
+  transient let SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
+  transient let SUBJECT_NOT_CREATED = "subject not created";
   var subjectIdCounter: Nat = 0;
 
   public query func greet(name : Text) : async Text {
@@ -52,7 +52,17 @@ persistent actor {
 
   public func createSubjectMediator(name : Text, code : Text, duration : Nat, description : Text) : async Result.Result<Text, Text> {
     try {
-      let newSubject = await createSubject(name, code, duration, description);
+
+      let newSubject : Types.Subject = {
+        id = subjectIdCounter;
+        name = name;
+        code = code;
+        duration = duration;
+        description = description;
+        assessments = [];
+      };
+
+      subjectIdCounter := subjectIdCounter + 1;
 
       await addSubject(newSubject);
 
@@ -61,21 +71,6 @@ persistent actor {
       Debug.print("Unable to create subject: " # Error.message(err));
       return #err(SUBJECT_NOT_CREATED);
     };
-  };
-
-  public func createSubject(name : Text, code : Text, duration : Nat, description : Text) : async Types.Subject {
-    let newSubject : Types.Subject = {
-      id = subjectIdCounter;
-      name = name;
-      code = code;
-      duration = duration;
-      description = description;
-      assessments = [];
-    };
-
-    subjectIdCounter := subjectIdCounter + 1;
-
-    return newSubject;
   };
 
   public func testCreateSubject() : async Result.Result<Text, Text> {
@@ -105,6 +100,48 @@ persistent actor {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
+    knowledgeUnits = [
+      {
+        id = "KU-001";
+        topic = "Introduction to Corruption";
+        difficulty = #EASY;
+        prerequisites = [];
+        sources = [
+          {
+            id = 1;
+            sourceType = #ARTICLE;
+            detail = "What is Corruption?";
+            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+          }
+        ];
+        teachings = [
+          {
+            id = 1;
+            topic = "What is Corruption?";
+            difficulty = #EASY;
+            keywords = ["corruption", "definition", "Introduction to Corruption"];
+          }
+        ];
+        assessments = [
+          {
+            id = 1;
+            quiz = ?{
+              id = 1;
+              assessmentType = #QUIZ;
+              questions = [
+                {
+                  questionText = "What is the definition of corruption?";
+                  options = ["Abuse of power for personal gain", "Honest behavior", "Transparency in government", "Accountability in public office"];
+                  correctAnswerIndex = 0;
+                  hint = ?("Think about the misuse of authority for personal benefit.");
+                }
+              ];
+            };
+          }
+        ];
+        tokenReward = 10;
+      }
+    ];
   };
 
   public query func getCorpus() : async Types.Corpus {

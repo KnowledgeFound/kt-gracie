@@ -34,6 +34,20 @@ export enum Region {
 }
 
 
+export enum Difficulty {
+  EASY = "EASY",
+  NORMAL = "NORMAL",
+  HARD = "HARD",
+}
+
+export enum SourceType {
+  BOOK = "BOOK",
+  ARTICLE = "ARTICLE",
+  VIDEO = "VIDEO",
+  AUDIO = "AUDIO",
+  TUTORIAL = "TUTORIAL",
+}
+
 export enum CityState {
     VIBRANT = "Vibrant",
     NORMAL = "Normal",

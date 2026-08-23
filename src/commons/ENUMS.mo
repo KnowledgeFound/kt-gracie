@@ -6,6 +6,7 @@ module Enums{
         #EXAM;
         #QUIZ;
         #ASSIGNMENT;
+        #FLASHCARDS
     };
 
     public type ContentType = {
@@ -14,4 +15,18 @@ module Enums{
         #ARTICLE;
         #TUTORIAL;
     }; 
+
+    public type Difficulty = {
+        #EASY;
+        #NORMAL;
+        #HARD;
+    };
+
+    public type SourceType = {
+        #BOOK;
+        #ARTICLE;
+        #VIDEO;
+        #AUDIO;
+        #TUTORIAL;
+    };
 }
