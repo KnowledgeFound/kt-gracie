@@ -12,7 +12,6 @@ import type {
 	CreateUserInput,
 	UpdateUserInput,
 	GracieConfig,
-	Progression,
 } from '../../types/user';
 import { City } from '@/models/City';
 
@@ -24,7 +23,6 @@ interface UserContextValue {
 	createUser: (input: CreateUserInput) => User;
 	updateUser: (updates: UpdateUserInput) => User;
 	deleteUser: () => void;
-	updateProgression: (progression: Partial<Progression>) => User;
 	updateGracie: (gracie: Partial<GracieConfig>) => User;
 }
 
@@ -65,15 +63,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
 		setCity(null);
 	}, []);
 
-	const updateProgression = useCallback(
-		(progression: Partial<Progression>): User => {
-			const updated = userServices.updateProgression(progression);
-			setUser(updated);
-			return updated;
-		},
-		[],
-	);
-
 	const updateGracie = useCallback((gracie: Partial<GracieConfig>): User => {
 		const updated = userServices.updateGracie(gracie);
 		setUser(updated);
@@ -88,7 +77,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
 				createUser,
 				updateUser,
 				deleteUser,
-				updateProgression,
 				updateGracie,
 			}}
 		>

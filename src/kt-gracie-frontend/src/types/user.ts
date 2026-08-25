@@ -1,4 +1,4 @@
-import { Gender, AgeBucket, Region, CompletedScore } from "../ENUMS/enums";
+import { Gender, AgeBucket, Region, CompletedScore, AssessmentType } from "../ENUMS/enums";
 
 // --- Gracie sub-object shape (owned by Gracie contributor) ---
 
@@ -24,8 +24,6 @@ export interface GracieConfig {
 	interactionCount: number;
 }
 
-// --- Progression sub-object shape (owned by Amanda — #20) ---
-
 export interface ContentRecord {
     contentId: string;
     subjectId: string;
@@ -35,8 +33,7 @@ export interface ContentRecord {
 
 export interface AssessmentResult {
     assessmentId: string;
-    subjectId: string;
-    type: "quiz" | "exam" | "flashcard" | "chatQA";
+    type: AssessmentType;
     score: number;
     maxScore: number;
     passed: boolean;
@@ -48,28 +45,6 @@ export interface Achievement {
     title: string;
     earnedAt: string;
 }
-
-export interface Progression {
-    subjectsStarted: string[];
-    subjectsCompleted: string[];
-    contentCompleted: ContentRecord[];
-    assessmentResults: AssessmentResult[];
-    achievements: Achievement[];
-    currentSubjectId: string | null;
-    currentContentId: string | null;
-    streakDays: number;
-    lastActivityDate: string;
-    	/** Total quiz sessions completed */
-	quizzesCompleted: number;
-	/** Cumulative correct answers across all sessions */
-	totalCorrect: number;
-	/** Cumulative questions answered */
-	totalAnswered: number;
-	/** Highest single-session score */
-	highScore: number;
-	/** Achievements earned */
-}
-
 // --- City sub-object shape (owned by Agape — #21) ---
 
 export type CityTier = "pristine" | "healthy" | "fading" | "neglected" | "ruined";
@@ -94,7 +69,6 @@ export interface User {
     updatedAt: string;
     lastActiveAt: string;
     gracie: GracieConfig;
-    progression: Progression;
     city: City;
     tokenBalance: number;
 }
@@ -113,9 +87,20 @@ export type UpdateUserInput = Partial<
     Pick<User, "firstName" | "ageBucket" | "gender" | "region" | "country">
 >;
 
+//-------------------- Progress ----------------------//
 
-export interface Progress {
+export type Progress = {
     knowledgeUnitID: string;
-    teaching: CompletedScore | null;
-    assessment: CompletedScore | null;
-}
+    teaching: CompletedScore | null; // amount of teaching progress completed (0–100)
+    assessment: CompletedScore | null; // amount of assessment progress completed (0–100)
+    subProgress: SubProgress[]; // for each assessment within the KnowledgeUnit
+};
+
+export type SubProgress = {
+    assessmentID: number;
+    assessmentType: AssessmentType;
+    score: number;
+    maxScore: number;
+};
+
+

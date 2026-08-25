@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { AgeBucket } from "../../ENUMS/enums";
 import {
     createDefaultGracie,
-    createDefaultProgression,
     createDefaultCity,
 } from "../userDefaults";
 
@@ -32,21 +31,6 @@ describe("createDefaultGracie", () => {
     it("maps AGE_UNDISCLOSED to youngAdult", () => {
         const gracie = createDefaultGracie(AgeBucket.AGE_UNDISCLOSED);
         expect(gracie.ageBand).toBe("youngAdult");
-    });
-});
-
-describe("createDefaultProgression", () => {
-    it("returns empty progression state", () => {
-        const prog = createDefaultProgression();
-        expect(prog.subjectsStarted).toEqual([]);
-        expect(prog.subjectsCompleted).toEqual([]);
-        expect(prog.contentCompleted).toEqual([]);
-        expect(prog.assessmentResults).toEqual([]);
-        expect(prog.achievements).toEqual([]);
-        expect(prog.currentSubjectId).toBeNull();
-        expect(prog.currentContentId).toBeNull();
-        expect(prog.streakDays).toBe(0);
-        expect(prog.lastActivityDate).toBeTruthy();
     });
 });
 

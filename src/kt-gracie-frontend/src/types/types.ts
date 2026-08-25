@@ -1,9 +1,4 @@
-import { Difficulty, SourceType } from "../ENUMS/enums";
-
-export type Assessment = {
-  id: bigint;
-  quiz: Quiz | null;
-};
+import { Difficulty, SourceType, AssessmentType } from "../ENUMS/enums";
 
 export type Corpus = {
   schema: string;
@@ -26,6 +21,13 @@ export type KnowledgeUnit = {
   tokenReward: bigint;
 };
 
+
+export type Assessment = {
+  id: bigint;
+  quiz: Quiz | null;
+  // flashcard: Flashcard | null; // Placeholder for future implementation
+};
+
 export type Source = {
   id: bigint;
   sourceType: SourceType;
@@ -42,7 +44,7 @@ export type Teaching = {
 
 export type Quiz = {
   id: bigint;
-  assessmentType: "QUIZ";
+  assessmentType: AssessmentType.QUIZ;
   questions: QuizQuestion[];
 };
 

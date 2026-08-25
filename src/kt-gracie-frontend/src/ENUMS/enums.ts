@@ -33,7 +33,6 @@ export enum Region {
     OCEANIA = 'OCEANIA'
 }
 
-
 export enum Difficulty {
   EASY = "EASY",
   NORMAL = "NORMAL",
@@ -67,4 +66,11 @@ export enum CompletedScore {
     EIGHTY = 80,
     NINETY = 90,
     HUNDRED = 100
+}
+
+export enum AssessmentType {
+    QUIZ = "QUIZ",
+    EXAM = "EXAM",
+    FLASHCARD = "FLASHCARD",
+    CHAT_QA = "CHAT_QA"
 }

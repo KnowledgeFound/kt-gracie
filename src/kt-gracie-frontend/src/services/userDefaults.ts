@@ -1,5 +1,5 @@
 import { AgeBucket } from "../ENUMS/enums";
-import type { AgeBand, GracieConfig, Progression, City } from "../types/user";
+import type { AgeBand, GracieConfig, City } from "../types/user";
 
 const AGE_BUCKET_TO_BAND: Record<AgeBucket, AgeBand> = {
     [AgeBucket.AGE_17_19]: "teen",
@@ -21,24 +21,6 @@ export function createDefaultGracie(ageBucket: AgeBucket): GracieConfig {
         avatarId: `default-${ageBand}-avatar`,
         integrityScore: 100,
         interactionCount: 0,
-    };
-}
-
-export function createDefaultProgression(): Progression {
-    return {
-        subjectsStarted: [],
-        subjectsCompleted: [],
-        contentCompleted: [],
-        assessmentResults: [],
-        achievements: [],
-        currentSubjectId: null,
-        currentContentId: null,
-        streakDays: 0,
-        lastActivityDate: new Date().toISOString(),
-        quizzesCompleted: 0,
-        totalCorrect: 0,
-        totalAnswered: 0,
-        highScore: 0,
     };
 }
 

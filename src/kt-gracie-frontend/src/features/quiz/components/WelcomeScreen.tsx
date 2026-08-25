@@ -206,22 +206,10 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 
 	const selectedAssessment = assessments[selectedIndex];
 
-	const highScore = user?.progression?.highScore ?? 0;
-	const lastTaken = user?.progression?.assessmentResults?.slice(-1)[0];
-	const lastDate = lastTaken?.takenAt
-		? new Date(lastTaken.takenAt).toLocaleDateString('en-US', {
-				month: 'short',
-				day: 'numeric',
-				year: 'numeric',
-			})
-		: 'Jun 28, 2026';
-	const accuracy =
-		highScore > 0 && user?.progression.totalAnswered
-			? Math.round(
-					(user.progression.totalCorrect / user.progression.totalAnswered) *
-						100,
-				)
-			: 71;
+	const highScore = 100; // update later with actual high score from user data
+	const lastTaken = 100; // update later with actual last taken date from user data
+	const lastDate = new Date(); 
+	const accuracy = 85; // update later with actual accuracy from user data
 
 	const objectives = module?.objectives ?? FALLBACK_OBJECTIVES;
 
@@ -319,7 +307,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					<Medal className="size-5 text-amber-500 flex-shrink-0" />
 					<div className="flex-1 min-w-0">
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase">
-							Previous Best · {lastDate}
+							Previous Best · 
 						</p>
 						<p className="text-sm font-black text-ink-deep">
 							{accuracy}% accuracy

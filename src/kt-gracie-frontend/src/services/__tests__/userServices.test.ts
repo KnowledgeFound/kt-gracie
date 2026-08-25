@@ -6,7 +6,6 @@ import {
     getUser,
     updateUser,
     deleteUser,
-    updateProgression,
     updateGracie,
     updateTokenBalance,
 } from "../userServices";
@@ -35,7 +34,6 @@ describe("createUser", () => {
         expect(user.tokenBalance).toBe(0);
         expect(user.createdAt).toBeTruthy();
         expect(user.gracie.ageBand).toBe("youngAdult");
-        expect(user.progression.subjectsStarted).toEqual([]);
         expect(user.city.health).toBe(100);
 
         const stored = JSON.parse(localStorage.getItem(USER_STORAGE_KEY)!);
@@ -148,32 +146,6 @@ describe("deleteUser", () => {
 
     it("does not throw when no user exists", () => {
         expect(() => deleteUser()).not.toThrow();
-    });
-});
-
-describe("updateProgression", () => {
-    it("merges progression updates", () => {
-        createUser({
-            firstName: "Alice",
-            ageBucket: AgeBucket.AGE_20_22,
-            gender: Gender.FEMALE,
-        });
-
-        const updated = updateProgression({
-            subjectsStarted: ["uncac"],
-            streakDays: 3,
-        });
-
-        expect(updated.progression.subjectsStarted).toEqual(["uncac"]);
-        expect(updated.progression.streakDays).toBe(3);
-        // untouched fields stay
-        expect(updated.progression.subjectsCompleted).toEqual([]);
-    });
-
-    it("throws when no user exists", () => {
-        expect(() =>
-            updateProgression({ subjectsStarted: ["uncac"] })
-        ).toThrow("No user found");
     });
 });
 

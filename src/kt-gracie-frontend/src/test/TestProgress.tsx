@@ -4,7 +4,6 @@ import {
     deleteProgress,
     getAssessmentProgressTotal,
     getProgress,
-    getProgressById,
     getProgressTotal,
     getTeachingProgressTotal,
     updateProgress,
@@ -16,33 +15,32 @@ export function TestProgress() {
     const [result, setResult] = useState<string>("Loading...");
 
     useEffect(() => {
-        deleteProgress();
+        //deleteProgress();
 
-        createProgress({
-            knowledgeUnitID: "what-is-corruption",
-            teaching: CompletedScore.THIRTY,
-            assessment: CompletedScore.FIFTY,
-        });
+        // createProgress({
+        //     knowledgeUnitID: "what-is-corruption",
+        //     teaching: CompletedScore.THIRTY,
+        //     assessment: CompletedScore.FIFTY,
+        // });
 
-        createProgress({
-            knowledgeUnitID: "what-is-drug-abuse",
-            teaching: CompletedScore.TEN,
-            assessment: CompletedScore.TWENTY,
-        });
+        // createProgress({
+        //     knowledgeUnitID: "what-is-drug-abuse",
+        //     teaching: CompletedScore.TEN,
+        //     assessment: CompletedScore.TWENTY,
+        // });
 
-        updateProgress({
-            knowledgeUnitID: "what-is-corruption",
-            teaching: CompletedScore.FORTY,
-            assessment: CompletedScore.SIXTY,
-        });
+        // updateProgress({
+        //     knowledgeUnitID: "what-is-corruption",
+        //     teaching: CompletedScore.FORTY,
+        //     assessment: CompletedScore.SIXTY,
+        // });
 
-        const allProgress = getProgress();
-        const byId = getProgressById("what-is-corruption");
-        const totals = getProgressTotal();
-        const assessmentTotal = getAssessmentProgressTotal();
-        const teachingTotal = getTeachingProgressTotal();
+        // const allProgress = getProgress();
+        // const totals = getProgressTotal();
+        // const assessmentTotal = getAssessmentProgressTotal();
+        // const teachingTotal = getTeachingProgressTotal();
 
-        setResult(JSON.stringify({ allProgress, byId, totals, assessmentTotal, teachingTotal }, null, 2));
+        // setResult(JSON.stringify({ allProgress, totals, assessmentTotal, teachingTotal }, null, 2));
 
     }, []);
 
