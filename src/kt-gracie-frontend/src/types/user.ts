@@ -89,11 +89,17 @@ export type UpdateUserInput = Partial<
 
 //-------------------- Progress ----------------------//
 
+export type ProgressContainer = {
+    arr_progress: Progress[];
+};
+
 export type Progress = {
     knowledgeUnitID: string;
     teaching: CompletedScore | null; // amount of teaching progress completed (0–100)
     assessment: CompletedScore | null; // amount of assessment progress completed (0–100)
     subProgress: SubProgress[]; // for each assessment within the KnowledgeUnit
+    completed: boolean; // indicates if the knowledge unit is fully completed
+    achievments: Achievement[]; // list of achievements earned by the user
 };
 
 export type SubProgress = {
@@ -101,6 +107,7 @@ export type SubProgress = {
     assessmentType: AssessmentType;
     score: number;
     maxScore: number;
+    completed: boolean; 
 };
 
 

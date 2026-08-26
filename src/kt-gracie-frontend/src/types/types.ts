@@ -8,6 +8,8 @@ export type Corpus = {
   typeOfObject: string;
   additionalProperties: boolean;
   knowledgeUnits: KnowledgeUnit[];
+  numberOfModules: number;
+  numberOfAssessments: number;
 };
 
 export type KnowledgeUnit = {
@@ -88,3 +90,10 @@ export type TokenAccount = {
   balance: bigint;
   transactions: Transaction[];
 };
+
+export type Achievement = {
+  id: string;
+  title: string;
+  earnedAt: string;
+};
+

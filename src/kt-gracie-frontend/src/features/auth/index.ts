@@ -9,7 +9,6 @@ export type {
 	CreateUserInput,
 	UpdateUserInput,
 	GracieConfig,
-	Progression,
 	City,
 } from '../../types/user';
 

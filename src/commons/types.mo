@@ -56,6 +56,8 @@ module Types{
         typeOfObject: Text;
         additionalProperties: Bool;
         knowledgeUnits: [KnowledgeUnit];
+        numberOfModules: Nat;
+        numberOfAssessments: Nat;
     };
 
     public type KnowledgeUnit = {

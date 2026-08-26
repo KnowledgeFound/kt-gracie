@@ -8,7 +8,7 @@ import type {
     Teaching as BackendTeaching,
 } from "declarations/kt-gracie-backend/kt-gracie-backend.did";
 
-import { Difficulty, SourceType } from "../../ENUMS/enums";
+import { AssessmentType, Difficulty, SourceType } from "../../ENUMS/enums";
 
 import type { Corpus } from "../../types/types";
 
@@ -50,7 +50,7 @@ function mapQuizQuestion(question: BackendQuizQuestion) {
 function mapQuiz(quiz: BackendQuiz) {
     return {
         id: quiz.id,
-        assessmentType: mapVariant<"QUIZ">(quiz.assessmentType),
+        assessmentType: mapVariant<keyof typeof AssessmentType>(quiz.assessmentType) as AssessmentType.QUIZ,
         questions: quiz.questions.map(mapQuizQuestion),
     };
 }
@@ -83,8 +83,20 @@ export function mapFromBackend(corpus: BackendCorpus): Corpus {
         id: corpus.id,
         title: corpus.title,
         description: corpus.description,
+        numberOfModules: Number(corpus.numberOfModules),
+        numberOfAssessments: Number(corpus.numberOfAssessments),
         typeOfObject: corpus.typeOfObject,
         additionalProperties: corpus.additionalProperties,
         knowledgeUnits: (corpus.knowledgeUnits ?? []).map(mapKnowledgeUnit),
     };
+}
+
+function getAssessmentType(assessment: BackendAssessment): AssessmentType | null {
+    const quiz = unwrapOptional(assessment.quiz);
+
+    if (quiz) {
+        return mapVariant<keyof typeof AssessmentType>(quiz.assessmentType) as AssessmentType;
+    }
+    
+    return null;
 }

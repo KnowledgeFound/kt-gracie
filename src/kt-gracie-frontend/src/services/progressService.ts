@@ -16,7 +16,14 @@ function isProgress(value: unknown): value is Progress {
 }
 
 function emptyProgress(knowledgeUnitID = ""): Progress {
-    return { knowledgeUnitID, teaching: null, assessment: null, subProgress: [] };
+    return { 
+        knowledgeUnitID, 
+        teaching: null, 
+        assessment: null, 
+        subProgress: [], 
+        completed: false,
+        achievments: []
+    };
 }
 
 function getProgressStorageKey(): string {
@@ -79,14 +86,6 @@ export function getProgressTotal(): { score: number; teaching: number; assessmen
     };
 }
 
-export function getAssessmentProgressTotal(): number {
-    return getProgressTotal().assessment;
-}
-
-export function getTeachingProgressTotal(): number {
-    return getProgressTotal().teaching;
-}
-
 export function addSubProgress(assessmentID: number, assessmentType: AssessmentType, score: number, maxScore: number): void {
     const progress = getProgress();
 
@@ -104,9 +103,23 @@ export function addSubProgress(assessmentID: number, assessmentType: AssessmentT
             assessmentID, 
             assessmentType, 
             score,
-            maxScore
+            maxScore,
+            completed: false
         });
     }
 
     persistProgress(progress);
+}
+
+export function getAssessmentProgressTotal(): number {
+    return getProgressTotal().assessment;
+}
+
+export function getTeachingProgressTotal(): number {
+    return getProgressTotal().teaching;
+}
+
+export function IsCompleted(): boolean {
+    const progress = getProgress();
+    return progress.completed;
 }
