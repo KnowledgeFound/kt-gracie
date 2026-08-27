@@ -19,6 +19,9 @@
     "build": {
       "args": "",
       "packtool": "mops sources"
+    },
+    "canister_settings": {
+      "freezing_threshold": 2592000
     }
   },
   "output_env_file": ".env",
