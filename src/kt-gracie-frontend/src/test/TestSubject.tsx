@@ -5,14 +5,14 @@ import * as CorpusService from "../services/corpusService";
 
 export default function TestSubject() {
 
-    const createSubject = useCreateSubjectHook()
+    // const createSubject = useCreateSubjectHook()
 
-    let newSubject: CreateSubjectInput = {
-        name: "test name",
-        code: "test code",
-        duration: BigInt(84),
-        description: "test description"
-    }
+    // let newSubject: CreateSubjectInput = {
+    //     name: "test name",
+    //     code: "test code",
+    //     duration: BigInt(84),
+    //     description: "test description"
+    // }
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>){
        event.preventDefault(); 
@@ -21,6 +21,8 @@ export default function TestSubject() {
         //  console.log(res);
 
         console.log(await CorpusService.getCorpus());
+
+        console.log(await CorpusService.getPersistedCorpus());
 
     }
 

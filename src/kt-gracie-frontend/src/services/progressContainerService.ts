@@ -3,7 +3,7 @@ import { ProgressContainer, Progress, Achievement } from "@/types/user";
 import { getUser } from "./userServices";
 import { AssessmentType } from "@/ENUMS/enums";
 
-export const PROGRESS_STORAGE_KEY = "progress";
+export const PROGRESS_STORAGE_KEY = "progress_container";
 
 function getProgressContainerStorageKey(): string {
     const user = getUser();

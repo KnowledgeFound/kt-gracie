@@ -22,7 +22,7 @@ function mapVariant<T extends string>(value: Partial<Record<T, null>>): T {
 
 function mapSource(source: BackendSource) {
     return {
-        id: source.id,
+        id: Number(source.id),
         sourceType: mapVariant<keyof typeof SourceType>(source.sourceType) as SourceType,
         detail: source.detail,
         url: unwrapOptional(source.url),
@@ -31,7 +31,7 @@ function mapSource(source: BackendSource) {
 
 function mapTeaching(teaching: BackendTeaching) {
     return {
-        id: teaching.id,
+        id: Number(teaching.id),
         topic: teaching.topic,
         difficulty: mapVariant<keyof typeof Difficulty>(teaching.difficulty) as Difficulty,
         keywords: teaching.keywords,
@@ -42,14 +42,14 @@ function mapQuizQuestion(question: BackendQuizQuestion) {
     return {
         questionText: question.questionText,
         options: question.options,
-        correctAnswerIndex: question.correctAnswerIndex,
+        correctAnswerIndex: Number(question.correctAnswerIndex),
         hint: unwrapOptional(question.hint),
     };
 }
 
 function mapQuiz(quiz: BackendQuiz) {
     return {
-        id: quiz.id,
+        id: Number(quiz.id),
         assessmentType: mapVariant<keyof typeof AssessmentType>(quiz.assessmentType) as AssessmentType.QUIZ,
         questions: quiz.questions.map(mapQuizQuestion),
     };
@@ -59,7 +59,7 @@ function mapAssessment(assessment: BackendAssessment) {
     const quiz = unwrapOptional(assessment.quiz);
 
     return {
-        id: assessment.id,
+        id: Number(assessment.id),
         quiz: quiz === null ? null : mapQuiz(quiz),
     };
 }
@@ -73,7 +73,7 @@ function mapKnowledgeUnit(knowledgeUnit: BackendKnowledgeUnit) {
         sources: knowledgeUnit.sources.map(mapSource),
         teachings: knowledgeUnit.teachings.map(mapTeaching),
         assessments: knowledgeUnit.assessments.map(mapAssessment),
-        tokenReward: knowledgeUnit.tokenReward,
+        tokenReward: Number(knowledgeUnit.tokenReward),
     };
 }
 

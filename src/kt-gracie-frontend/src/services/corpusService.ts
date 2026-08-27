@@ -1,19 +1,23 @@
 import { Corpus } from "../types/types";
 import { kt_gracie_backend } from "declarations/kt-gracie-backend";
 import { mapFromBackend } from "./mappers/corpusMapper";
+import { setLocalStorage, getLocalStorage } from "../commons/utilts";
 
-var MAIN_CORPUS: Corpus | null = null; 
 
 export async function getCorpus(): Promise<Corpus> {
-    if (MAIN_CORPUS) {
-        return MAIN_CORPUS;
+    const persistedCorpus = await getPersistedCorpus();
+
+    if (persistedCorpus) {
+        return persistedCorpus;
     }
 
     const corpus = await kt_gracie_backend.getCorpus();
 
-    MAIN_CORPUS = mapFromBackend(corpus);
+    const normalizedCorpus = mapFromBackend(corpus);
 
-    return MAIN_CORPUS;
+    await persistCorpus(normalizedCorpus);
+
+    return normalizedCorpus;
 }
 
 export async function getNumberOfModules(): Promise<number> {
@@ -24,4 +28,12 @@ export async function getNumberOfModules(): Promise<number> {
 export async function getNumberOfAssessments(): Promise<number> {
     const corpus = await getCorpus();
     return corpus.numberOfAssessments;
+}
+
+export async function persistCorpus(corpus: Corpus): Promise<void> {
+    setLocalStorage("corpus", corpus);
+}
+
+export async function getPersistedCorpus(): Promise<Corpus | null> {
+    return getLocalStorage("corpus");
 }

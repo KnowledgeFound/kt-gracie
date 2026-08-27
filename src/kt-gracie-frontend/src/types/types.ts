@@ -20,32 +20,32 @@ export type KnowledgeUnit = {
   sources: Source[];
   teachings: Teaching[];
   assessments: Assessment[];
-  tokenReward: bigint;
+  tokenReward: number;
 };
 
 
 export type Assessment = {
-  id: bigint;
+  id: number;
   quiz: Quiz | null;
   // flashcard: Flashcard | null; // Placeholder for future implementation
 };
 
 export type Source = {
-  id: bigint;
+  id: number;
   sourceType: SourceType;
   detail: string;
   url: string | null;
 };
 
 export type Teaching = {
-  id: bigint;
+  id: number;
   topic: string;
   difficulty: Difficulty;
   keywords: string[];
 };
 
 export type Quiz = {
-  id: bigint;
+  id: number;
   assessmentType: AssessmentType.QUIZ;
   questions: QuizQuestion[];
 };
@@ -53,7 +53,7 @@ export type Quiz = {
 export type QuizQuestion = {
   questionText: string;
   options: string[];
-  correctAnswerIndex: bigint;
+  correctAnswerIndex: number;
   hint: string | null;
 };
 
