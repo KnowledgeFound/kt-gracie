@@ -4,12 +4,10 @@ import type {
     User,
     CreateUserInput,
     UpdateUserInput,
-    Progression,
     GracieConfig,
 } from "../types/user";
 import {
     createDefaultGracie,
-    createDefaultProgression,
     createDefaultCity,
 } from "./userDefaults";
 
@@ -31,7 +29,6 @@ export function createUser(input: CreateUserInput): User {
         updatedAt: now,
         lastActiveAt: now,
         gracie: createDefaultGracie(input.ageBucket),
-        progression: createDefaultProgression(),
         city: createDefaultCity(),
         tokenBalance: 0,
     };
@@ -69,23 +66,6 @@ export function deleteUser(): void {
     localStorage.removeItem(USER_STORAGE_KEY);
 }
 
-export function updateProgression(updates: Partial<Progression>): User {
-    const user = getUser();
-    if (!user) {
-        throw new Error("No user found.");
-    }
-
-    const now = new Date().toISOString();
-    const updated: User = {
-        ...user,
-        progression: { ...user.progression, ...updates },
-        updatedAt: now,
-        lastActiveAt: now,
-    };
-
-    setLocalStorage(USER_STORAGE_KEY, updated);
-    return updated;
-}
 
 /**
  * Sync the locally-cached token balance from the backend.

@@ -1,9 +1,60 @@
-export type Assessment = {
-  id: bigint;
+import { Difficulty, SourceType, AssessmentType } from "../ENUMS/enums";
+
+export type Corpus = {
+  schema: string;
+  id: string;
   title: string;
-  assessmentType: string;
-  maxScore: bigint;
-  currentScore: bigint;
+  description: string;
+  typeOfObject: string;
+  additionalProperties: boolean;
+  knowledgeUnits: KnowledgeUnit[];
+  numberOfModules: number;
+  numberOfAssessments: number;
+};
+
+export type KnowledgeUnit = {
+  id: string;
+  topic: string;
+  difficulty: Difficulty;
+  prerequisites: string[];
+  sources: Source[];
+  teachings: Teaching[];
+  assessments: Assessment[];
+  tokenReward: number;
+};
+
+
+export type Assessment = {
+  id: number;
+  quiz: Quiz | null;
+  // flashcard: Flashcard | null; // Placeholder for future implementation
+};
+
+export type Source = {
+  id: number;
+  sourceType: SourceType;
+  detail: string;
+  url: string | null;
+};
+
+export type Teaching = {
+  id: number;
+  topic: string;
+  difficulty: Difficulty;
+  keywords: string[];
+};
+
+export type Quiz = {
+  id: number;
+  assessmentType: AssessmentType.QUIZ;
+  questions: QuizQuestion[];
+};
+
+export type QuizQuestion = {
+  questionText: string;
+  options: string[];
+  correctAnswerIndex: number;
+  hint: string | null;
 };
 
 export type Subject = {
@@ -40,11 +91,9 @@ export type TokenAccount = {
   transactions: Transaction[];
 };
 
-export type Corpus = {
-  schema: string;
+export type Achievement = {
   id: string;
   title: string;
-  description: string;
-  typeOfObject: string;
-  additionalProperties: boolean;
-}
+  earnedAt: string;
+};
+

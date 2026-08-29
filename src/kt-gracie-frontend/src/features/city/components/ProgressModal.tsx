@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, CheckCircle2, Circle } from 'lucide-react';
 import { useOptionalUser } from '@/features/auth';
+import { getNumberOfAssessments, getNumberOfModules } from '@/services/corpusService';
+import * as ProgressContainer from '@/services/progressContainerService'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -25,8 +27,8 @@ const ACHIEVEMENT_DEFS: AchievementDef[] = [
 	{ id: 'perfect-semester',  title: 'Perfect Semester',   description: 'All subjects completed'         },
 ];
 
-const TOTAL_SUBJECTS    = 7;
-const TOTAL_ASSESSMENTS = 18;
+const TOTAL_SUBJECTS    = 5;
+const TOTAL_ASSESSMENTS = 10; // Replace with actual value from getNumberOfAssessments()
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -49,17 +51,17 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
 export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 	const user = useOptionalUser();
 
-	const streak        = user?.progression.streakDays ?? 9;
+	const streak        = 5; // consult Leo about this 
 	const bestStreak    = Math.max(streak, 14); // fallback best
-	const subjectsDone  = user?.progression.subjectsCompleted.length ?? 3;
+	const subjectsDone  = ProgressContainer.getNumberOfModulesCompleted();
 	const subjectsLeft  = TOTAL_SUBJECTS - subjectsDone;
 	const subjectsPct   = Math.round((subjectsDone / TOTAL_SUBJECTS) * 100);
-	const assessDone    = user?.progression.assessmentResults.filter(r => r.passed).length ?? 11;
+	const assessDone    = ProgressContainer.getNumberOfAssessmentsCompleted();
 	const assessLeft    = Math.max(0, TOTAL_ASSESSMENTS - assessDone);
 	const assessPct     = Math.round((assessDone / TOTAL_ASSESSMENTS) * 100);
 
 	// Which achievement IDs the user has earned
-	const earnedIds = new Set(user?.progression.achievements.map(a => a.achievementId) ?? [
+	const earnedIds = new Set(ProgressContainer.getAllAchievements().map(a => a.achievementId) ?? [
 		'first-steps', 'quiz-master', 'on-fire', // fallback demo
 	]);
 	const earnedCount = earnedIds.size;

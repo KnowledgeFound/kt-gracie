@@ -2,7 +2,8 @@
   "canisters": {
     "kt-gracie-backend": {
       "main": "src/kt-gracie-backend/main.mo",
-      "type": "motoko"
+      "type": "motoko",
+      "cycles": "1000000000000"
     },
     "kt-gracie-frontend": {
       "dependencies": [
@@ -12,13 +13,17 @@
         "src/kt-gracie-frontend/dist"
       ],
       "type": "assets",
-      "workspace": "kt-gracie-frontend"
+      "workspace": "kt-gracie-frontend",
+      "cycles": "1000000000000"
     }
   },
   "defaults": {
     "build": {
       "args": "",
       "packtool": "mops sources"
+    },
+    "canister_settings": {
+      "freezing_threshold": 2592000
     }
   },
   "output_env_file": ".env",

@@ -17,6 +17,7 @@ interface TxRow {
 	date: string;
 }
 
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatDate(iso: string): string {
@@ -40,27 +41,20 @@ function truncateId(id: string): string {
 }
 
 /** Derive mock transaction rows from real assessment results */
-function buildTransactions(
-	results: { assessmentId: string; subjectId: string; score: number; maxScore: number; passed: boolean; takenAt: string }[],
-	tokenBalance: number,
-): TxRow[] {
-	const rows: TxRow[] = results.map((r) => ({
-		id: r.assessmentId,
-		amount: r.passed ? Math.round((r.score / r.maxScore) * 100) : -10,
-		type: r.passed ? 'reward' : 'spend',
-		source: r.assessmentId || r.subjectId || 'assessment',
-		date: r.takenAt,
-	}));
+function buildTransactions(tokenBalance: number): TxRow[] {
+	// const rows: TxRow[] = results.map((r) => ({
+	// 	id: r.assessmentId,
+	// 	amount: r.passed ? Math.round((r.score / r.maxScore) * 100) : -10,
+	// 	type: r.passed ? 'reward' : 'spend',
+	// 	source: r.assessmentId || r.subjectId || 'assessment',
+	// 	date: r.takenAt,
+	// }));
 
-	// Fallback when no real results yet
-	if (rows.length === 0) {
-		return [
-			{ id: 'tx-1', amount: 100, type: 'reward', source: 'assessment-101', date: new Date(Date.now() - 86400000 * 3).toISOString() },
-			{ id: 'tx-2', amount: 50,  type: 'reward', source: 'subject-COS301', date: new Date(Date.now() - 86400000 * 2).toISOString() },
-			{ id: 'tx-3', amount: -30, type: 'spend',  source: '—',              date: new Date(Date.now() - 86400000 * 1).toISOString() },
-		];
-	}
-	return rows;
+	return [
+		{ id: 'tx-1', amount: 100, type: 'reward', source: 'assessment-101', date: new Date(Date.now() - 86400000 * 3).toISOString() },
+		{ id: 'tx-2', amount: 50,  type: 'reward', source: 'subject-COS301', date: new Date(Date.now() - 86400000 * 2).toISOString() },
+		{ id: 'tx-3', amount: -30, type: 'spend',  source: '—',              date: new Date(Date.now() - 86400000 * 1).toISOString() },
+	];
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -70,8 +64,7 @@ export default function TokenModal({ open, onClose }: TokenModalProps) {
 
 	const balance   = user?.tokenBalance ?? 340;
 	const userId    = user?.anonymousId  ?? 'kt-a3f2…9c1';
-	const results   = user?.progression.assessmentResults ?? [];
-	const txRows    = buildTransactions(results, balance);
+	const txRows    = buildTransactions(balance);
 	const totalEarned = txRows.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
 	const totalSpent  = Math.abs(txRows.filter(t => t.amount < 0).reduce((s, t) => s + t.amount, 0));
 	const lastActivity = txRows.length > 0

@@ -10,6 +10,7 @@ import {
 	Heart,
 } from 'lucide-react';
 import { useOptionalUser } from '@/features/auth';
+import * as ProgressContainer from '@/services/progressContainerService';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -27,12 +28,7 @@ export default function CityMenu({ open, onClose }: CityMenuProps) {
 	const user = useOptionalUser();
 
 	// Derived stat — safe even when user is null
-	const accuracy =
-		user && user.progression.totalAnswered > 0
-			? Math.round(
-					(user.progression.totalCorrect / user.progression.totalAnswered) * 100,
-				)
-			: 0;
+	const accuracy = 10; // Consult Leo about this
 
 	return (
 		<AnimatePresence>
@@ -85,7 +81,7 @@ export default function CityMenu({ open, onClose }: CityMenuProps) {
 										<StatCard
 											icon={<Trophy className="w-5 h-5 text-warning-400" />}
 											label="High Score"
-											value={`${user.progression.highScore}/10`}
+											value={`${ProgressContainer.getTotalScore()}/10`}
 											bg="bg-warning-50"
 										/>
 										<StatCard
@@ -97,13 +93,13 @@ export default function CityMenu({ open, onClose }: CityMenuProps) {
 										<StatCard
 											icon={<BookOpen className="w-5 h-5 text-brand-500" />}
 											label="Quizzes"
-											value={user.progression.quizzesCompleted}
+											value={ProgressContainer.getNumberOfAssessmentsCompleted()}
 											bg="bg-brand-50"
 										/>
 										<StatCard
 											icon={<Flame className="w-5 h-5 text-danger-500" />}
 											label="Streak"
-											value={`${user.progression.streakDays}d`}
+											value={`${5}d`} //Consult Leo about this
 											bg="bg-danger-50"
 										/>
 									</div>

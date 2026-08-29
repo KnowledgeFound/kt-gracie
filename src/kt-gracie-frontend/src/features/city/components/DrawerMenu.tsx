@@ -38,9 +38,7 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 	const navigate = useNavigate();
 	const { user, deleteUser } = useUser();
 
-	const accuracy = user && user.progression.totalAnswered > 0
-		? Math.round((user.progression.totalCorrect / user.progression.totalAnswered) * 100)
-		: 0;
+	const accuracy = 10; // Consult Leo about this
 
 	function handleNav(path: string) {
 		onClose();
@@ -122,7 +120,7 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 									<div className="w-px h-3.5 bg-white/25" />
 									<div className="flex items-center gap-1.5 text-sm font-bold">
 										<Flame className="size-3.5 text-orange-300" />
-										<span>{user.progression.streakDays}d streak</span>
+										<span>{5}d streak</span> {/* Consult Leo about this */}
 									</div>
 									<div className="w-px h-3.5 bg-white/25" />
 									<div className="flex items-center gap-1.5 text-sm font-bold">

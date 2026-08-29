@@ -18,7 +18,6 @@ import data from '@/lib/gracie-qa-corpus.json';
  *                  until per-module questions are served).
  */
 export function useQuiz(moduleId?: string) {
-	const { updateProgression, user } = useUser();
 
 	// Numeric module id
 	const numericId = moduleId ? Number(moduleId) : undefined;
@@ -114,15 +113,6 @@ export function useQuiz(moduleId?: string) {
 		stopTimer();
 		setTimeTaken(elapsed);
 		setScreen('results');
-
-		if (user) {
-			// updateProgression({
-			// 	quizzesCompleted: user.progression.quizzesCompleted + 1,
-			// 	totalCorrect:     user.progression.totalCorrect + score,
-			// 	totalAnswered:    user.progression.totalAnswered + quizQuestions.length,
-			// 	highScore:        Math.max(user.progression.highScore, score),
-			// });
-		}
 	};
 
 	const retakeQuiz = () => {

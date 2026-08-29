@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, ShieldCheck, Zap, Trophy, Target, BookOpen, Flame, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useOptionalUser } from '@/features/auth';
+import * as ProgressContainer from '@/services/progressContainerService';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -53,13 +54,11 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const pct    = Math.min(100, Math.max(0, health));
 	const tier   = getTierInfo(pct);
 
-	const accuracy = user && user.progression.totalAnswered > 0
-		? Math.round((user.progression.totalCorrect / user.progression.totalAnswered) * 100)
-		: 0;
+	const accuracy = 10; // Consult Leo about this
 	const integrityScore = user?.gracie.integrityScore ?? 0;
-	const streak         = user?.progression.streakDays ?? 0;
-	const quizzes        = user?.progression.quizzesCompleted ?? 0;
-	const highScore      = user?.progression.highScore ?? 0;
+	const streak         = 5; // Consult Leo about this
+	const quizzes        = ProgressContainer.getNumberOfQuizzesCompleted();
+	const highScore      = ProgressContainer.getTotalScore();
 
 	const isWarning = pct < 45;
 

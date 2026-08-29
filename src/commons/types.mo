@@ -1,5 +1,8 @@
 import Text "mo:core/Text";
 import Nat "mo:base/Nat";
+import Int "mo:base/Int";
+
+import Enums "ENUMS";
 
 module Types{
 
@@ -15,14 +18,6 @@ module Types{
         duration: Nat; // Metric still has to be decided
         description: Text;
         assessments: [Assessment];
-    };
-
-    public type Assessment = {
-        id: Nat;
-        title: Text;
-        assessmentType: Text;
-        maxScore: Nat;
-        currentScore: Nat;
     };
 
     public type Content = {
@@ -60,6 +55,55 @@ module Types{
         description: Text;
         typeOfObject: Text;
         additionalProperties: Bool;
+        knowledgeUnits: [KnowledgeUnit];
+        numberOfModules: Nat;
+        numberOfAssessments: Nat;
     };
+
+    public type KnowledgeUnit = {
+        id: Text;
+        topic: Text;
+        difficulty: Enums.Difficulty; 
+        prerequisites: [Text]; // List of Knowledge Unit IDs
+        sources: [Source];
+        teachings: [Teaching];
+        assessments: [Assessment];
+        tokenReward: Nat;
+    };
+
+    public type Source = {
+        id: Nat;
+        sourceType: Enums.SourceType;
+        detail: Text;
+        url: ?Text;
+    };
+
+    public type Teaching = {
+        id: Nat;
+        topic: Text;
+        difficulty: Enums.Difficulty;
+        keywords: [Text];
+    };
+
+    public type Assessment = {
+        id: Nat;
+        quiz: ?Quiz;
+    };
+
+    public type Quiz = {
+        id: Nat;
+        assessmentType: {#QUIZ};
+        questions: [QuizQuestion];
+    };
+
+    public type QuizQuestion = {
+        questionText: Text;
+        options: [Text];
+        correctAnswerIndex: Nat;
+        hint: ?Text;
+    };
+
+
+
 
 }

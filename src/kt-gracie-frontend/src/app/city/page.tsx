@@ -1,5 +1,5 @@
 import '@pixi/unsafe-eval';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './city.css';
 import {
@@ -19,6 +19,7 @@ import { useUser } from '@/features/auth';
 import { useSettings } from '@/features/settings';
 import { cityBlocks, getCityBlock } from '@/features/city/constants';
 import type { CityBlockId } from '@/features/city/types';
+import { getCorpus } from '@/services/corpusService';
 
 /**
  * Top-level city page.
@@ -59,6 +60,21 @@ export default function CityScene() {
 	const handleModuleHover = (id: number | null) => {
 		setHoveredBlock(id === null ? null : (getCityBlock(id)?.id ?? null));
 	};
+
+	useEffect(() => {
+    	async function fetchCorpus() {
+			try{
+				// corpus will be persisted in local storage
+				await getCorpus();
+			}
+			catch(err){
+				console.error("Failed to load Corpus: ", err)
+			}
+    	};
+
+    	fetchCorpus();
+  	}, []); 
+
 
 	return (
 		<div className={`cityScene${hoveredBlock ? ' cityScene--hovering' : ''}`}>

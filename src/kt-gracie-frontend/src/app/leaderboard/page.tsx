@@ -4,6 +4,7 @@ import { LeaderboardTable } from '@/features/leaderboard';
 import type { LeaderboardEntry } from '@/features/leaderboard';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import * as ProgressContainer from '@/services/progressContainerService';
 
 // Placeholder — replace with a canister call via useLeaderboard() hook
 const MOCK_ENTRIES: LeaderboardEntry[] = [
@@ -62,17 +63,15 @@ export default function LeaderboardPage() {
 							</span>
 						</div>
 						<div className="flex gap-6">
-							<Stat label="High Score" value={user.progression.highScore} />
-							<Stat label="Quizzes" value={user.progression.quizzesCompleted} />
+							<Stat label="High Score" value={ProgressContainer.getTotalScore()} />
+							<Stat label="Quizzes" value={ProgressContainer.getNumberOfQuizzesCompleted()} />
 							<Stat
 								label="Accuracy"
 								value={
-									user.progression.totalAnswered > 0
-										? `${Math.round((user.progression.totalCorrect / user.progression.totalAnswered) * 100)}%`
-										: '—'
+									10 // Consult Leo about this
 								}
 							/>
-							<Stat label="Streak" value={`${user.progression.streakDays}d`} />
+							<Stat label="Streak" value={`${5}d`} />
 						</div>
 					</div>
 				)}

@@ -1,24 +1,29 @@
 import { Progress } from "@/types/user";
-import { CompletedScore } from "../ENUMS/enums";
-import { getLocalStorage, setLocalStorage, USER_STORAGE_KEY } from "../commons/utilts";
+import { getLocalStorage, setLocalStorage } from "../commons/utilts";
 import { getUser } from "./userServices";
+import { AssessmentType } from "@/ENUMS/enums";
 
-const PROGRESS_STORAGE_KEY = `${USER_STORAGE_KEY}_progress`;
+export const PROGRESS_STORAGE_KEY = "progress";
 
-function normalizeProgressList(value: unknown): Array<Progress> {
-    if (!value) {
-        return [];
-    }
+function isProgress(value: unknown): value is Progress {
+    return Boolean(
+        value &&
+        typeof value === "object" &&
+        typeof (value as Progress).knowledgeUnitID === "string" &&
+        ((value as Progress).teaching === null || typeof (value as Progress).teaching === "number") &&
+        ((value as Progress).assessment === null || typeof (value as Progress).assessment === "number")
+    );
+}
 
-    if (Array.isArray(value)) {
-        return value.filter((item): item is Progress => Boolean(item && typeof item === "object" && typeof (item as Progress).knowledgeUnitID === "string"));
-    }
-
-    if (typeof value === "object" && value !== null && "knowledgeUnitID" in value) {
-        return [value as Progress];
-    }
-
-    return [];
+function emptyProgress(knowledgeUnitID = ""): Progress {
+    return { 
+        knowledgeUnitID, 
+        teaching: null, 
+        assessment: null, 
+        subProgress: [], 
+        completed: false,
+        achievments: []
+    };
 }
 
 function getProgressStorageKey(): string {
@@ -33,68 +38,46 @@ export function deleteProgress(): void {
     localStorage.removeItem(getProgressStorageKey());
 }
 
-export function createProgress(input: Progress): Array<Progress> {
-    const progress: Progress = {
-        knowledgeUnitID: input.knowledgeUnitID,
-        teaching: input.teaching ?? CompletedScore.ZERO,
-        assessment: input.assessment ?? CompletedScore.ZERO,
-    };
-
-    const existingProgress = getProgress();
-    const nextProgress = existingProgress.some((item) => item.knowledgeUnitID === progress.knowledgeUnitID)
-        ? existingProgress.map((item) => item.knowledgeUnitID === progress.knowledgeUnitID ? progress : item)
-        : [...existingProgress, progress];
-
-    persistProgress(nextProgress);
-    return nextProgress;
+export function createProgress(): Progress;
+export function createProgress(progress: Progress): Progress;
+export function createProgress(progress = emptyProgress()): Progress {
+    persistProgress(progress);
+    return progress;
 }
 
-export function getProgress(): Array<Progress> {
+export function getProgress(): Progress;
+export function getProgress(knowledgeUnit: string): Progress;
+export function getProgress(knowledgeUnit?: string): Progress {
     const storedProgress = getLocalStorage(getProgressStorageKey());
-    return normalizeProgressList(storedProgress);
-}
-
-export function getProgressById(knowledgeUnitID: string): Progress | null {
-    const progress = getProgress();
-    return progress.find((item) => item.knowledgeUnitID === knowledgeUnitID) ?? null;
-}
-
-export function persistProgress(progress: Array<Progress> | Progress): void {
-    const normalizedProgress = normalizeProgressList(progress);
-    setLocalStorage(getProgressStorageKey(), normalizedProgress);
-}
-
-export function updateProgress(input: Pick<Progress, "knowledgeUnitID"> & Partial<Omit<Progress, "knowledgeUnitID">>): Array<Progress> {
-    const existingProgress = getProgress();
-    const progressIndex = existingProgress.findIndex((item) => item.knowledgeUnitID === input.knowledgeUnitID);
-
-    if (progressIndex === -1) {
-        return createProgress({
-            knowledgeUnitID: input.knowledgeUnitID,
-            teaching: input.teaching ?? CompletedScore.ZERO,
-            assessment: input.assessment ?? CompletedScore.ZERO,
-        });
+    if (isProgress(storedProgress)) {
+        return knowledgeUnit === undefined || storedProgress.knowledgeUnitID === knowledgeUnit
+            ? storedProgress
+            : emptyProgress(knowledgeUnit);
     }
 
-    const updatedProgress = existingProgress.map((item) =>
-        item.knowledgeUnitID === input.knowledgeUnitID
-            ? {
-                ...item,
-                ...input,
-                teaching: input.teaching ?? item.teaching ?? CompletedScore.ZERO,
-                assessment: input.assessment ?? item.assessment ?? CompletedScore.ZERO,
-            }
-            : item
-    );
+    if (Array.isArray(storedProgress)) {
+        const legacyProgress = storedProgress.find((item) => isProgress(item) && (knowledgeUnit === undefined || item.knowledgeUnitID === knowledgeUnit));
+        if (legacyProgress) {
+            return legacyProgress;
+        }
+    }
 
-    persistProgress(updatedProgress);
-    return updatedProgress;
+    return emptyProgress(knowledgeUnit);
+}
+
+export function persistProgress(progress: Progress): void {
+    setLocalStorage(getProgressStorageKey(), progress);
+}
+
+export function updateProgress(progress: Progress): Progress {
+    persistProgress(progress);
+    return progress;
 }
 
 export function getProgressTotal(): { score: number; teaching: number; assessment: number } {
     const progress = getProgress();
-    const teaching = progress.reduce((total, item) => total + (item.teaching ?? CompletedScore.ZERO), 0);
-    const assessment = progress.reduce((total, item) => total + (item.assessment ?? CompletedScore.ZERO), 0);
+    const teaching = progress.teaching ?? 0;
+    const assessment = progress.assessment ?? 0;
 
     return {
         score: teaching + assessment,
@@ -103,10 +86,40 @@ export function getProgressTotal(): { score: number; teaching: number; assessmen
     };
 }
 
+export function addSubProgress(assessmentID: number, assessmentType: AssessmentType, score: number, maxScore: number): void {
+    const progress = getProgress();
+
+    const existingSubProgressIndex = progress.subProgress.findIndex(
+        (sub) => sub.assessmentID === assessmentID && sub.assessmentType === assessmentType
+    );
+
+    if (existingSubProgressIndex !== -1) {
+        // Update existing sub-progress
+        progress.subProgress[existingSubProgressIndex].score = score;
+        progress.subProgress[existingSubProgressIndex].maxScore = maxScore;
+    } else {
+        // Add new sub-progress
+        progress.subProgress.push({ 
+            assessmentID, 
+            assessmentType, 
+            score,
+            maxScore,
+            completed: false
+        });
+    }
+
+    persistProgress(progress);
+}
+
 export function getAssessmentProgressTotal(): number {
     return getProgressTotal().assessment;
 }
 
 export function getTeachingProgressTotal(): number {
     return getProgressTotal().teaching;
+}
+
+export function IsCompleted(): boolean {
+    const progress = getProgress();
+    return progress.completed;
 }

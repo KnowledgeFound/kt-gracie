@@ -11,6 +11,7 @@ import {
 import type { User } from '../../../types/user';
 import { AGE_BUCKET_LABELS, GENDER_LABELS, REGION_LABELS } from '../constants';
 import { Button } from '@/components/ui';
+import * as ProgressContainer from '@/services/progressContainerService';
 
 interface ProfileCardProps {
 	user: User;
@@ -25,13 +26,7 @@ export default function ProfileCard({
 	onEdit,
 	onDelete,
 }: ProfileCardProps) {
-	const accuracy =
-		user.progression.totalAnswered > 0
-			? Math.round(
-					(user.progression.totalCorrect / user.progression.totalAnswered) *
-						100,
-				)
-			: 0;
+	const accuracy = 10; // Consult Leo about this
 
 	return (
 		<div className="max-w-lg mx-auto px-4 py-8 space-y-5 shadow-lg">
@@ -87,7 +82,7 @@ export default function ProfileCard({
 				<StatCard
 					icon={<Trophy className="w-5 h-5 text-warning-400" />}
 					label="High Score"
-					value={`${user.progression.highScore}/10`}
+					value={`${ProgressContainer.getTotalScore()}/10`}
 					bg="bg-warning-50"
 				/>
 				<StatCard
@@ -99,13 +94,13 @@ export default function ProfileCard({
 				<StatCard
 					icon={<BookOpen className="w-5 h-5 text-brand-500" />}
 					label="Quizzes"
-					value={user.progression.quizzesCompleted}
+					value={ProgressContainer.getNumberOfQuizzesCompleted()}
 					bg="bg-brand-50"
 				/>
 				<StatCard
 					icon={<Flame className="w-5 h-5 text-danger-500" />}
 					label="Streak"
-					value={`${user.progression.streakDays}d`}
+					value={`${5}d`}
 					bg="bg-danger-50"
 				/>
 			</div>

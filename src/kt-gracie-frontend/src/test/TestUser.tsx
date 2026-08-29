@@ -5,7 +5,6 @@ import {
     getUser,
     updateUser,
     deleteUser,
-    updateProgression,
     updateGracie,
 } from "../services/userServices";
 import type { User } from "../types/user";
@@ -64,23 +63,6 @@ export default function TestUser() {
         }
     }
 
-    function handleAddSubject() {
-        try {
-            const subjects = ["uncac", "policy-guide", "youthled", "forum-theatre", "uni-modules"];
-            const current = user?.progression.subjectsStarted ?? [];
-            const next = subjects.find((s) => !current.includes(s));
-            if (!next) {
-                addLog("All subjects already started");
-                return;
-            }
-            const updated = updateProgression({ subjectsStarted: [...current, next] });
-            setUser(updated);
-            addLog(`Added subject "${next}" to subjectsStarted`);
-        } catch (err) {
-            addLog(`Error: ${(err as Error).message}`);
-        }
-    }
-
     function handleUpdateMood() {
         const moods = ["encouraging", "neutral", "concerned"] as const;
         const current = user?.gracie.mood ?? "encouraging";
@@ -131,7 +113,6 @@ export default function TestUser() {
                         <button onClick={handleRefresh}>Refresh from localStorage</button>
                         <button onClick={handleUpdateName}>Update Name</button>
                         <button onClick={handleUpdateCountry}>Update Country</button>
-                        <button onClick={handleAddSubject}>Add Subject</button>
                         <button onClick={handleUpdateMood}>Cycle Gracie Mood</button>
                         <button onClick={handleDelete} style={{ color: "red" }}>Delete User</button>
                     </div>

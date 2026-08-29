@@ -1,12 +1,102 @@
-import { Corpus } from "../../types/types";
+import type {
+    Assessment as BackendAssessment,
+    Corpus as BackendCorpus,
+    KnowledgeUnit as BackendKnowledgeUnit,
+    Quiz as BackendQuiz,
+    QuizQuestion as BackendQuizQuestion,
+    Source as BackendSource,
+    Teaching as BackendTeaching,
+} from "declarations/kt-gracie-backend/kt-gracie-backend.did";
 
-export function mapFromBackend(corpus: any): Corpus {
+import { AssessmentType, Difficulty, SourceType } from "../../ENUMS/enums";
+
+import type { Corpus } from "../../types/types";
+
+function unwrapOptional<T>(value: [] | [T]): T | null {
+    return value.length === 0 ? null : value[0];
+}
+
+function mapVariant<T extends string>(value: Partial<Record<T, null>>): T {
+    return Object.keys(value)[0] as T;
+}
+
+function mapSource(source: BackendSource) {
     return {
-        schema: corpus.schema ?? "default_schema",
-        id: corpus.id ?? "default_id",
-        title: corpus.title ?? "default_title",
-        description: corpus.description ?? "default_description",
-        typeOfObject: corpus.typeOfObject ?? "default_type",
-        additionalProperties: corpus.additionalProperties ?? false
+        id: Number(source.id),
+        sourceType: mapVariant<keyof typeof SourceType>(source.sourceType) as SourceType,
+        detail: source.detail,
+        url: unwrapOptional(source.url),
+    };
+}
+
+function mapTeaching(teaching: BackendTeaching) {
+    return {
+        id: Number(teaching.id),
+        topic: teaching.topic,
+        difficulty: mapVariant<keyof typeof Difficulty>(teaching.difficulty) as Difficulty,
+        keywords: teaching.keywords,
+    };
+}
+
+function mapQuizQuestion(question: BackendQuizQuestion) {
+    return {
+        questionText: question.questionText,
+        options: question.options,
+        correctAnswerIndex: Number(question.correctAnswerIndex),
+        hint: unwrapOptional(question.hint),
+    };
+}
+
+function mapQuiz(quiz: BackendQuiz) {
+    return {
+        id: Number(quiz.id),
+        assessmentType: mapVariant<keyof typeof AssessmentType>(quiz.assessmentType) as AssessmentType.QUIZ,
+        questions: quiz.questions.map(mapQuizQuestion),
+    };
+}
+
+function mapAssessment(assessment: BackendAssessment) {
+    const quiz = unwrapOptional(assessment.quiz);
+
+    return {
+        id: Number(assessment.id),
+        quiz: quiz === null ? null : mapQuiz(quiz),
+    };
+}
+
+function mapKnowledgeUnit(knowledgeUnit: BackendKnowledgeUnit) {
+    return {
+        id: knowledgeUnit.id,
+        topic: knowledgeUnit.topic,
+        difficulty: mapVariant<keyof typeof Difficulty>(knowledgeUnit.difficulty) as Difficulty,
+        prerequisites: knowledgeUnit.prerequisites,
+        sources: knowledgeUnit.sources.map(mapSource),
+        teachings: knowledgeUnit.teachings.map(mapTeaching),
+        assessments: knowledgeUnit.assessments.map(mapAssessment),
+        tokenReward: Number(knowledgeUnit.tokenReward),
+    };
+}
+
+export function mapFromBackend(corpus: BackendCorpus): Corpus {
+    return {
+        schema: corpus.schema,
+        id: corpus.id,
+        title: corpus.title,
+        description: corpus.description,
+        numberOfModules: Number(corpus.numberOfModules),
+        numberOfAssessments: Number(corpus.numberOfAssessments),
+        typeOfObject: corpus.typeOfObject,
+        additionalProperties: corpus.additionalProperties,
+        knowledgeUnits: (corpus.knowledgeUnits ?? []).map(mapKnowledgeUnit),
+    };
+}
+
+function getAssessmentType(assessment: BackendAssessment): AssessmentType | null {
+    const quiz = unwrapOptional(assessment.quiz);
+
+    if (quiz) {
+        return mapVariant<keyof typeof AssessmentType>(quiz.assessmentType) as AssessmentType;
     }
-}; 
+    
+    return null;
+}
