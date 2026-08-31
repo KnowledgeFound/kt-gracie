@@ -26,6 +26,8 @@ export type KnowledgeUnit = {
 
 export type Assessment = {
   id: number;
+  maxScore: number;
+  pointScore: number;
   quiz: Quiz | null;
   // flashcard: Flashcard | null; // Placeholder for future implementation
 };

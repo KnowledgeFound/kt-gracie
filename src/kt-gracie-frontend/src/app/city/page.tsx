@@ -20,6 +20,10 @@ import { useSettings } from '@/features/settings';
 import { cityBlocks, getCityBlock } from '@/features/city/constants';
 import type { CityBlockId } from '@/features/city/types';
 import { getCorpus } from '@/services/corpusService';
+import { addProgressToContainer, createAndPersistProgressContainer, getProgressContainer } from '@/services/progressContainerService';
+import { createProgress } from '@/services/progressService';
+import { SubProgress } from '@/types/user';
+import { AssessmentType } from '@/ENUMS/enums';
 
 /**
  * Top-level city page.
@@ -65,7 +69,41 @@ export default function CityScene() {
     	async function fetchCorpus() {
 			try{
 				// corpus will be persisted in local storage
-				await getCorpus();
+				const corpus = await getCorpus();
+
+				console.log(corpus);
+
+				if(getProgressContainer() != null)
+					return;
+
+				// create Knowledge container
+				createAndPersistProgressContainer();
+
+
+				corpus.knowledgeUnits.forEach((knowledgeUnit) => {
+
+					let arr_subProgress : SubProgress [] = [];
+
+					knowledgeUnit.assessments.forEach((assessment) =>{
+						if(assessment.quiz != null)
+						{
+							arr_subProgress.push({
+								assessmentID: assessment.id,
+								assessmentType: AssessmentType.QUIZ,
+								score: 0,
+								pointScore: assessment.pointScore,
+								maxScore: assessment.maxScore,
+								completed: false
+							});
+						}
+					});
+					
+					// create a progress object for each Knowledge Unit
+					const progress = createProgress(knowledgeUnit.id, arr_subProgress);
+
+					addProgressToContainer(progress);
+				});
+
 			}
 			catch(err){
 				console.error("Failed to load Corpus: ", err)

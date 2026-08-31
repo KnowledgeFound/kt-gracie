@@ -102,11 +102,13 @@ export type Progress = {
     achievments: Achievement[]; // list of achievements earned by the user
 };
 
+// contains details about each assessment
 export type SubProgress = {
     assessmentID: number;
     assessmentType: AssessmentType;
     score: number;
     maxScore: number;
+    pointScore: number;
     completed: boolean; 
 };
 
