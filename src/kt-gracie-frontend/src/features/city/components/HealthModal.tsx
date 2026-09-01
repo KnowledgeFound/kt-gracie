@@ -50,6 +50,9 @@ function AnimatedBar({ pct, colorClass }: { pct: number; colorClass: string }) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function HealthModal({ open, onClose, health }: HealthModalProps) {
+
+	console.log('HealthModal: health =', health);
+	
 	const user   = useOptionalUser();
 	const pct    = Math.min(100, Math.max(0, health));
 	const tier   = getTierInfo(pct);

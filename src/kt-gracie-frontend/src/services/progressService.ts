@@ -1,4 +1,4 @@
-import { Progress, SubProgress } from "@/types/user";
+import { Progress, SubProgress, SubProgressTeaching } from "@/types/user";
 import { getLocalStorage, setLocalStorage } from "../commons/utilts";
 import { getUser } from "./userServices";
 import { AssessmentType, CompletedScore } from "@/ENUMS/enums";
@@ -21,18 +21,20 @@ function emptyProgress(knowledgeUnitID = ""): Progress {
         teaching: null, 
         assessment: null, 
         subProgress: [], 
+        subProgressTeachings: [],
         completed: false,
         achievments: []
     };
 }
 
-export function createProgress(knowledgeUnitID: string, arr_subProgress: SubProgress[]) : Progress
+export function createProgress(knowledgeUnitID: string, arr_subProgress: SubProgress[], arr_subProgressTeachings: SubProgressTeaching[]) : Progress
 {
     return{
         knowledgeUnitID: knowledgeUnitID,
         teaching: CompletedScore.ZERO,
         assessment: CompletedScore.ZERO,
         subProgress: arr_subProgress,
+        subProgressTeachings: arr_subProgressTeachings,
         completed: false,
         achievments:[]
     }
