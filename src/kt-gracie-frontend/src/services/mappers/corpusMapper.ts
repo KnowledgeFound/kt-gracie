@@ -60,6 +60,8 @@ function mapAssessment(assessment: BackendAssessment) {
 
     return {
         id: Number(assessment.id),
+        maxScore: Number(assessment.maxScore),
+        pointScore: Number(assessment.pointScore),
         quiz: quiz === null ? null : mapQuiz(quiz),
     };
 }

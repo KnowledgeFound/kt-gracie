@@ -127,6 +127,8 @@ persistent actor Main {
         assessments = [
           {
             id = 1;
+            maxScore = 5;
+            pointScore = 1; // how much each answer to a question is worth
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;

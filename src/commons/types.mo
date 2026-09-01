@@ -87,6 +87,8 @@ module Types{
 
     public type Assessment = {
         id: Nat;
+        maxScore: Nat;
+        pointScore: Nat;
         quiz: ?Quiz;
     };
 

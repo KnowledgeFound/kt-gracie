@@ -1,7 +1,9 @@
 import { getLocalStorage, setLocalStorage } from "../commons/utilts";
-import { ProgressContainer, Progress, Achievement } from "@/types/user";
+import { ProgressContainer, Progress, Achievement, SubProgress } from "@/types/user";
 import { getUser } from "./userServices";
 import { AssessmentType } from "@/ENUMS/enums";
+import { KnowledgeUnit } from "@/types/types";
+import { createProgress } from "./progressService";
 
 export const PROGRESS_STORAGE_KEY = "progress_container";
 
@@ -80,6 +82,18 @@ export function getAllAchievements(): Achievement[] {
     }
 
     return [];
+}
+
+export function createAndPersistProgressContainer() : void
+{
+    if(getProgressContainer())
+        return;
+
+    const progressContainer = {
+        arr_progress: []
+    };
+
+    persistProgressContainer(progressContainer);
 }
 
 export function getTotalScore(): number {

@@ -1,7 +1,7 @@
-import { Progress } from "@/types/user";
+import { Progress, SubProgress } from "@/types/user";
 import { getLocalStorage, setLocalStorage } from "../commons/utilts";
 import { getUser } from "./userServices";
-import { AssessmentType } from "@/ENUMS/enums";
+import { AssessmentType, CompletedScore } from "@/ENUMS/enums";
 
 export const PROGRESS_STORAGE_KEY = "progress";
 
@@ -26,6 +26,30 @@ function emptyProgress(knowledgeUnitID = ""): Progress {
     };
 }
 
+export function createProgress(knowledgeUnitID: string, arr_subProgress: SubProgress[]) : Progress
+{
+    return{
+        knowledgeUnitID: knowledgeUnitID,
+        teaching: CompletedScore.ZERO,
+        assessment: CompletedScore.ZERO,
+        subProgress: arr_subProgress,
+        completed: false,
+        achievments:[]
+    }
+}
+
+export function createSubProgress(assessmentID: number, assessmentType: AssessmentType, maxScore: number, pointScore: number) : SubProgress
+{
+    return {
+        assessmentID: assessmentID,
+        assessmentType: assessmentType,
+        score: 0,
+        maxScore: maxScore,
+        completed: false,
+        pointScore: pointScore
+    }
+}
+
 function getProgressStorageKey(): string {
     const user = getUser();
     const userId = user?.anonymousId ?? "anonymous";
@@ -36,13 +60,6 @@ function getProgressStorageKey(): string {
 
 export function deleteProgress(): void {
     localStorage.removeItem(getProgressStorageKey());
-}
-
-export function createProgress(): Progress;
-export function createProgress(progress: Progress): Progress;
-export function createProgress(progress = emptyProgress()): Progress {
-    persistProgress(progress);
-    return progress;
 }
 
 export function getProgress(): Progress;
@@ -86,7 +103,7 @@ export function getProgressTotal(): { score: number; teaching: number; assessmen
     };
 }
 
-export function addSubProgress(assessmentID: number, assessmentType: AssessmentType, score: number, maxScore: number): void {
+export function addSubProgress(assessmentID: number, assessmentType: AssessmentType, score: number, maxScore: number, pointScore: number): void {
     const progress = getProgress();
 
     const existingSubProgressIndex = progress.subProgress.findIndex(
@@ -100,11 +117,12 @@ export function addSubProgress(assessmentID: number, assessmentType: AssessmentT
     } else {
         // Add new sub-progress
         progress.subProgress.push({ 
-            assessmentID, 
-            assessmentType, 
-            score,
-            maxScore,
-            completed: false
+            assessmentID: assessmentID, 
+            assessmentType: assessmentType, 
+            score: score,
+            maxScore: maxScore,
+            completed: false,
+            pointScore: pointScore
         });
     }
 
