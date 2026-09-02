@@ -12,6 +12,11 @@ interface HealthModalProps {
 	health: number;
 }
 
+interface BestAssessmentScore{
+	score: number;
+	maxScore: number;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 type TierInfo = { label: string; color: string; bg: string; bar: string; emoji: string; description: string };
@@ -50,8 +55,6 @@ function AnimatedBar({ pct, colorClass }: { pct: number; colorClass: string }) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function HealthModal({ open, onClose, health }: HealthModalProps) {
-
-	console.log('HealthModal: health =', health);
 	
 	const user   = useOptionalUser();
 	const pct    = Math.min(100, Math.max(0, health));
@@ -64,6 +67,15 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const highScore      = ProgressContainer.getTotalScore();
 
 	const isWarning = pct < 45;
+
+	const bestAssessmentScore: BestAssessmentScore = ProgressContainer.getTheBestAssessmentScore();
+	const assessmentsCompleted = ProgressContainer.getNumberOfAssessmentsCompleted();
+	const teachingsCompleted = ProgressContainer.getNumberOfTeachingsCompleted();
+	const totalAssessments = ProgressContainer.getTotalNumberOfAssessments();
+	const totalTeachings = ProgressContainer.getTotalNumberOfTeachings();
+
+	console.log('assessmentsCompleted', assessmentsCompleted);
+	console.log('teachingsCompleted', teachingsCompleted);
 
 	return (
 		<AnimatePresence>
@@ -148,10 +160,10 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 
 							{/* Stats grid */}
 							<div className="grid grid-cols-4 gap-2">
-								<StatPill icon={<Trophy className="size-4" />} label="Best"     value={`${highScore}/10`} color="text-amber-500" />
+								<StatPill icon={<Trophy className="size-4" />} label="Best Score"     value={`${bestAssessmentScore.score}/${bestAssessmentScore.maxScore}`} color="text-amber-500" />
 								<StatPill icon={<Target className="size-4" />}  label="Accuracy" value={`${accuracy}%`}   color="text-brand-500" />
-								<StatPill icon={<Flame className="size-4" />}   label="Streak"   value={`${streak}d`}     color="text-rose-500"  />
-								<StatPill icon={<BookOpen className="size-4" />} label="Quizzes" value={quizzes}          color="text-purple-500"/>
+								<StatPill icon={<Flame className="size-4" />}   label="Assessments completed"   value={`${assessmentsCompleted}/${totalAssessments}`}     color="text-rose-500"  />
+								<StatPill icon={<BookOpen className="size-4" />} label="Lessons completed" value={`${teachingsCompleted}/${totalTeachings}`}          color="text-purple-500"/>
 							</div>
 
 							{/* Sub-metrics */}

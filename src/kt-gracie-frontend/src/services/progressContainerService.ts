@@ -20,8 +20,12 @@ export function persistProgressContainer(progressContainer: ProgressContainer): 
 
 export function getProgressContainer(): ProgressContainer | null {
     const storedProgressContainer = getLocalStorage(getProgressContainerStorageKey());
-    
-    if (storedProgressContainer && typeof storedProgressContainer === "object" && Array.isArray((storedProgressContainer as ProgressContainer).arr_progress)) {
+
+    if (
+        storedProgressContainer &&
+        typeof storedProgressContainer === "object" &&
+        Array.isArray(storedProgressContainer.arr_progress)
+    ) {
         return storedProgressContainer as ProgressContainer;
     }
 
@@ -56,7 +60,7 @@ export function getNumberOfModulesCompleted(): number {
     const progressContainer = getProgressContainer();
 
     if (progressContainer) {
-        return progressContainer.arr_progress.filter(p => p.completed).length;
+        return progressContainer.arr_progress.filter(p => p.completed === true).length;
     }
 
     return 0;
@@ -65,9 +69,23 @@ export function getNumberOfModulesCompleted(): number {
 export function getNumberOfAssessmentsCompleted(): number {
     const progressContainer = getProgressContainer();
 
+    console.log("Progress Container:", progressContainer);
+
     if (progressContainer) {
         return progressContainer.arr_progress.reduce((count, p) => {
-            return count + (p.subProgress.filter(sp => sp.completed).length);
+            return count + (p.subProgress.filter(sp => sp.completed === true).length);
+        }, 0);
+    }
+
+    return 0;
+}
+
+export function getNumberOfTeachingsCompleted(): number {
+    const progressContainer = getProgressContainer();
+
+    if (progressContainer) {
+        return progressContainer.arr_progress.reduce((count, p) => {
+            return count + (p.subProgressTeachings.filter(sp => sp.completed === true).length);
         }, 0);
     }
 
@@ -113,10 +131,57 @@ export function getNumberOfQuizzesCompleted(): number {
 
     if (progressContainer) {
         return progressContainer.arr_progress.reduce((count, p) => {
-            return count + (p.subProgress.filter(sp => sp.completed && sp.assessmentType === AssessmentType.QUIZ).length);
+            return count + (p.subProgress.filter(sp => sp.completed === true && sp.assessmentType === AssessmentType.QUIZ).length);
         }, 0);
     }
 
     return 0;
 }
 
+export function getTotalNumberOfAssessments(): number {
+    const progressContainer = getProgressContainer();
+
+    if (progressContainer) {
+        return progressContainer.arr_progress.reduce((count, p) => {
+            return count + p.subProgress.length;
+        }, 0);
+    }
+
+    return 0;
+}
+
+export function getTotalNumberOfTeachings(): number {
+    const progressContainer = getProgressContainer();
+
+    if (progressContainer) {
+        return progressContainer.arr_progress.reduce((count, p) => {
+            return count + p.subProgressTeachings.length;
+        }, 0);
+    }
+
+    return 0;
+}
+
+export function getTheBestAssessmentScore(): {score: number, maxScore: number} {
+    const progressContainer = getProgressContainer();
+
+    if (progressContainer) {
+        let bestScore = 0;
+        let difference = Number.MAX_VALUE;
+        let maxScore = 0;
+
+        progressContainer.arr_progress.forEach(p => {
+            p.subProgress.forEach(sp => {
+                if ((sp.maxScore - sp.score) < difference) {
+                    difference = sp.maxScore - sp.score;
+                    bestScore = sp.score;
+                    maxScore = sp.maxScore;
+                }
+            });
+        });
+
+        return { score: bestScore, maxScore: maxScore };
+    }
+
+    return { score: 0, maxScore: 0 };
+}
