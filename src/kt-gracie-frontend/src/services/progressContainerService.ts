@@ -4,7 +4,7 @@ import { getUser } from "./userServices";
 import { AssessmentType } from "@/ENUMS/enums";
 import { KnowledgeUnit } from "@/types/types";
 import { createProgress } from "./progressService";
-
+ 
 export const PROGRESS_STORAGE_KEY = "progress_container";
 
 function getProgressContainerStorageKey(): string {
@@ -119,4 +119,18 @@ export function getNumberOfQuizzesCompleted(): number {
 
     return 0;
 }
+
+export function getMaxScore(): number {
+    const progressContainer = getProgressContainer();
+
+    if (progressContainer) {
+        return progressContainer.arr_progress.reduce((max, p) => {
+            return max + (p.subProgress.reduce((subMax, sp) => subMax + sp.maxScore, 0));
+        }, 0);
+    }
+
+    return 0;
+}
+
+
 
