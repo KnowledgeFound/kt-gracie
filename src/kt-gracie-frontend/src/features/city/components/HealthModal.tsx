@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, ShieldCheck, Zap, Trophy, Target, BookOpen, Flame, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { useOptionalUser } from '@/features/auth';
+import { useOptionalUser, useUser } from '@/features/auth';
 import * as ProgressContainer from '@/services/progressContainerService';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -60,11 +60,15 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const pct    = Math.min(100, Math.max(0, health));
 	const tier   = getTierInfo(pct);
 
+	const { city } = useUser();
+
 	const accuracy = 10; // Consult Leo about this
 	const integrityScore = user?.gracie.integrityScore ?? 0;
 	const streak         = 5; // Consult Leo about this
 	const quizzes        = ProgressContainer.getNumberOfQuizzesCompleted();
 	const highScore      = ProgressContainer.getTotalScore();
+	const assessmentScore = city?.getFinalAssessmentScore() ?? 0;
+	const contentScore = city?.getContentScore() ?? 0;
 
 	const isWarning = pct < 45;
 
@@ -73,9 +77,6 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const teachingsCompleted = ProgressContainer.getNumberOfTeachingsCompleted();
 	const totalAssessments = ProgressContainer.getTotalNumberOfAssessments();
 	const totalTeachings = ProgressContainer.getTotalNumberOfTeachings();
-
-	console.log('assessmentsCompleted', assessmentsCompleted);
-	console.log('teachingsCompleted', teachingsCompleted);
 
 	return (
 		<AnimatePresence>
@@ -172,16 +173,16 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 									Health Factors
 								</p>
 
-								{/* Quiz accuracy contribution */}
+								{/* Assessment score */}
 								<div>
 									<div className="flex items-center justify-between mb-1.5">
 										<div className="flex items-center gap-1.5">
 											<Target className="size-3 text-brand-500" />
-											<span className="text-xs font-semibold text-ink-mid">Quiz Accuracy</span>
+											<span className="text-xs font-semibold text-ink-mid">Assessment Score</span>
 										</div>
-										<span className="text-xs font-bold text-ink-deep">{accuracy}%</span>
+										<span className="text-xs font-bold text-ink-deep">{assessmentScore}/50</span>
 									</div>
-									<AnimatedBar pct={accuracy} colorClass="from-brand-400 to-brand-600" />
+									<AnimatedBar pct={Math.min((assessmentScore / 50) * 100, 100)} colorClass="from-brand-400 to-brand-600" />
 								</div>
 
 								{/* Gracie integrity */}
@@ -196,16 +197,16 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 									<AnimatedBar pct={integrityScore} colorClass="from-emerald-400 to-emerald-600" />
 								</div>
 
-								{/* Streak contribution */}
+								{/* Content score */}
 								<div>
 									<div className="flex items-center justify-between mb-1.5">
 										<div className="flex items-center gap-1.5">
 											<Flame className="size-3 text-amber-500" />
-											<span className="text-xs font-semibold text-ink-mid">Daily Streak</span>
+											<span className="text-xs font-semibold text-ink-mid">Content Score</span>
 										</div>
-										<span className="text-xs font-bold text-ink-deep">{streak} days</span>
+										<span className="text-xs font-bold text-ink-deep">{contentScore} / 50</span>
 									</div>
-									<AnimatedBar pct={Math.min((streak / 30) * 100, 100)} colorClass="from-amber-400 to-orange-400" />
+									<AnimatedBar pct={Math.min((contentScore / 50) * 100, 100)} colorClass="from-amber-400 to-orange-400" />
 								</div>
 							</div>
 
