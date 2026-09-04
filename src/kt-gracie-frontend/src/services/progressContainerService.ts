@@ -172,7 +172,7 @@ export function getScoreDetails(): { currentScore: number; maxScore: number; per
     if (percentage <= 25) {
         encouragementMessage = "Every expert was once a beginner!";
     } else if (percentage >= 26 && percentage <= 49) {
-        encouragementMessage = "You’re laying the groundwork!";
+        encouragementMessage = "You are laying the groundwork!";
     } else if (percentage >= 50 && percentage <= 69) {
         encouragementMessage = "More than halfway there!";
     } else if (percentage >= 70 && percentage <= 79) {
