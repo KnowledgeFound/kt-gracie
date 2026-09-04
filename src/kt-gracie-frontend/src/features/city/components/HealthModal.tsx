@@ -17,6 +17,13 @@ interface BestAssessmentScore{
 	maxScore: number;
 }
 
+interface ScoreDetails {
+	currentScore: number;
+	maxScore: number;
+	percentage: number;
+	encouragementMessage: string;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 type TierInfo = { label: string; color: string; bg: string; bar: string; emoji: string; description: string };
@@ -77,6 +84,8 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const teachingsCompleted = ProgressContainer.getNumberOfTeachingsCompleted();
 	const totalAssessments = ProgressContainer.getTotalNumberOfAssessments();
 	const totalTeachings = ProgressContainer.getTotalNumberOfTeachings();
+
+	const scoreDetails: ScoreDetails = ProgressContainer.getScoreDetails();
 
 	return (
 		<AnimatePresence>
@@ -162,7 +171,7 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 							{/* Stats grid */}
 							<div className="grid grid-cols-4 gap-2">
 								<StatPill icon={<Trophy className="size-4" />} label="Best Score"     value={`${bestAssessmentScore.score}/${bestAssessmentScore.maxScore}`} color="text-amber-500" />
-								<StatPill icon={<Target className="size-4" />}  label="Accuracy" value={`${accuracy}%`}   color="text-brand-500" />
+								<StatPill icon={<Target className="size-4" />}  label="Current Score" value={`${scoreDetails.percentage}%`}   color="text-brand-500" />
 								<StatPill icon={<Flame className="size-4" />}   label="Assessments completed"   value={`${assessmentsCompleted}/${totalAssessments}`}     color="text-rose-500"  />
 								<StatPill icon={<BookOpen className="size-4" />} label="Lessons completed" value={`${teachingsCompleted}/${totalTeachings}`}          color="text-purple-500"/>
 							</div>
@@ -170,20 +179,8 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 							{/* Sub-metrics */}
 							<div className="space-y-3">
 								<p className="text-[10px] font-black tracking-widest text-ink-subtle uppercase">
-									Health Factors
+									City Health Factors
 								</p>
-
-								{/* Assessment score */}
-								<div>
-									<div className="flex items-center justify-between mb-1.5">
-										<div className="flex items-center gap-1.5">
-											<Target className="size-3 text-brand-500" />
-											<span className="text-xs font-semibold text-ink-mid">Assessment Score</span>
-										</div>
-										<span className="text-xs font-bold text-ink-deep">{assessmentScore}/50</span>
-									</div>
-									<AnimatedBar pct={Math.min((assessmentScore / 50) * 100, 100)} colorClass="from-brand-400 to-brand-600" />
-								</div>
 
 								{/* Gracie integrity */}
 								<div>
@@ -195,6 +192,18 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 										<span className="text-xs font-bold text-ink-deep">{integrityScore}/100</span>
 									</div>
 									<AnimatedBar pct={integrityScore} colorClass="from-emerald-400 to-emerald-600" />
+								</div>
+
+								{/* Assessment score */}
+								<div>
+									<div className="flex items-center justify-between mb-1.5">
+										<div className="flex items-center gap-1.5">
+											<Target className="size-3 text-brand-500" />
+											<span className="text-xs font-semibold text-ink-mid">Assessment Score</span>
+										</div>
+										<span className="text-xs font-bold text-ink-deep">{assessmentScore}/50</span>
+									</div>
+									<AnimatedBar pct={Math.min((assessmentScore / 50) * 100, 100)} colorClass="from-brand-400 to-brand-600" />
 								</div>
 
 								{/* Content score */}
