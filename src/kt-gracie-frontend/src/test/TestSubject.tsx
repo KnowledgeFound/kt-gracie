@@ -1,6 +1,7 @@
 import { FormEvent } from "react";
 import { useCreateSubjectHook } from "../hooks/subjectHooks";
 import { CreateSubjectInput } from "../types/types";
+import { completeAssessment } from "@/services/completionService";
 import * as CorpusService from "../services/corpusService";
 
 export default function TestSubject() {
@@ -22,7 +23,11 @@ export default function TestSubject() {
 
         console.log(await CorpusService.getCorpus());
 
-        console.log(await CorpusService.getPersistedCorpus());
+        // console.log(await CorpusService.getPersistedCorpus());
+
+        completeAssessment("KU-001", 1);
+
+        console.log("done!");
 
     }
 

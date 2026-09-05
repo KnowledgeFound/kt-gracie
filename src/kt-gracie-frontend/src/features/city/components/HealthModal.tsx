@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, ShieldCheck, Zap, Trophy, Target, BookOpen, Flame, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { useOptionalUser } from '@/features/auth';
+import { useOptionalUser, useUser } from '@/features/auth';
 import * as ProgressContainer from '@/services/progressContainerService';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -10,6 +10,18 @@ interface HealthModalProps {
 	onClose: () => void;
 	/** Live city health value from the City model */
 	health: number;
+}
+
+interface BestAssessmentScore{
+	score: number;
+	maxScore: number;
+}
+
+interface ScoreDetails {
+	currentScore: number;
+	maxScore: number;
+	percentage: number;
+	encouragementMessage: string;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -50,17 +62,30 @@ function AnimatedBar({ pct, colorClass }: { pct: number; colorClass: string }) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function HealthModal({ open, onClose, health }: HealthModalProps) {
+	
 	const user   = useOptionalUser();
 	const pct    = Math.min(100, Math.max(0, health));
 	const tier   = getTierInfo(pct);
+
+	const { city } = useUser();
 
 	const accuracy = 10; // Consult Leo about this
 	const integrityScore = user?.gracie.integrityScore ?? 0;
 	const streak         = 5; // Consult Leo about this
 	const quizzes        = ProgressContainer.getNumberOfQuizzesCompleted();
 	const highScore      = ProgressContainer.getTotalScore();
+	const assessmentScore = city?.getFinalAssessmentScore() ?? 0;
+	const contentScore = city?.getContentScore() ?? 0;
 
 	const isWarning = pct < 45;
+
+	const bestAssessmentScore: BestAssessmentScore = ProgressContainer.getTheBestAssessmentScore();
+	const assessmentsCompleted = ProgressContainer.getNumberOfAssessmentsCompleted();
+	const teachingsCompleted = ProgressContainer.getNumberOfTeachingsCompleted();
+	const totalAssessments = ProgressContainer.getTotalNumberOfAssessments();
+	const totalTeachings = ProgressContainer.getTotalNumberOfTeachings();
+
+	const scoreDetails: ScoreDetails = ProgressContainer.getScoreDetails();
 
 	return (
 		<AnimatePresence>
@@ -145,29 +170,17 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 
 							{/* Stats grid */}
 							<div className="grid grid-cols-4 gap-2">
-								<StatPill icon={<Trophy className="size-4" />} label="Best"     value={`${highScore}/10`} color="text-amber-500" />
-								<StatPill icon={<Target className="size-4" />}  label="Accuracy" value={`${accuracy}%`}   color="text-brand-500" />
-								<StatPill icon={<Flame className="size-4" />}   label="Streak"   value={`${streak}d`}     color="text-rose-500"  />
-								<StatPill icon={<BookOpen className="size-4" />} label="Quizzes" value={quizzes}          color="text-purple-500"/>
+								<StatPill icon={<Trophy className="size-4" />} label="Best Score"     value={`${bestAssessmentScore.score}/${bestAssessmentScore.maxScore}`} color="text-amber-500" />
+								<StatPill icon={<Target className="size-4" />}  label="User Score" value={`${scoreDetails.currentScore}/${scoreDetails.maxScore}`}   color="text-brand-500" />
+								<StatPill icon={<Flame className="size-4" />}   label="Assessments completed"   value={`${assessmentsCompleted}/${totalAssessments}`}     color="text-rose-500"  />
+								<StatPill icon={<BookOpen className="size-4" />} label="Lessons completed" value={`${teachingsCompleted}/${totalTeachings}`}          color="text-purple-500"/>
 							</div>
 
 							{/* Sub-metrics */}
 							<div className="space-y-3">
 								<p className="text-[10px] font-black tracking-widest text-ink-subtle uppercase">
-									Health Factors
+									City Health Factors
 								</p>
-
-								{/* Quiz accuracy contribution */}
-								<div>
-									<div className="flex items-center justify-between mb-1.5">
-										<div className="flex items-center gap-1.5">
-											<Target className="size-3 text-brand-500" />
-											<span className="text-xs font-semibold text-ink-mid">Quiz Accuracy</span>
-										</div>
-										<span className="text-xs font-bold text-ink-deep">{accuracy}%</span>
-									</div>
-									<AnimatedBar pct={accuracy} colorClass="from-brand-400 to-brand-600" />
-								</div>
 
 								{/* Gracie integrity */}
 								<div>
@@ -181,16 +194,28 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 									<AnimatedBar pct={integrityScore} colorClass="from-emerald-400 to-emerald-600" />
 								</div>
 
-								{/* Streak contribution */}
+								{/* Assessment score */}
+								<div>
+									<div className="flex items-center justify-between mb-1.5">
+										<div className="flex items-center gap-1.5">
+											<Target className="size-3 text-brand-500" />
+											<span className="text-xs font-semibold text-ink-mid">Assessment Score</span>
+										</div>
+										<span className="text-xs font-bold text-ink-deep">{assessmentScore}/50</span>
+									</div>
+									<AnimatedBar pct={Math.min((assessmentScore / 50) * 100, 100)} colorClass="from-brand-400 to-brand-600" />
+								</div>
+
+								{/* Content score */}
 								<div>
 									<div className="flex items-center justify-between mb-1.5">
 										<div className="flex items-center gap-1.5">
 											<Flame className="size-3 text-amber-500" />
-											<span className="text-xs font-semibold text-ink-mid">Daily Streak</span>
+											<span className="text-xs font-semibold text-ink-mid">Content Score</span>
 										</div>
-										<span className="text-xs font-bold text-ink-deep">{streak} days</span>
+										<span className="text-xs font-bold text-ink-deep">{contentScore} / 50</span>
 									</div>
-									<AnimatedBar pct={Math.min((streak / 30) * 100, 100)} colorClass="from-amber-400 to-orange-400" />
+									<AnimatedBar pct={Math.min((contentScore / 50) * 100, 100)} colorClass="from-amber-400 to-orange-400" />
 								</div>
 							</div>
 

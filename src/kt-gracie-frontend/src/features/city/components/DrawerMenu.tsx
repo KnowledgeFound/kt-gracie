@@ -20,8 +20,8 @@ import { useUser } from '@/features/auth';
 const NAV_ITEMS = [
 	{ icon: Home,     label: 'City',        path: '/city',        description: 'Return to the city map'        },
 	{ icon: Trophy,   label: 'Leaderboard', path: '/leaderboard', description: 'See how you rank'              },
-	{ icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
-	{ icon: BookOpen, label: 'Assessments', path: '/',           description: 'Take a knowledge assessment'   },
+	// { icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
+	//{ icon: BookOpen, label: 'Assessments', path: '/',           description: 'Take a knowledge assessment'   },
 	{ icon: Settings, label: 'Settings',    path: '/settings',   description: 'Theme, guide audio and more'   },
 ] as const;
 
@@ -117,21 +117,11 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 										<Zap className="size-3.5 text-amber-300" />
 										<span>{user.tokenBalance.toLocaleString()} KT</span>
 									</div>
-									<div className="w-px h-3.5 bg-white/25" />
-									<div className="flex items-center gap-1.5 text-sm font-bold">
-										<Flame className="size-3.5 text-orange-300" />
-										<span>{5}d streak</span> {/* Consult Leo about this */}
-									</div>
-									<div className="w-px h-3.5 bg-white/25" />
-									<div className="flex items-center gap-1.5 text-sm font-bold">
-										<ShieldCheck className="size-3.5 text-emerald-300" />
-										<span>{accuracy}%</span>
-									</div>
 								</div>
 							)}
 						</div>
 
-						{/* ── Gracie companion card ─────────────────────────── */}
+
 						{user && (
 							<motion.div
 								className="mx-4 mt-4 mb-1 flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-50 border border-brand-100"
