@@ -114,6 +114,10 @@ export function createAndPersistProgressContainer() : void
     persistProgressContainer(progressContainer);
 }
 
+
+/**
+ * Returns the total score accumulated across all assessments in the progress container.
+ */
 export function getTotalScore(): number {
     const progressContainer = getProgressContainer();
 
@@ -176,7 +180,7 @@ export function getScoreDetails(): { currentScore: number; maxScore: number; per
     } else if (percentage >= 50 && percentage <= 69) {
         encouragementMessage = "More than halfway there!";
     } else if (percentage >= 70 && percentage <= 79) {
-        encouragementMessage = "Solid effort—you’ve got real momentum!";
+        encouragementMessage = "Solid effort—you have got real momentum!";
     }
     else if (percentage >= 80 && percentage <= 89) {   
         encouragementMessage = "Awesome work! You really know your stuff!";
