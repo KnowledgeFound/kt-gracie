@@ -20,8 +20,8 @@ import { useUser } from '@/features/auth';
 const NAV_ITEMS = [
 	{ icon: Home,     label: 'City',        path: '/city',        description: 'Return to the city map'        },
 	{ icon: Trophy,   label: 'Leaderboard', path: '/leaderboard', description: 'See how you rank'              },
-	{ icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
-	{ icon: BookOpen, label: 'Assessments', path: '/',           description: 'Take a knowledge assessment'   },
+	// { icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
+	//{ icon: BookOpen, label: 'Assessments', path: '/',           description: 'Take a knowledge assessment'   },
 	{ icon: Settings, label: 'Settings',    path: '/settings',   description: 'Theme, guide audio and more'   },
 ] as const;
 
