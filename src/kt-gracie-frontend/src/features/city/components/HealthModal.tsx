@@ -171,7 +171,7 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 							{/* Stats grid */}
 							<div className="grid grid-cols-4 gap-2">
 								<StatPill icon={<Trophy className="size-4" />} label="Best Score"     value={`${bestAssessmentScore.score}/${bestAssessmentScore.maxScore}`} color="text-amber-500" />
-								<StatPill icon={<Target className="size-4" />}  label="Current User Score" value={`${scoreDetails.percentage}%`}   color="text-brand-500" />
+								<StatPill icon={<Target className="size-4" />}  label="User Score" value={`${scoreDetails.currentScore}/${scoreDetails.maxScore}`}   color="text-brand-500" />
 								<StatPill icon={<Flame className="size-4" />}   label="Assessments completed"   value={`${assessmentsCompleted}/${totalAssessments}`}     color="text-rose-500"  />
 								<StatPill icon={<BookOpen className="size-4" />} label="Lessons completed" value={`${teachingsCompleted}/${totalTeachings}`}          color="text-purple-500"/>
 							</div>

@@ -116,7 +116,7 @@ export function createAndPersistProgressContainer() : void
 
 
 /**
- * Returns the total score accumulated across all assessments in the progress container.
+ * Returns the total score accumulated across all assessments and teachings in the progress container.
  */
 export function getTotalScore(): number {
     const progressContainer = getProgressContainer();
