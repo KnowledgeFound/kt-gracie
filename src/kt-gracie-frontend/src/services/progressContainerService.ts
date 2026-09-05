@@ -123,7 +123,8 @@ export function getTotalScore(): number {
 
     if (progressContainer) {
         return progressContainer.arr_progress.reduce((total, p) => {
-            return total + (p.subProgress.reduce((subTotal, sp) => subTotal + sp.score, 0));
+            return total + (p.subProgress.reduce((subTotal, sp) => subTotal + sp.score, 0)) +
+                (p.subProgressTeachings.reduce((subTotal, sp) => subTotal + (sp.completed ? 1 : 0), 0));
         }, 0);
     }
 
@@ -180,7 +181,7 @@ export function getScoreDetails(): { currentScore: number; maxScore: number; per
     } else if (percentage >= 50 && percentage <= 69) {
         encouragementMessage = "More than halfway there!";
     } else if (percentage >= 70 && percentage <= 79) {
-        encouragementMessage = "Solid effort—you have got real momentum!";
+        encouragementMessage = "Solid effort — you have got real momentum!";
     }
     else if (percentage >= 80 && percentage <= 89) {   
         encouragementMessage = "Awesome work! You really know your stuff!";
@@ -194,16 +195,15 @@ export function getScoreDetails(): { currentScore: number; maxScore: number; per
 
 export function getMaxScore(): number {
     const progressContainer = getProgressContainer();
-
     if (progressContainer) {
         return progressContainer.arr_progress.reduce((max, p) => {
-            return max + (p.subProgress.reduce((subMax, sp) => subMax + sp.maxScore, 0));
+            return max + (p.subProgress.reduce((subMax, sp) => subMax + sp.maxScore, 0)) +
+                (p.subProgressTeachings.length);
         }, 0);
     }
 
     return 0;
 }
-
 
 
 export function getTheBestAssessmentScore(): {score: number, maxScore: number} {
