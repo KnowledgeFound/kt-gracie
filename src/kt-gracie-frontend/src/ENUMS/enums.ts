@@ -1,0 +1,76 @@
+export enum Gender {
+    MALE = "MALE",
+    FEMALE = "FEMALE",
+    UNDISCLOSED = "UNDISCLOSED",
+}
+
+export enum AgeBucket {
+    AGE_17_19 = "AGE_17_19",
+    AGE_20_22 = "AGE_20_22",
+    AGE_23_25 = "AGE_23_25",
+    AGE_UNDISCLOSED = "AGE_UNDISCLOSED",
+}
+
+export enum Region {
+    NORTHERN_AFRICA = 'NORTHERN_AFRICA',
+    EASTERN_AFRICA = 'EASTERN_AFRICA',
+    MIDDLE_AFRICA = 'MIDDLE_AFRICA',
+    SOUTHERN_AFRICA = 'SOUTHERN_AFRICA',
+    WESTERN_AFRICA = 'WESTERN_AFRICA',
+    CARIBBEAN = 'CARIBBEAN',
+    CENTRAL_AMERICA = 'CENTRAL_AMERICA',
+    SOUTH_AMERICA = 'SOUTH_AMERICA',
+    NORTHERN_AMERICA = 'NORTHERN_AMERICA',
+    CENTRAL_ASIA = 'CENTRAL_ASIA',
+    EASTERN_ASIA = 'EASTERN_ASIA',
+    SOUTH_EASTERN_ASIA = 'SOUTH_EASTERN_ASIA',
+    SOUTHERN_ASIA = 'SOUTHERN_ASIA',
+    WESTERN_ASIA = 'WESTERN_ASIA',
+    EASTERN_EUROPE = 'EASTERN_EUROPE',
+    NORTHERN_EUROPE = 'NORTHERN_EUROPE',
+    SOUTHERN_EUROPE = 'SOUTHERN_EUROPE',
+    WESTERN_EUROPE = 'WESTERN_EUROPE',
+    OCEANIA = 'OCEANIA'
+}
+
+export enum Difficulty {
+  EASY = "EASY",
+  NORMAL = "NORMAL",
+  HARD = "HARD",
+}
+
+export enum SourceType {
+  BOOK = "BOOK",
+  ARTICLE = "ARTICLE",
+  VIDEO = "VIDEO",
+  AUDIO = "AUDIO",
+  TUTORIAL = "TUTORIAL",
+}
+
+export enum CityState {
+    VIBRANT = "Vibrant",
+    NORMAL = "Normal",
+    CORRUPT = "Corrupt",
+}
+
+
+export enum CompletedScore {
+    ZERO = 0,
+    TEN = 10,
+    TWENTY = 20 ,
+    THIRTY = 30,
+    FORTY = 40,
+    FIFTY = 50,
+    SIXTY = 60,
+    SEVENTY = 70,
+    EIGHTY = 80,
+    NINETY = 90,
+    HUNDRED = 100
+}
+
+export enum AssessmentType {
+    QUIZ = "QUIZ",
+    EXAM = "EXAM",
+    FLASHCARD = "FLASHCARD",
+    CHAT_QA = "CHAT_QA"
+}

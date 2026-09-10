@@ -18,6 +18,7 @@ cd kt-gracie/
 dfx help
 dfx canister --help
 ```
+
 ## Pre-requisites
 
 - dfx 0.31.0
@@ -28,7 +29,7 @@ dfx canister --help
 
 ### Node
 
-Ensure you have Node installed in WSL or your macOS. 
+Ensure you have Node installed in WSL or your macOS.
 
 If not, you can install it through nvm (node version manager) for both Linux and macOS, run the following:
 
@@ -73,6 +74,7 @@ dfx identity use <insert_name>
 ```
 
 To verify the list of identities available:
+
 ```bash
 dfx identity list
 ```
@@ -90,6 +92,7 @@ Through curl
 
 curl -fsSL cli.mops.one/install.sh | sh
 ```
+
 In your project's dfx.json, add mops as a packtool
 
 ```json
@@ -105,6 +108,7 @@ In your project's root directory, run the following command:
 ```bash
 mops install
 ```
+
 After running this, any toolchains or dependencies will be installed.
 
 **Note that the installation of mops will take some time. Approximately five minutes, or more depending on your system and network connection.**
