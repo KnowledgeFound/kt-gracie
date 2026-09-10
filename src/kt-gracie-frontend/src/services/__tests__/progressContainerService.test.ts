@@ -11,8 +11,7 @@ vi.mock(import("../../commons/utilts"), async (importOriginal) => {
 import {
     getScoreDetails,
     getTotalScore,
-    getMaxScore,
-    getProgressContainer
+    getMaxScore
 } from "../progressContainerService";
 
 import { getLocalStorage } from "../../commons/utilts";
@@ -31,6 +30,10 @@ describe("progressContainerService", () => {
                     subProgress: [
                         { score: 20, maxScore: 25, completed: true }
                     ],
+                    subProgressTeachings: [
+                        { teachingID: 1, topic: "Topic 1", completed: true },
+                        { teachingID: 2, topic: "Topic 2", completed: false }
+                    ],
                     achievments: []
                 },
                 {
@@ -41,6 +44,10 @@ describe("progressContainerService", () => {
                         { score: 4, maxScore: 5, completed: true },
                         { score: 5, maxScore: 5, completed: true },
                         { score: 5, maxScore: 5, completed: true }
+                    ],
+                    subProgressTeachings: [
+                        { teachingID: 3, topic: "Topic 3", completed: true },
+                        { teachingID: 4, topic: "Topic 4", completed: false }
                     ],
                     achievments: []
                 },
@@ -53,12 +60,20 @@ describe("progressContainerService", () => {
                         { score: 3, maxScore: 5, completed: true },
                         { score: 2, maxScore: 5, completed: true }
                     ],
+                    subProgressTeachings: [
+                        { teachingID: 5, topic: "Topic 5", completed: true },
+                        { teachingID: 6, topic: "Topic 6", completed: false }
+                    ],
                     achievments: []
                 },
                 {
                     knowledgeUnitID: "ku4",
                     subProgress: [
                         { score: 18, maxScore: 25, completed: true }
+                    ],
+                    subProgressTeachings: [
+                        { teachingID: 7, topic: "Topic 7", completed: true },
+                        { teachingID: 8, topic: "Topic 8", completed: false }
                     ],
                     achievments: []
                 }
@@ -67,52 +82,25 @@ describe("progressContainerService", () => {
 
         const totalMaxScore = getMaxScore();
         
-        expect(totalMaxScore).toBe(100);
-        
-        //Verify that service actually called getLocalStorage
-        expect(getLocalStorage).toHaveBeenCalled();
+        expect(totalMaxScore).toBe(108);
     });
 
-    it("should return the correct max score", () => {
-        const maxScore = getMaxScore();
+    
+    it("should return the correct total score", () => {
+        const totalScore = getTotalScore();
         
-        expect(typeof maxScore).toBe("number");
-        expect(maxScore).toBeGreaterThanOrEqual(0);
+        expect(typeof totalScore).toBe("number");
+        expect(totalScore).toBe(82); 
     });
 
     it("should return formatted score details", () => {
         const scoreDetails = getScoreDetails();
         
         expect(scoreDetails).toBeDefined();
-        expect(scoreDetails.currentScore).toBe(78);
-        expect(scoreDetails.maxScore).toBe(100);
-        expect(scoreDetails.percentage).toBe(78);
-        expect(scoreDetails.encouragementMessage).toBe("Solid effort—you’ve got real momentum!");
+        expect(scoreDetails.currentScore).toBe(82);
+        expect(scoreDetails.maxScore).toBe(108);
+        expect(scoreDetails.percentage).toBeCloseTo(75.93, 1);
+        expect(scoreDetails.encouragementMessage).toBe("Solid effort — you have got real momentum!");
     });
 
-    // it("should handle missing data gracefully (e.g., return 0)", () => {
-    //     (getLocalStorage as ReturnType<typeof vi.fn>).mockReturnValue(null);
-
-    //     const totalScore = getTotalScore();
-        
-    //     expect(totalScore).toBe(0); 
-    // });
-    
-    // it("should return a valid progress container", () => {
-    //     (getLocalStorage as ReturnType<typeof vi.fn>).mockReturnValue({
-    //         arr_progress: []
-    //     });
-
-    //     const progressContainer = getProgressContainer();
-        
-    //     //Properties you expect the container to have
-    //     expect(progressContainer).not.toBeNull();
-    // });
-
-    // it("should return the correct total score", () => {
-    //     const totalScore = getTotalScore();
-        
-    //     expect(typeof totalScore).toBe("number");
-    //     // expect(totalScore).toBe(); 
-    // });
 });
