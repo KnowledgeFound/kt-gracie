@@ -138,6 +138,80 @@ persistent actor Main {
                   options = ["Abuse of power for personal gain", "Honest behavior", "Transparency in government", "Accountability in public office"];
                   correctAnswerIndex = 0;
                   hint = ?("Think about the misuse of authority for personal benefit.");
+                },
+                {
+                  questionText = "Which term describes offering money or gifts to influence the decision of an official?";
+                  options = ["Whistleblowing", "Bribery", "Auditing", "Lobbying"];
+                  correctAnswerIndex = 1;
+                  hint = ?("Consider an illicit payment made under the table to secure a favorable outcome.");
+                },
+                {
+                  questionText = "What is nepotism in a workplace or government setting?";
+                  options = ["Hiring based strictly on merit", "Favoring relatives or friends regardless of qualifications", "Outsourcing work to external contractors", "Conducting anonymous performance reviews"];
+                  correctAnswerIndex = 1;
+                  hint = ?("It comes from the Latin word for 'nephew' and refers to family bias.");
+                },
+                {
+                  questionText = "What is embezzlement?";
+                  options = ["Stealing or misappropriating funds entrusted to your care", "Refusing to pay annual property taxes", "Failing to disclose political donations", "Accidentally misplacing government records"];
+                  correctAnswerIndex = 0;
+                  hint = ?("Focus on the violation of trust involving company or public money.");
+                },
+                {
+                  questionText = "What is the main purpose of an independent anti-corruption agency?";
+                  options = ["To manage national budget allocations", "To promote international trade partnerships", "To investigate and prevent corrupt practices without political interference", "To oversee municipal elections exclusively"];
+                  correctAnswerIndex = 2;
+                  hint = ?("Their core role is oversight, investigation, and enforcement free from outside control.");
+                },
+                {
+                  questionText = "A government official uses insider knowledge to buy property before a highway route is announced. This is an example of what?";
+                  options = ["Conflict of interest", "Freedom of information", "Public stewardship", "Civil disobedience"];
+                  correctAnswerIndex = 0;
+                  hint = ?("It occurs when personal interests collide with an official duty to the public.");
+                },
+                {
+                  questionText = "What role does a 'whistleblower' play in combating corruption?";
+                  options = ["Enforcing penalties on behalf of the judiciary", "Exposing illegal or unethical practices within an organization", "Drafting anti-bribery legislation", "Defending accused officials in court"];
+                  correctAnswerIndex = 1;
+                  hint = ?("They bring hidden misconduct into the light from the inside.");
+                }
+              ];
+            };
+            flashcard = null;
+          },
+          {
+            id = 2;
+            maxScore = 5;
+            pointScore = 1; // how much each answer to a question is worth
+            quiz = null;
+            flashcard = ?{
+              id = 1;
+              assessmentType = #FLASHCARD;
+              questions = [
+                {
+                  front = "What is corruption?";
+                  back = "Corruption is the abuse of entrusted power for private gain.";
+                  hint = ?("Think about the misuse of power for personal benefit.");
+                },
+                {
+                  front = "What is bribery?";
+                  back = "Bribery is offering, giving, receiving, or soliciting something of value to influence the actions of an official.";
+                  hint = ?("It involves something of value exchanged to influence an official's actions.");
+                },
+                {
+                  front = "What is nepotism?";
+                  back = "Nepotism is favoritism granted to relatives or friends, often by giving them jobs.";
+                  hint = ?("Think of favoritism toward family members or close friends.");
+                },
+                {
+                  front = "What is embezzlement?";
+                  back = "Embezzlement is the theft or misappropriation of funds placed in one's trust or belonging to one's employer.";
+                  hint = ?("It is the misuse or theft of money entrusted to someone.");
+                },
+                {
+                  front = "What is the role of an independent anti-corruption agency?";
+                  back = "Its role is to investigate and prevent corruption without political interference.";
+                  hint = ?("Focus on investigating and preventing corruption independently.");
                 }
               ];
             };

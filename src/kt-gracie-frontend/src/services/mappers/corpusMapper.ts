@@ -2,6 +2,8 @@ import type {
     Assessment as BackendAssessment,
     Corpus as BackendCorpus,
     KnowledgeUnit as BackendKnowledgeUnit,
+    Flashcard as BackendFlashcard,
+    FlashCardQuestion as BackendFlashcardQuestion,
     Quiz as BackendQuiz,
     QuizQuestion as BackendQuizQuestion,
     Source as BackendSource,
@@ -55,14 +57,36 @@ function mapQuiz(quiz: BackendQuiz) {
     };
 }
 
+function mapFlashcardQuestion(question: BackendFlashcardQuestion) {
+    return {
+        front: question.front,
+        back: question.back,
+        hint: unwrapOptional(question.hint),
+    };
+}
+
+function mapFlashcard(flashcard: BackendFlashcard) {
+    return {
+        id: Number(flashcard.id),
+        assessmentType: mapVariant<keyof typeof AssessmentType>(flashcard.assessmentType) as AssessmentType.FLASHCARD,
+        cards: flashcard.questions.map(mapFlashcardQuestion),
+    };
+}
+
 function mapAssessment(assessment: BackendAssessment) {
     const quiz = unwrapOptional(assessment.quiz);
+    const flashcard = unwrapOptional(assessment.flashcard);
+
+    if (quiz !== null && flashcard !== null) {
+        throw new Error(`Assessment ${assessment.id} cannot contain both a quiz and a flashcard`);
+    }
 
     return {
         id: Number(assessment.id),
         maxScore: Number(assessment.maxScore),
         pointScore: Number(assessment.pointScore),
         quiz: quiz === null ? null : mapQuiz(quiz),
+        flashcard: flashcard === null ? null : mapFlashcard(flashcard),
     };
 }
 
@@ -91,14 +115,4 @@ export function mapFromBackend(corpus: BackendCorpus): Corpus {
         additionalProperties: corpus.additionalProperties,
         knowledgeUnits: (corpus.knowledgeUnits ?? []).map(mapKnowledgeUnit),
     };
-}
-
-function getAssessmentType(assessment: BackendAssessment): AssessmentType | null {
-    const quiz = unwrapOptional(assessment.quiz);
-
-    if (quiz) {
-        return mapVariant<keyof typeof AssessmentType>(quiz.assessmentType) as AssessmentType;
-    }
-    
-    return null;
 }
