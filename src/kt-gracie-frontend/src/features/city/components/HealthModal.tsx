@@ -213,7 +213,7 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 											<Flame className="size-3 text-amber-500" />
 											<span className="text-xs font-semibold text-ink-mid">Content Score</span>
 										</div>
-										<span className="text-xs font-bold text-ink-deep">{contentScore} / 50</span>
+										<span className="text-xs font-bold text-ink-deep">{contentScore}/50</span>
 									</div>
 									<AnimatedBar pct={Math.min((contentScore / 50) * 100, 100)} colorClass="from-amber-400 to-orange-400" />
 								</div>

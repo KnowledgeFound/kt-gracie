@@ -69,7 +69,7 @@ export function getNumberOfModulesCompleted(): number {
 export function getNumberOfAssessmentsCompleted(): number {
     const progressContainer = getProgressContainer();
 
-    console.log("Progress Container:", progressContainer);
+    // console.log("Progress Container:", progressContainer);
 
     if (progressContainer) {
         return progressContainer.arr_progress.reduce((count, p) => {

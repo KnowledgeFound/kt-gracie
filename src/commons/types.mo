@@ -85,11 +85,13 @@ module Types{
         keywords: [Text];
     };
 
+    // An assessment can be either a quiz or a flashcard set.
     public type Assessment = {
         id: Nat;
         maxScore: Nat;
         pointScore: Nat;
         quiz: ?Quiz;
+        flashcard: ?Flashcard;
     };
 
     public type Quiz = {
@@ -102,6 +104,18 @@ module Types{
         questionText: Text;
         options: [Text];
         correctAnswerIndex: Nat;
+        hint: ?Text;
+    };
+
+    public type Flashcard = {
+        id: Nat;
+        assessmentType: {#FLASHCARD};
+        questions: [FlashCardQuestion];
+    };
+
+    public type FlashCardQuestion = {
+        front: Text;
+        back: Text;
         hint: ?Text;
     };
 
