@@ -85,11 +85,23 @@ export default function CityScene() {
 					let arr_subProgress : SubProgress [] = [];
 
 					knowledgeUnit.assessments.forEach((assessment) =>{
+						
 						if(assessment.quiz != null)
 						{
 							arr_subProgress.push({
 								assessmentID: assessment.id,
 								assessmentType: AssessmentType.QUIZ,
+								score: 0,
+								pointScore: assessment.pointScore,
+								maxScore: assessment.maxScore,
+								completed: false
+							});
+						}
+						else if(assessment.flashcard != null)
+						{
+							arr_subProgress.push({
+								assessmentID: assessment.id,
+								assessmentType: AssessmentType.FLASHCARD,
 								score: 0,
 								pointScore: assessment.pointScore,
 								maxScore: assessment.maxScore,
