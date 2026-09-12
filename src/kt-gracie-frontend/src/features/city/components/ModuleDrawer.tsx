@@ -4,6 +4,7 @@ import { X, ArrowRight, CheckCircle2, Clock, Zap, BookOpen } from 'lucide-react'
 import { useEffect, useState } from 'react';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
+import { useReadingLevel } from '@/features/settings';
 
 // const CITY_SRC = '/assets/city/city.png';
 
@@ -115,6 +116,7 @@ interface ModuleHeaderProps {
 function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
 	const Icon = module.icon;
 	const [loading, setLoading] = useState(false);
+	const { t } = useReadingLevel();
 
 	return (
 		<>
@@ -145,7 +147,7 @@ function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
 
 				{/* Description */}
 				<p className="mt-4 text-sm text-white leading-tight">
-					{module.description}
+					{t(module.description)}
 				</p>
 			</div>
 			{/* Video Frame */}
@@ -174,6 +176,7 @@ function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
 function ModuleBody({ module }: { module: Module }) {
+	const { t } = useReadingLevel();
 	return (
 		<section className="px-5 py-5 space-y-5 bg-white">
 			{/* Overview stats */}
@@ -205,7 +208,7 @@ function ModuleBody({ module }: { module: Module }) {
 					What You'll Learn
 				</h3>
 				<ol className="space-y-1.5">
-					{module.expectations.map((item, index) => (
+					{t(module.expectations).map((item, index) => (
 						<li
 							key={index}
 							className="

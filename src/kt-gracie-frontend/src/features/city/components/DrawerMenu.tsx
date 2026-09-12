@@ -18,11 +18,26 @@ import { useUser } from '@/features/auth';
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-	{ icon: Home,     label: 'City',        path: '/city',        description: 'Return to the city map'        },
-	{ icon: Trophy,   label: 'Leaderboard', path: '/leaderboard', description: 'See how you rank'              },
+	{
+		icon: Home,
+		label: 'City',
+		path: '/city',
+		description: 'Return to the city map',
+	},
+	{
+		icon: Trophy,
+		label: 'Leaderboard',
+		path: '/leaderboard',
+		description: 'See how you rank',
+	},
 	// { icon: Map,      label: 'Subjects',    path: '/subjects',    description: 'Browse all learning modules'   },
 	//{ icon: BookOpen, label: 'Assessments', path: '/',           description: 'Take a knowledge assessment'   },
-	{ icon: Settings, label: 'Settings',    path: '/settings',   description: 'Theme, guide audio and more'   },
+	{
+		icon: Settings,
+		label: 'Settings',
+		path: '/settings',
+		description: 'Theme, guide audio and more',
+	},
 ] as const;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -119,9 +134,7 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 									</div>
 								</div>
 							)}
-						</div>
-
-
+						</div>{' '}
 						{user && (
 							<motion.div
 								className="mx-4 mt-4 mb-1 flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-50 border border-brand-100"
@@ -146,7 +159,6 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 								</div>
 							</motion.div>
 						)}
-
 						{/* ── Nav items ─────────────────────────────────────── */}
 						<nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
 							<p className="px-3 pt-1 pb-2 text-[10px] font-black tracking-widest text-ink-subtle uppercase">
@@ -180,7 +192,6 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 								</motion.button>
 							))}
 						</nav>
-
 						{/* ── Footer ────────────────────────────────────────── */}
 						<div className="flex-shrink-0 px-3 py-4 border-t border-gray-100 space-y-1">
 							<button

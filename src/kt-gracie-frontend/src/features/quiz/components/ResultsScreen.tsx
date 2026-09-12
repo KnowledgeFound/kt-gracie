@@ -472,7 +472,7 @@ const ResultsScreen = ({
 			    DESKTOP  (md+) — side-by-side modal
 			═══════════════════════════════════════════════════════════ */}
 			<motion.div
-				className="hidden md:flex relative z-10 w-full max-w-4xl mx-4 max-h-[90vh] flex-row rounded-2xl overflow-hidden gap-2"
+				className="hidden md:flex relative z-10 w-full max-w-5xl mx-4 max-h-[95vh] flex-row rounded-2xl overflow-hidden gap-2"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"

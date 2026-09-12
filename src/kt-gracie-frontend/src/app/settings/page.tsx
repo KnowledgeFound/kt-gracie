@@ -12,6 +12,7 @@ import {
 	Check,
 	Cloud,
 	Cpu,
+	GraduationCap,
 	Palette,
 	SlidersHorizontal,
 	UserRound,
@@ -24,13 +25,14 @@ import {
 	AiPanel,
 	CityPanel,
 	GuidePanel,
+	LearningPanel,
 	useSettings,
 } from '@/features/settings';
 import '@/features/settings/settings.css';
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
-type TabId = 'appearance' | 'guide' | 'ai' | 'city' | 'account';
+type TabId = 'appearance' | 'learning' | 'guide' | 'ai' | 'city' | 'account';
 
 const TABS: {
 	id: TabId;
@@ -45,6 +47,13 @@ const TABS: {
 		blurb: 'Theme, accent and readability',
 		icon: Palette,
 		Panel: AppearancePanel,
+	},
+	{
+		id: 'learning',
+		label: 'Learning',
+		blurb: 'Reading level of lessons and districts',
+		icon: GraduationCap,
+		Panel: LearningPanel,
 	},
 	{
 		id: 'guide',

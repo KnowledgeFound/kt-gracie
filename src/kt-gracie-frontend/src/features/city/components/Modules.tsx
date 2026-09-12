@@ -158,7 +158,12 @@ interface ProgressRingProps {
 	className?: string;
 }
 
-function ProgressRing({ pct, size, stroke, className = '' }: ProgressRingProps) {
+function ProgressRing({
+	pct,
+	size,
+	stroke,
+	className = '',
+}: ProgressRingProps) {
 	const r = (size - stroke) / 2;
 	const circ = 2 * Math.PI * r;
 	const dash = circ * (pct / 100);
@@ -230,7 +235,9 @@ function MapButtonInner({
 			</span>
 			<span
 				className={`font-medium text-[11px] leading-tight md:text-base transition-colors ${
-					isActive ? 'text-white' : 'text-ink-deep group-hover:text-white'
+					isActive
+						? 'text-white'
+						: 'text-ink-deep group-hover:text-white dark:text-black'
 				}`}
 			>
 				{module.name}
@@ -239,8 +246,8 @@ function MapButtonInner({
 				<span
 					className={`md:ml-0.5 px-1 md:px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold transition-colors shrink-0 ${
 						isActive
-							? 'bg-white/20 text-white'
-							: 'bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white'
+							? 'bg-white/20 text-white '
+							: 'bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white dark:text-black'
 					}`}
 				>
 					{pct}%

@@ -3,23 +3,40 @@ import { Volume2, VolumeX } from 'lucide-react';
 import {
 	getIntroLastShown,
 	isIntroDue,
+	leveled,
 	markIntroShown,
 	speak,
 	speechSupported,
 	stopSpeaking,
+	useReadingLevel,
 	useSettings,
+	type Leveled,
 } from '@/features/settings';
 import { getModule, getModuleProgress } from '../constants';
 import type { Module } from '../types';
 
 const GRACIE_VIDEO_SRC = '/assets/talking-gracie.webm';
 
-// Short intro script. Each entry is one speech bubble; the user advances with
-// the Continue button. Swap for dynamic/localized content later.
-const SCRIPT = [
-	"Hi, I'm Gracie! I'm here to guide you through your anti-corruption city.",
-	'Your city is in danger of corruption. If you do well in the quizzes and games, you will save your city. Do poorly and it collapses into corruption. Keep that health meter high!',
-	"Click on any city district and I'll guide you through each module.",
+// Short intro script. Each entry is one speech bubble, written per reading
+// level; the user advances with the Continue button. Swap for dynamic/localized
+// content later. Keep the tone warm — the city grows with the learner, it is
+// never under threat.
+const SCRIPT: Leveled<string>[] = [
+	leveled(
+		"Hi, I'm Gracie! I'm here to show you around your city.",
+		"Hi, I'm Gracie! I'm here to guide you through your Integrity City.",
+		"Hi, I'm Gracie. I'll be your guide through Integrity City and its five districts.",
+	),
+	leveled(
+		'Your city grows when you learn! Play the quizzes and games and watch it light up. Keep that health meter high!',
+		'Your city grows every time you learn. Do well in the quizzes and games and watch it light up. Keep that health meter high!',
+		'The city reflects your progress: every lesson and assessment you complete raises its health and brings its districts to life.',
+	),
+	leveled(
+		"Tap any district and I'll show you what to learn there.",
+		"Click on any city district and I'll guide you through each module.",
+		'Select any district to open its module. I will brief you on what it covers.',
+	),
 ];
 
 // The talking loop plays this many times per message, then stops.
@@ -44,11 +61,11 @@ type Phase = 'enter' | 'center' | 'docked';
  * What Gracie says about the district the user just clicked — the module's own
  * copy from constants.ts, plus where they left off if they have started it.
  */
-function moduleBriefing(module: Module): string {
+function moduleBriefing(module: Module, description: string): string {
 	const progress = getModuleProgress(module.id);
 	const intro = `This is the ${module.name} district — built for ${module.audience}.`;
 
-	if (!progress) return `${intro} ${module.description}`;
+	if (!progress) return `${intro} ${description}`;
 
 	return `${intro} You're ${progress.percentComplete}% of the way through. Next up: ${progress.currentLesson.title}.`;
 }
@@ -73,6 +90,7 @@ interface Props {
  */
 export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 	const { settings, update } = useSettings();
+	const { t } = useReadingLevel();
 	const guide = settings.guide;
 	const [step, setStep] = useState(0);
 	const [phase, setPhase] = useState<Phase>('enter');
@@ -148,10 +166,10 @@ export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 	// with nothing open she holds on the "click a district" prompt rather than
 	// whichever line the user skipped out of.
 	const message = activeModule
-		? moduleBriefing(activeModule)
+		? moduleBriefing(activeModule, t(activeModule.description))
 		: introRunning
-		? SCRIPT[step]
-		: SCRIPT[SCRIPT.length - 1];
+		? t(SCRIPT[step])
+		: t(SCRIPT[SCRIPT.length - 1]);
 
 	// Replay the talking clip whenever the shown message changes.
 	const messageKey = activeModule

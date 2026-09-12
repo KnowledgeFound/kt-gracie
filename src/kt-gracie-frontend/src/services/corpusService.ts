@@ -6,6 +6,7 @@ import { AssessmentDifficulty, Module, ModuleAssessment } from "@/features/city/
 import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
 import { resolveImage } from "./mappers/imageMapper";
+import { withLeveledCopy } from "./mappers/readingLevelMapper";
 
 export async function getCorpus(): Promise<Corpus> {
     const persistedCorpus = await getPersistedCorpus();
@@ -79,7 +80,7 @@ export async function getAllModules(): Promise<Module[]> {
                 progress: null // resolve later
             }
 
-            modules.push(module);
+            modules.push(withLeveledCopy(module));
         });
     }
 

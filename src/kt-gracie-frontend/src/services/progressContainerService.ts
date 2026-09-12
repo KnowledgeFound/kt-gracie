@@ -18,6 +18,21 @@ export function persistProgressContainer(progressContainer: ProgressContainer): 
     setLocalStorage(getProgressContainerStorageKey(), progressContainer);
 }
 
+/**
+ * Progress persisted by an earlier release may predate a field (for example
+ * `subProgressTeachings` was added after `subProgress`). Fill any missing
+ * arrays so the score helpers never call `.reduce` or read `.length` of
+ * `undefined`.
+ */
+function normalizeProgress(progress: Partial<Progress>): Progress {
+    return {
+        ...progress,
+        subProgress: Array.isArray(progress.subProgress) ? progress.subProgress : [],
+        subProgressTeachings: Array.isArray(progress.subProgressTeachings) ? progress.subProgressTeachings : [],
+        achievments: Array.isArray(progress.achievments) ? progress.achievments : [],
+    } as Progress;
+}
+
 export function getProgressContainer(): ProgressContainer | null {
     const storedProgressContainer = getLocalStorage(getProgressContainerStorageKey());
 
@@ -26,7 +41,12 @@ export function getProgressContainer(): ProgressContainer | null {
         typeof storedProgressContainer === "object" &&
         Array.isArray(storedProgressContainer.arr_progress)
     ) {
-        return storedProgressContainer as ProgressContainer;
+        return {
+            ...storedProgressContainer,
+            arr_progress: storedProgressContainer.arr_progress
+                .filter((p: unknown) => p && typeof p === "object")
+                .map((p: Partial<Progress>) => normalizeProgress(p)),
+        } as ProgressContainer;
     }
 
     return null;

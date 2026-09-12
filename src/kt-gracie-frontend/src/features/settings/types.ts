@@ -71,6 +71,25 @@ export interface AiSettings {
 	showDebug: boolean;
 }
 
+/**
+ * How the app phrases its learning content.
+ *
+ *  - `simple`   — short sentences and everyday words, for learners still
+ *                 building their English or new to the subject
+ *  - `standard` — the default wording
+ *  - `advanced` — technical, policy and legal vocabulary for learners who
+ *                 already know the field
+ */
+export type ReadingLevel = 'simple' | 'standard' | 'advanced';
+
+/** A reading level, or `auto` to pick one from the learner's profile. */
+export type ReadingLevelSetting = ReadingLevel | 'auto';
+
+export interface LearningSettings {
+	/** Which wording of every lesson, district and Gracie line is shown. */
+	readingLevel: ReadingLevelSetting;
+}
+
 export interface CitySettings {
 	/** Drifting PixiJS cloud layer. */
 	clouds: boolean;
@@ -85,6 +104,7 @@ export interface AppSettings {
 	guide: GuideSettings;
 	city: CitySettings;
 	ai: AiSettings;
+	learning: LearningSettings;
 }
 
 /** Sections are patched one at a time — see `useSettings().update`. */

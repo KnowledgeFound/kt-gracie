@@ -13,6 +13,7 @@ import {
 	Target,
 } from 'lucide-react';
 import { useOptionalUser } from '@/features/auth';
+import { useReadingLevel } from '@/features/settings';
 import type {
 	Module,
 	ModuleAssessment,
@@ -85,6 +86,7 @@ function AssessmentCard({
 	selected,
 	onSelect,
 }: AssessmentCardProps) {
+	const { t } = useReadingLevel();
 	const isLocked = assessment.status === 'locked';
 	const isCompleted = assessment.status === 'completed';
 	const statusInfo = statusConfig[assessment.status];
@@ -146,7 +148,7 @@ function AssessmentCard({
 					<p
 						className={`text-xs leading-relaxed mb-2.5 ${isLocked ? 'text-gray-300' : 'text-ink-muted'}`}
 					>
-						{assessment.description}
+						{t(assessment.description)}
 					</p>
 					<div
 						className={`flex items-center gap-3 text-[11px] ${isLocked ? 'text-gray-300' : 'text-ink-subtle'}`}
@@ -194,6 +196,7 @@ type MobileTab = 'overview' | 'assessments';
 const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 	const user = useOptionalUser();
 	const navigate = useNavigate();
+	const { t } = useReadingLevel();
 
 	const assessments = module?.assessments ?? [];
 	const [selectedIndex, setSelectedIndex] = useState(
@@ -208,10 +211,10 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 
 	const highScore = 100; // update later with actual high score from user data
 	const lastTaken = 100; // update later with actual last taken date from user data
-	const lastDate = new Date(); 
+	const lastDate = new Date();
 	const accuracy = 85; // update later with actual accuracy from user data
 
-	const objectives = module?.objectives ?? FALLBACK_OBJECTIVES;
+	const objectives = module ? t(module.objectives) : FALLBACK_OBJECTIVES;
 
 	const itemVariants: Variants = {
 		hidden: { opacity: 0, y: 10 },
@@ -252,7 +255,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 				{/* Description */}
 				{module?.description && (
 					<p className="text-ink-muted text-xs leading-relaxed mb-4">
-						{module.description}
+						{t(module.description)}
 					</p>
 				)}
 
@@ -307,7 +310,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					<Medal className="size-5 text-amber-500 flex-shrink-0" />
 					<div className="flex-1 min-w-0">
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase">
-							Previous Best · 
+							Previous Best ·
 						</p>
 						<p className="text-sm font-black text-ink-deep">
 							{accuracy}% accuracy
@@ -348,7 +351,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 			    Full-screen sheet with tab switcher
 			═══════════════════════════════════════════════════════════ */}
 			<motion.div
-				className="md:hidden relative z-10 w-full h-[100dvh] flex flex-col bg-white"
+				className="md:hidden relative z-10 w-full h-[100dvh] max-w-5xl debug flex flex-col bg-white"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"
