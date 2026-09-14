@@ -60,7 +60,7 @@ export function templateReply(kind: string, f: LearnerFacts): string | null {
 		}
 		case 'tokens':
 			if (f.tokensJustEarned == null) return null;
-			return `${n}, you just earned ${f.tokensJustEarned} Knowledge Tokens, taking your balance to ${f.tokens}. They track what you have actually mastered, so they only ever go up.`;
+			return `${n}, you just earned ${f.tokensJustEarned} Knowledge Tokens, taking your balance to ${f.tokens}. Keep finishing assessments to earn more.`;
 		case 'quizprompt':
 			return `${n}, quick check before we move on: a supplier offers a council officer match tickets a week before a contract is awarded. Is that a bribe, and what would you need to know to be sure?`;
 		case 'outofscope':
