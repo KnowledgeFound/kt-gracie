@@ -22,6 +22,7 @@ export { speak, stopSpeaking, speechSupported, useVoices } from './speech';
 export { default as AppearancePanel } from './components/AppearancePanel';
 export { default as GuidePanel } from './components/GuidePanel';
 export { default as CityPanel } from './components/CityPanel';
+export { default as AiPanel } from './components/AiPanel';
 export { default as AccountPanel } from './components/AccountPanel';
 export { default as SettingsCard } from './components/SettingsCard';
 export { default as SettingRow } from './components/SettingRow';

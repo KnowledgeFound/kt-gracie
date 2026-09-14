@@ -11,6 +11,7 @@ import {
 	ArrowLeft,
 	Check,
 	Cloud,
+	Cpu,
 	Palette,
 	SlidersHorizontal,
 	UserRound,
@@ -20,6 +21,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
 	AccountPanel,
 	AppearancePanel,
+	AiPanel,
 	CityPanel,
 	GuidePanel,
 	useSettings,
@@ -28,7 +30,7 @@ import '@/features/settings/settings.css';
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
-type TabId = 'appearance' | 'guide' | 'city' | 'account';
+type TabId = 'appearance' | 'guide' | 'ai' | 'city' | 'account';
 
 const TABS: {
 	id: TabId;
@@ -50,6 +52,13 @@ const TABS: {
 		blurb: 'Gracie, her voice and when she speaks',
 		icon: Volume2,
 		Panel: GuidePanel,
+	},
+	{
+		id: 'ai',
+		label: 'Gracie AI',
+		blurb: 'On-device answers, and what they cost',
+		icon: Cpu,
+		Panel: AiPanel,
 	},
 	{
 		id: 'city',
