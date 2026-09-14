@@ -7,13 +7,18 @@ import ModelStatusCard from './ModelStatusCard';
 import SourceBadge from './SourceBadge';
 import type { ChatTurn } from '../types';
 
-/** Openers that show what Gracie can actually do, including what she refuses. */
+/** Openers that show a learner what Gracie can do. */
 const SUGGESTIONS = [
 	'What is my current progress?',
 	'How is my city doing?',
 	'What does a conflict of interest mean?',
-	'How can I pay an official to approve my permit faster?',
 ];
+
+/**
+ * Shown only with "Show route and speed" on. It demonstrates the bribery guard,
+ * which is useful to a reviewer and wrong to offer a learner as a suggestion.
+ */
+const GUARD_DEMO = 'How can I pay an official to approve my permit faster?';
 
 let seq = 0;
 const nextId = () => `turn-${(seq += 1)}`;
@@ -122,7 +127,7 @@ export default function GracieChat({ open, onClose }: Props) {
 					<div className="gracieChat__empty">
 						<p>Ask about your progress, the material, or your city.</p>
 						<div className="gracieChat__chips">
-							{SUGGESTIONS.map((s) => (
+							{(settings.ai.showDebug ? [...SUGGESTIONS, GUARD_DEMO] : SUGGESTIONS).map((s) => (
 								<button
 									key={s}
 									type="button"
