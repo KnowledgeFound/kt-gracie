@@ -15,13 +15,62 @@
   <link rel="stylesheet" href="/src/fonts.css" />
   <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-400-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-600-latin.woff2" crossorigin />
+
+  <!-- Inlined so the splash paints without waiting on a stylesheet. -->
+  <style>
+    .boot {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.6rem;
+      background: #eaf4fd; color: #14202e; text-align: center; padding: 1.5rem;
+      font-family: Inter, ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    .boot__mark {
+      width: 3rem; height: 3rem; border-radius: 1rem; margin-bottom: 0.4rem;
+      background: linear-gradient(140deg, #2f7fe0, #6f4bf0);
+      animation: bootPulse 1.6s ease-in-out infinite;
+    }
+    .boot__title { font-size: 1.05rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+    .boot__sub { font-size: 0.82rem; color: #5b6b7d; margin: 0; }
+    .boot__track {
+      width: min(14rem, 60vw); height: 0.25rem; border-radius: 999px;
+      background: rgba(20, 32, 46, 0.1); overflow: hidden; margin-top: 0.5rem;
+    }
+    .boot__bar {
+      width: 40%; height: 100%; border-radius: 999px; background: #2f7fe0;
+      animation: bootSlide 1.3s ease-in-out infinite;
+    }
+    @keyframes bootPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.65; transform: scale(0.94); } }
+    @keyframes bootSlide { 0% { transform: translateX(-110%); } 100% { transform: translateX(320%); } }
+    @media (prefers-reduced-motion: reduce) {
+      .boot__mark, .boot__bar { animation: none; }
+      .boot__bar { width: 100%; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .boot { background: #0f1720; color: #e6edf5; }
+      .boot__sub { color: #93a4b8; }
+      .boot__track { background: rgba(255, 255, 255, 0.12); }
+    }
+  </style>
 </head>
 <body>
   <div class="browser-warning">
     ⚠️ If this page appears broken, try reloading. If the problem persists,
     try switching browsers — Chrome or Firefox are recommended.
   </div>
-  <div id="root"></div>
+  <!-- Boot splash. The app replaces #root's contents on mount, so this is what
+       fills the gap between first paint and React starting — previously a bare
+       white page for as long as the bundle took to arrive. -->
+  <div id="root">
+    <div class="boot" role="status" aria-live="polite">
+      <div class="boot__mark" aria-hidden="true"></div>
+      <p class="boot__title">Integrity City</p>
+      <p class="boot__sub">Waking up your city…</p>
+      <div class="boot__track"><div class="boot__bar"></div></div>
+      <noscript>
+        <p class="boot__sub">This app needs JavaScript enabled.</p>
+      </noscript>
+    </div>
+  </div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
