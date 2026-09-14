@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { SendHorizonal, X } from 'lucide-react';
 import { useGracieAI } from '../context';
 import { useLearnerFacts } from '../hooks/useLearnerFacts';
-import { useSettings } from '@/features/settings';
+import { speak, speechSupported, stopSpeaking, useSettings } from '@/features/settings';
 import ModelStatusCard from './ModelStatusCard';
 import SourceBadge from './SourceBadge';
 import type { ChatTurn } from '../types';
@@ -38,6 +38,7 @@ interface Props {
 export default function GracieChat({ open, onClose }: Props) {
 	const { ask, status, mode } = useGracieAI();
 	const { settings } = useSettings();
+	const guide = settings.guide;
 	const facts = useLearnerFacts();
 	const [turns, setTurns] = useState<ChatTurn[]>([]);
 	const [draft, setDraft] = useState('');
@@ -54,6 +55,11 @@ export default function GracieChat({ open, onClose }: Props) {
 	useEffect(() => {
 		listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
 	}, [turns, streaming]);
+
+	// Closing the chat silences her mid-sentence rather than reading on.
+	useEffect(() => {
+		if (!open) stopSpeaking();
+	}, [open]);
 
 	useEffect(() => {
 		if (!open) return;
@@ -74,6 +80,11 @@ export default function GracieChat({ open, onClose }: Props) {
 			try {
 				const reply = await ask(trimmed, facts, (soFar) => setStreaming(soFar));
 				setTurns((prev) => [...prev, { ...reply, id: nextId(), ask: trimmed, at: Date.now() }]);
+				// Same voice and switch as her guide lines, so "Read lines aloud"
+				// means every line she says, not only the scripted ones.
+				if (guide.audio && speechSupported) {
+					speak(reply.text, { voiceURI: guide.voiceURI, pace: guide.pace, volume: guide.volume });
+				}
 			} catch (err) {
 				setTurns((prev) => [
 					...prev,
@@ -93,7 +104,7 @@ export default function GracieChat({ open, onClose }: Props) {
 				setBusy(false);
 			}
 		},
-		[ask, busy, facts],
+		[ask, busy, facts, guide],
 	);
 
 	if (!open) return null;
