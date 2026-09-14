@@ -24,6 +24,7 @@ dist/
 # test artifacts
 test-results/
 playwright-report/
+.screenshots/
 coverage/
 
 # environment variables

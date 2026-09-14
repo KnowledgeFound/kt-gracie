@@ -5,15 +5,16 @@ import path from "node:path";
  * AI Gracie (issue #50), end to end.
  *
  * Every test saves screenshots so a reviewer can see each path without
- * running the branch. They land in test-results/gracie-ai-shots/ (gitignored),
- * or in GRACIE_SHOTS_DIR when set.
+ * running the branch. They land in e2e/.screenshots/gracie-ai/ (gitignored),
+ * or in GRACIE_SHOTS_DIR when set. Not under test-results/: Playwright empties
+ * that folder on every run, so running one test would delete the others' shots.
  *
  * No local replica is needed: the learner profile, settings and quiz corpus
  * all live in the browser. The one slow test downloads the ~229 MB model and
  * only runs with GRACIE_E2E_MODEL=1.
  */
 
-const SHOTS = process.env.GRACIE_SHOTS_DIR ?? path.join("test-results", "gracie-ai-shots");
+const SHOTS = process.env.GRACIE_SHOTS_DIR ?? path.join("e2e", ".screenshots", "gracie-ai");
 
 const shot = (page: Page, name: string) =>
     page.screenshot({ path: path.join(SHOTS, `${name}.png`) });
