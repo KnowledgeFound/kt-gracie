@@ -10,9 +10,11 @@
   <link rel="icon" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
 
-  <!-- Google Fonts preconnect (fonts loaded via index.css @import) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Self-hosted webfonts. Served from /fonts so they survive the cross-origin
+       isolation Gracie's on-device model needs, and so the app works offline. -->
+  <link rel="stylesheet" href="/src/fonts.css" />
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-600-latin.woff2" crossorigin />
 </head>
 <body>
   <div class="browser-warning">
