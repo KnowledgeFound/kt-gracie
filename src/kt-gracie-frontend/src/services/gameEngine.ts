@@ -1,1 +1,6 @@
-// Where the Magic happens
+// Where the Magic happen
+
+export function generateQuizGame()
+{
+    
+}

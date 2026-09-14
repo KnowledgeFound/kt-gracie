@@ -17,6 +17,9 @@ persistent actor Main {
 
   transient let SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
   transient let SUBJECT_NOT_CREATED = "subject not created";
+  transient let GRACIE_INTRODUCTION = "GRACIE introduction";
+  transient let COURSE_INTRODUCTION = "course introduction";
+
   var subjectIdCounter: Nat = 0;
 
   public query func greet(name : Text) : async Text {
@@ -122,6 +125,12 @@ persistent actor Main {
             topic = "What is Corruption?";
             difficulty = #EASY;
             keywords = ["corruption", "definition", "Introduction to Corruption"];
+            content = {
+              name = "What is Corruption?";
+              contentType = #ARTICLE;
+              url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
+              description = "An article by the United Nations Office on Drugs and Crime (UNODC) that provides a comprehensive overview of corruption, its forms, and its impact on society.";
+            };
           }
         ];
         assessments = [
@@ -218,6 +227,27 @@ persistent actor Main {
           }
         ];
         tokenReward = 10;
+        summary = {
+          id = 1;
+          inforgraphic = ?{
+            name = "Corruption Overview";
+            contentType = #INFORGRAPHIC;
+            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+          };
+          slideDeck = ?{
+            name = "Understanding Corruption";
+            contentType = #SLIDEDECK;
+            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+          };
+          podcast = ?{
+            name = "The Corruption Podcast";
+            contentType = #PODCAST;
+            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+          };  
+        };
       }
     ];
   };
