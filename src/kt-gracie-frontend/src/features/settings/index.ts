@@ -35,6 +35,8 @@ export type {
 	AppearanceSettings,
 	GuideSettings,
 	CitySettings,
+	AiSettings,
+	GracieBrain,
 	ThemeMode,
 	ResolvedTheme,
 	AccentId,

@@ -44,6 +44,13 @@ export const DEFAULT_SETTINGS: AppSettings = {
 		balloonCursor: true,
 		floatingDistricts: true,
 	},
+	ai: {
+		// Robot by default. Intelligence mode pulls a ~229MB model, which is not
+		// something to spend on a learner's connection without asking.
+		brain: 'robot',
+		preload: false,
+		showDebug: false,
+	},
 };
 
 // ─── Option tables (label + blurb for the settings UI) ───────────────────────
