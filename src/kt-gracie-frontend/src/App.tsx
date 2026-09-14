@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { UserProvider, useOptionalUser } from '@/features/auth';
 import { SettingsProvider } from '@/features/settings';
+import { GracieAIProvider } from '@/features/gracie-ai';
 import RootLayout from './app/layout';
 import HomePage from './app/home/page';
 import QuizPage from './app/quiz/page';
@@ -17,6 +18,7 @@ import CityScene from './app/city/page';
 import SubjectPage from './app/subject/page';
 import SettingsPage from './app/settings/page';
 import { TestProgress } from './test/TestProgress';
+import { TestGracieAI } from './test/TestGracieAI';
 import TestSubject from './test/TestSubject';
 
 // ─── Protected route guard ────────────────────────────────────────────────────
@@ -49,12 +51,14 @@ const NotFound = () => (
 export default function App() {
 	return (
 		<SettingsProvider>
+			<GracieAIProvider>
 			<UserProvider>
 				<BrowserRouter>
 					<Routes>
 						<Route element={<RootLayout />}>
 							{/* Test routes */}
 							<Route path="/tests/progress" element={<TestProgress />} />
+							<Route path="/tests/gracie-ai" element={<TestGracieAI />} />
 							<Route path="/tests/subject" element={<TestSubject />} />
 
 							{/* Public routes */}
@@ -76,6 +80,7 @@ export default function App() {
 					</Routes>
 				</BrowserRouter>
 			</UserProvider>
+			</GracieAIProvider>
 		</SettingsProvider>
 	);
 }
