@@ -51,6 +51,26 @@ export interface GuideSettings {
 	districtBriefings: boolean;
 }
 
+/**
+ * Which Gracie brain answers. See issue #50 (AI Gracie Phase 1).
+ *
+ *  - `robot`        — scripted replies only; no download, works everywhere.
+ *  - `intelligence` — a small model runs in this browser tab and writes her
+ *                     wording. Costs a one-off download and some memory.
+ */
+export type GracieBrain = 'robot' | 'intelligence';
+
+export interface AiSettings {
+	/** Which brain to use. `robot` by default — Intelligence mode is opt-in
+	 *  because it downloads a model. */
+	brain: GracieBrain;
+	/** Load the model as soon as the city opens, rather than on first question. */
+	preload: boolean;
+	/** Show the route and speed strip under each reply. Off for learners, on
+	 *  when demonstrating how the thing works. */
+	showDebug: boolean;
+}
+
 export interface CitySettings {
 	/** Drifting PixiJS cloud layer. */
 	clouds: boolean;
@@ -64,6 +84,7 @@ export interface AppSettings {
 	appearance: AppearanceSettings;
 	guide: GuideSettings;
 	city: CitySettings;
+	ai: AiSettings;
 }
 
 /** Sections are patched one at a time — see `useSettings().update`. */

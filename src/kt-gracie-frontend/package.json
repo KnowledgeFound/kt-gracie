@@ -15,13 +15,14 @@
     "@pixi/react": "^7.1.2",
     "@pixi/unsafe-eval": "^7.4.3",
     "@tanstack/react-query": "^5.99.0",
+    "@wllama/wllama": "^3.6.1",
     "classnames": "^2.5.1",
     "framer-motion": "^11.0.0",
     "lucide-react": "^1.16.0",
+    "pixi.js": "^7.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.1",
-    "pixi.js": "^7.4.3",
     "zustand": "^5.0.12"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@ import {
 	QuizScreen,
 	ResultsScreen,
 } from '@/features/quiz';
+import { GracieFeedback } from '@/features/gracie-ai';
 
 /**
  * Quiz route — /quiz/:id
@@ -77,6 +78,22 @@ export default function QuizPage() {
 						/>
 					)}
 				</AnimatePresence>
+
+				{/* Gracie's read on the result. The score itself is stated from the
+				    quiz data, never from the model — only the closing line is
+				    generated, and only in Intelligence mode. */}
+				{(quiz.screen === 'results' || quiz.screen === 'explanation') && (
+					<div className="mx-auto max-w-3xl px-4 pb-10">
+						<GracieFeedback
+							title="Gracie's read"
+							ask={`I scored ${quiz.score} out of ${quiz.quizQuestions.length} on the quiz.`}
+							facts={{
+								quizScore: quiz.score,
+								quizTotal: quiz.quizQuestions.length,
+							}}
+						/>
+					</div>
+				)}
 			</div>
 		</div>
 	);

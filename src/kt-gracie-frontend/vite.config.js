@@ -18,6 +18,15 @@ export default defineConfig({
     },
   },
   server: {
+    // wllama's multi-threaded WASM build needs SharedArrayBuffer, which the
+    // browser only exposes on a cross-origin-isolated page. It matters most on
+    // devices with no WebGPU, where multi-thread is roughly 3x single-thread.
+    // Safe now that the webfonts are served from this origin — a cross-origin
+    // stylesheet would be blocked by COEP.
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
     proxy: {
       "/api": {
         target: "http://127.0.0.1:4943",
