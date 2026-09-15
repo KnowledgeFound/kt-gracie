@@ -104,13 +104,19 @@ persistent actor Main {
     typeOfObject = "object";
     additionalProperties = false;
     numberOfModules = 5;
-    numberOfAssessments = 10; // 2 assessments per module, 5 modules
+    numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
       {
         id = "KU-001";
         topic = "Introduction to Corruption";
         difficulty = #EASY;
         prerequisites = [];
+        learningObjectives = [
+          "Define corruption and its various forms.",
+          "Understand the impact of corruption on society.",
+          "Identify common examples of corrupt practices."
+        ];
+        duration = "30 minutes";
         sources = [
           {
             id = 1;

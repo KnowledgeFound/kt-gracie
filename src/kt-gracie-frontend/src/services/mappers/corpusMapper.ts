@@ -112,6 +112,8 @@ function mapKnowledgeUnit(knowledgeUnit: BackendKnowledgeUnit) {
         topic: knowledgeUnit.topic,
         difficulty: mapVariant<keyof typeof Difficulty>(knowledgeUnit.difficulty) as Difficulty,
         prerequisites: knowledgeUnit.prerequisites,
+        learningObjectives: knowledgeUnit.learningObjectives,
+        duration: knowledgeUnit.duration,
         sources: knowledgeUnit.sources.map(mapSource),
         teachings: knowledgeUnit.teachings.map(mapTeaching),
         assessments: knowledgeUnit.assessments.map(mapAssessment),
