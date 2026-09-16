@@ -7,19 +7,22 @@ import { getUser } from "./userServices";
 import { AssessmentType, Difficulty, SourceType } from "../ENUMS/enums";
 
 /**
- * Shuffles an array of objects using the Fisher-Yates algorithm.
+ * Returns 'numQuestions' random, non-repeating elements from input array, in shuffled order.
+ * Only performs 'numQuestions' swaps instead of shuffling the entire array — more efficient
  * Returns a new array to avoid mutating the original.
  */
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
 
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+function shuffleArray<T>(array: T[], numQuestions: number, rng: () => number = Math.random): T[] {
+  const result = [...array];
+  const n = Math.min(numQuestions, result.length);
 
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  for (let i = 0; i < n; i++) {
+    const j = i + Math.floor(rng() * (result.length - i));
+
+    [result[i], result[j]] = [result[j], result[i]];
   }
 
-  return shuffled;
+  return result.slice(0, n);
 }
 
 interface AssessmentFilter {
@@ -89,24 +92,25 @@ function getFlashCards(
 
 export async function quizQuestionRandomiser(
   numQuestions: number,
-  filter: AssessmentFilter & { quizId?: number } = {}
+  filter: AssessmentFilter & { quizId?: number } = {},
+  rng: () => number = Math.random
 ): Promise<QuizQuestion[]> {
   const corpus = await getCorpus();
   const quizQuestions = getQuizQuestions(corpus, filter);
-  const num = Math.min(numQuestions, quizQuestions.length);
 
-  return shuffleArray(quizQuestions).slice(0, num);
+  return shuffleArray(quizQuestions, numQuestions, rng);
 }
 
 export async function flashCardRandomiser(
   numQuestions: number,
-  filter: AssessmentFilter & { flashcardId?: number } = {}
+  filter: AssessmentFilter & { flashcardId?: number } = {},
+  rng: () => number = Math.random
 ): Promise<Card[]> {
   const corpus = await getCorpus();
   const flashCards = getFlashCards(corpus, filter);
   const num = Math.min(numQuestions, flashCards.length);
 
-  return shuffleArray(flashCards).slice(0, num);
+  return shuffleArray(flashCards, numQuestions, rng);
 }
 
 
