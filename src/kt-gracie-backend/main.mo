@@ -142,7 +142,7 @@ persistent actor Main {
         assessments = [
           {
             id = 1;
-            maxScore = 5;
+            maxScore = 7;
             pointScore = 1; // how much each answer to a question is worth
             quiz = ?{
               id = 1;
