@@ -62,12 +62,12 @@ export type QuizQuestion = {
 export type FlashCard = {
   id: number;
   assessmentType: AssessmentType.FLASHCARD;
-  cards: Card[];
+  cards: FlashcardQuestion[];
 };
 
-export type Card = {
-  question: string;
-  answer: string;
+export type FlashcardQuestion = {
+  front: string;
+  back: string;
   hint: string | null;
 }
 

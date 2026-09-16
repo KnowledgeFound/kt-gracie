@@ -1,5 +1,5 @@
 import { getCorpus } from "./corpusService";
-import { Corpus, QuizQuestion, Card } from "@/types/types";
+import { Corpus, QuizQuestion, FlashcardQuestion } from "@/types/types";
 
 /**
  * Returns 'numQuestions' random, non-repeating elements from input array, in shuffled order.
@@ -52,8 +52,8 @@ function getQuizQuestions(
 function getFlashCards(
   corpus: Corpus,
   filter: AssessmentFilter & { flashcardId?: number } = {}
-): Card[] {
-  const flashCards: Card[] = [];
+): FlashcardQuestion[] {
+  const flashCards: FlashcardQuestion[] = [];
 
   if (!corpus?.knowledgeUnits) return flashCards;
 
@@ -100,7 +100,7 @@ export async function flashCardRandomiser(
   numQuestions: number,
   filter: AssessmentFilter & { flashcardId?: number } = {},
   rng: () => number = Math.random
-): Promise<Card[]> {
+): Promise<FlashcardQuestion[]> {
   const corpus = await getCorpus();
   const flashCards = getFlashCards(corpus, filter);
   const num = Math.min(numQuestions, flashCards.length);
