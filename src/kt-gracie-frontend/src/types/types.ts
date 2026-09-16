@@ -29,7 +29,7 @@ export type Assessment = {
   maxScore: number;
   pointScore: number;
   quiz: Quiz | null;
-  flashcard: FlashCard | null;
+  flashcard: Flashcard | null; // Placeholder for future implementation
 };
 
 export type Source = {
@@ -59,7 +59,8 @@ export type QuizQuestion = {
   hint: string | null;
 };
 
-export type FlashCard = {
+
+export type Flashcard = {
   id: number;
   assessmentType: AssessmentType.FLASHCARD;
   cards: FlashcardQuestion[];
@@ -69,7 +70,7 @@ export type FlashcardQuestion = {
   front: string;
   back: string;
   hint: string | null;
-}
+};
 
 export type Subject = {
   id: bigint;

@@ -22,7 +22,7 @@ import type { CityBlockId } from '@/features/city/types';
 import { getCorpus } from '@/services/corpusService';
 import { addProgressToContainer, createAndPersistProgressContainer, getProgressContainer } from '@/services/progressContainerService';
 import { createProgress } from '@/services/progressService';
-import { SubProgress } from '@/types/user';
+import { SubProgress, SubProgressTeaching } from '@/types/user';
 import { AssessmentType } from '@/ENUMS/enums';
 
 /**
@@ -71,7 +71,7 @@ export default function CityScene() {
 				// corpus will be persisted in local storage
 				const corpus = await getCorpus();
 
-				console.log(corpus);
+				//console.log(corpus);
 
 				if(getProgressContainer() != null)
 					return;
@@ -85,6 +85,7 @@ export default function CityScene() {
 					let arr_subProgress : SubProgress [] = [];
 
 					knowledgeUnit.assessments.forEach((assessment) =>{
+						
 						if(assessment.quiz != null)
 						{
 							arr_subProgress.push({
@@ -96,11 +97,33 @@ export default function CityScene() {
 								completed: false
 							});
 						}
+						else if(assessment.flashcard != null)
+						{
+							arr_subProgress.push({
+								assessmentID: assessment.id,
+								assessmentType: AssessmentType.FLASHCARD,
+								score: 0,
+								pointScore: assessment.pointScore,
+								maxScore: assessment.maxScore,
+								completed: false
+							});
+						}
 					});
-					
-					// create a progress object for each Knowledge Unit
-					const progress = createProgress(knowledgeUnit.id, arr_subProgress);
 
+					let arr_subProgressTeachings : SubProgressTeaching [] = [];
+
+					knowledgeUnit.teachings.forEach((teaching) =>{
+						arr_subProgressTeachings.push({
+							teachingID: teaching.id,
+							topic: teaching.topic,
+							difficulty: teaching.difficulty,
+							completed: false
+						});
+					});
+
+					// create a progress object for each Knowledge Unit
+					const progress = createProgress(knowledgeUnit.id, arr_subProgress, arr_subProgressTeachings);
+					
 					addProgressToContainer(progress);
 				});
 

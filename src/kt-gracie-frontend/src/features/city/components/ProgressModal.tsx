@@ -27,8 +27,8 @@ const ACHIEVEMENT_DEFS: AchievementDef[] = [
 	{ id: 'perfect-semester',  title: 'Perfect Semester',   description: 'All subjects completed'         },
 ];
 
-const TOTAL_SUBJECTS    = 5;
-const TOTAL_ASSESSMENTS = 10; // Replace with actual value from getNumberOfAssessments()
+const TOTAL_ASSESSMENTS = ProgressContainer.getTotalNumberOfAssessments();
+const TOTAL_TEACHINGS   = ProgressContainer.getTotalNumberOfTeachings();
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -53,9 +53,9 @@ export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 
 	const streak        = 5; // consult Leo about this 
 	const bestStreak    = Math.max(streak, 14); // fallback best
-	const subjectsDone  = ProgressContainer.getNumberOfModulesCompleted();
-	const subjectsLeft  = TOTAL_SUBJECTS - subjectsDone;
-	const subjectsPct   = Math.round((subjectsDone / TOTAL_SUBJECTS) * 100);
+	const teachingsDone = ProgressContainer.getNumberOfTeachingsCompleted();
+	const teachingsLeft = TOTAL_TEACHINGS - teachingsDone;
+	const teachingsPct  = Math.round((teachingsDone / TOTAL_TEACHINGS) * 100);
 	const assessDone    = ProgressContainer.getNumberOfAssessmentsCompleted();
 	const assessLeft    = Math.max(0, TOTAL_ASSESSMENTS - assessDone);
 	const assessPct     = Math.round((assessDone / TOTAL_ASSESSMENTS) * 100);
@@ -131,17 +131,17 @@ export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 
 							{/* Progress rows */}
 							<div className="space-y-3">
-								{/* Subjects */}
+								{/* Teachings */}
 								<div>
 									<div className="flex items-center justify-between">
-										<span className="text-sm font-bold text-brand-600">Subjects</span>
+										<span className="text-sm font-bold text-brand-600">Teachings</span>
 										<span className="text-xs text-ink-muted">
-											<span className="text-brand-600 font-bold">{subjectsDone} done</span>
-											{' · '}{subjectsLeft} left{' '}
-											<span className="font-bold text-ink-mid">{subjectsPct}%</span>
+											<span className="text-brand-600 font-bold">{teachingsDone} done</span>
+											{' · '}{teachingsLeft} left{' '}
+											<span className="font-bold text-ink-mid">{teachingsPct}%</span>
 										</span>
 									</div>
-									<ProgressBar value={subjectsPct} color="bg-brand-500" />
+									<ProgressBar value={teachingsPct} color="bg-brand-500" />
 								</div>
 
 								{/* Assessments */}

@@ -11,7 +11,25 @@
         "security_policy": "standard",
 
         "headers": {
-            "Content-Security-Policy": "default-src 'self'; script-src 'self'; connect-src 'self' https://icp0.io https://*.icp0.io https://icp-api.io http://127.0.0.1:4943 http://localhost:4943 http://*.localhost:4943; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self';"
+            // Gracie's Intelligence mode (issue #50) runs a small language model
+            // in the browser via wllama. That needs three things the standard
+            // policy does not allow:
+            //   - 'wasm-unsafe-eval' to compile the runtime's WebAssembly
+            //   - blob: workers, which is how the runtime spawns its threads
+            //   - connect-src reaching Hugging Face, where the weights are hosted
+            //
+            // The weights are fetched from a third party. Self-hosting the GGUF
+            // in this canister would remove that dependency, at the cost of
+            // ~229MB of asset storage and the cycles that implies — worth a
+            // decision before mainnet, not assumed here.
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' blob: https://icp0.io https://*.icp0.io https://icp-api.io http://127.0.0.1:4943 http://localhost:4943 http://*.localhost:4943 https://huggingface.co https://*.huggingface.co https://*.hf.co; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self';",
+
+            // wllama's multi-threaded build needs SharedArrayBuffer, which the
+            // browser only exposes on a cross-origin-isolated page. Without
+            // these it falls back to a single thread and runs about three times
+            // slower. Mirrored in vite.config.js for the dev server.
+            "Cross-Origin-Opener-Policy": "same-origin",
+            "Cross-Origin-Embedder-Policy": "require-corp"
         }
     },
 ]
