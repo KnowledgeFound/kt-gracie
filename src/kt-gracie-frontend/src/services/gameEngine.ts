@@ -1,10 +1,5 @@
-
-import { getLocalStorage, setLocalStorage } from "../commons/utilts";
-import { ProgressContainer, Progress, Achievement, SubProgress } from "@/types/user";
 import { getCorpus } from "./corpusService";
-import { Corpus, Quiz, FlashCard, QuizQuestion, Card } from "@/types/types";
-import { getUser } from "./userServices";
-import { AssessmentType, Difficulty, SourceType } from "../ENUMS/enums";
+import { Corpus, QuizQuestion, Card } from "@/types/types";
 
 /**
  * Returns 'numQuestions' random, non-repeating elements from input array, in shuffled order.
@@ -79,7 +74,7 @@ function getFlashCards(
 }
 
 /**
- * Theses functions randomise quiz/flashcard questions and returns specified number of questions
+ * Theses functions randomise quiz/flashcard questions/cards and returns specified number of questions
  * 
  * Params: 
  *  -numQuestions
