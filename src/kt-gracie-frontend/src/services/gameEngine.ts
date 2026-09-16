@@ -22,52 +22,79 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-function getQuizQuestions(corpus: Corpus): QuizQuestion[] {
-    
-    const quizQuestions: QuizQuestion[] = [];
-    
-    if(!corpus) 
-        return [];
-    else if (corpus.knowledgeUnits[0].assessments[0].quiz?.questions){
-        quizQuestions.push(...corpus.knowledgeUnits[0].assessments[0].quiz.questions);
+interface AssessmentFilter {
+  knowledgeUnitId?: string;
+  assessmentId?: number;
+}
+
+function getQuizQuestions(
+  corpus: Corpus,
+  filter: AssessmentFilter & { quizId?: number } = {}
+): QuizQuestion[] {
+  const quizQuestions: QuizQuestion[] = [];
+
+  if (!corpus?.knowledgeUnits) return quizQuestions;
+
+  for (const ku of corpus.knowledgeUnits) {
+    if (filter.knowledgeUnitId && ku.id !== filter.knowledgeUnitId) continue;
+    if (!ku.assessments) continue;
+
+    for (const assessment of ku.assessments) {
+      if (filter.assessmentId && assessment.id !== filter.assessmentId) continue;
+      if (!assessment.quiz?.questions) continue;
+      if (filter.quizId && assessment.quiz.id !== filter.quizId) continue;
+
+      quizQuestions.push(...assessment.quiz.questions);
     }
+  }
 
-    return shuffleArray(quizQuestions);
+  return quizQuestions;
 }
 
-function getFlashCards(corpus: Corpus): Card[] {
-    const flashCards: Card[] = [];
+function getFlashCards(
+  corpus: Corpus,
+  filter: AssessmentFilter & { flashcardId?: number } = {}
+): Card[] {
+  const flashCards: Card[] = [];
 
-    if (!corpus) {
-        return [];
-    } else if (corpus.knowledgeUnits[0].assessments[0].flashcard?.cards) {
-        flashCards.push(...corpus.knowledgeUnits[0].assessments[0].flashcard.cards);
+  if (!corpus?.knowledgeUnits) return flashCards;
+
+  for (const ku of corpus.knowledgeUnits) {
+    if (filter.knowledgeUnitId && ku.id !== filter.knowledgeUnitId) continue;
+    if (!ku.assessments) continue;
+
+    for (const assessment of ku.assessments) {
+      if (filter.assessmentId && assessment.id !== filter.assessmentId) continue;
+      if (!assessment.flashcard?.cards) continue;
+      if (filter.flashcardId && assessment.flashcard.id !== filter.flashcardId) continue;
+
+      flashCards.push(...assessment.flashcard.cards);
     }
+  }
 
-    return shuffleArray(flashCards);
+  return flashCards;
 }
 
-export async function quizQuestionRandomiser(numQuestions: number): Promise<QuizQuestion[]> {
+export async function quizQuestionRandomiser(
+  numQuestions: number,
+  filter: AssessmentFilter & { quizId?: number } = {}
+): Promise<QuizQuestion[]> {
+  const corpus = await getCorpus();
+  const quizQuestions = getQuizQuestions(corpus, filter);
+  const num = Math.min(numQuestions, quizQuestions.length);
 
-    const corpus = await getCorpus();
-    const quizQuestions = getQuizQuestions(corpus);
-    const num = numQuestions > quizQuestions.length ? quizQuestions.length : numQuestions;
-
-    const shuffledQuestions = shuffleArray(quizQuestions);
-
-    return shuffledQuestions.slice(0, num) || [];
+  return shuffleArray(quizQuestions).slice(0, num);
 }
 
-export async function flashCardRandomiser(numQuestions: number): Promise<Card[]> {
-    
-    const corpus = await getCorpus();
-    const flashCards = getFlashCards(corpus);
-    const num = numQuestions > flashCards.length ? flashCards.length : numQuestions;
+export async function flashCardRandomiser(
+  numQuestions: number,
+  filter: AssessmentFilter & { flashcardId?: number } = {}
+): Promise<Card[]> {
+  const corpus = await getCorpus();
+  const flashCards = getFlashCards(corpus, filter);
+  const num = Math.min(numQuestions, flashCards.length);
 
-    const shuffledFlashCards = shuffleArray(flashCards);
-
-    return shuffledFlashCards.slice(0, num) || [];
+  return shuffleArray(flashCards).slice(0, num);
 }
-
 
 
