@@ -75,6 +75,18 @@ function getFlashCards(
   return flashCards;
 }
 
+/**
+ * Theses functions randomise quiz/flashcard questions and returns specified number of questions
+ * 
+ * Params: 
+ *  -numQuestions
+ * 
+ *  Optionally:
+ *  -knowledge unit id 
+ *  -assessment id 
+ *  -quiz/flashcards id
+*/
+
 export async function quizQuestionRandomiser(
   numQuestions: number,
   filter: AssessmentFilter & { quizId?: number } = {}
