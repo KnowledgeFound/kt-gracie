@@ -88,12 +88,13 @@ export function updateProgression(updates: Partial<Progression>): User {
 }
 
 /**
- * Sync the locally-cached token balance from the backend.
+ * Write the locally-cached token balance.
  *
  * The backend token canister is the source of truth for balances; `tokenBalance`
  * on the user is only a display cache so the UI can render a number without an
- * async call. Call this after a credit/debit (or on load) with the balance the
- * backend returned.
+ * async call. This function is a plain cache write — the optimistic
+ * credit/debit/reconcile orchestration against the backend lives in
+ * `knowledgeTokenService`.
  */
 export function updateTokenBalance(tokenBalance: number): User {
     const user = getUser();
@@ -110,6 +111,7 @@ export function updateTokenBalance(tokenBalance: number): User {
     };
 
     setLocalStorage(USER_STORAGE_KEY, updated);
+
     return updated;
 }
 

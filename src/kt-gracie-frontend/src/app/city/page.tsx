@@ -9,6 +9,7 @@ import {
 	ModuleDrawer,
 	Modules,
 	BalloonCursor,
+	TokenModal,
 } from '@/features/city';
 import { useUser } from '@/features/auth';
 
@@ -39,6 +40,7 @@ export default function CityScene() {
 	const { user, city } = useUser();
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [statsOpen, setStatsOpen] = useState(false);
+	const [tokensOpen, setTokensOpen] = useState(false);
 	const [moduleId, setModuleId] = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<BlockId | null>(null);
 
@@ -101,8 +103,12 @@ export default function CityScene() {
 				tokens={user?.tokenBalance ?? 0}
 				username={user?.firstName ?? '—'}
 				onClickHealth={() => setStatsOpen(true)}
+				onClickToken={() => setTokensOpen(true)}
 				onClickUser={() => setDrawerOpen(true)}
 			/>
+
+			{/* Knowledge Tokens modal — opened by tokens badge */}
+			<TokenModal open={tokensOpen} onClose={() => setTokensOpen(false)} />
 
 			{/* Left nav drawer — opened by username badge */}
 			<DrawerMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
