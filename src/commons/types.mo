@@ -20,11 +20,6 @@ module Types{
         assessments: [Assessment];
     };
 
-    public type Content = {
-        name: Text;
-        contentType: Text;
-    };
-
     // A single token movement.
     // Convention: a credit is { from = "system"; to = userId }, a debit is
     // { from = userId; to = "system" }. `reference` optionally points at the
@@ -64,11 +59,14 @@ module Types{
         id: Text;
         topic: Text;
         difficulty: Enums.Difficulty; 
+        learningObjectives: [Text];
+        duration: Text; // e.g. "30 minutes", "1 hour", "2 hours"
         prerequisites: [Text]; // List of Knowledge Unit IDs
         sources: [Source];
         teachings: [Teaching];
         assessments: [Assessment];
         tokenReward: Nat;
+        summary: SummarySection;
     };
 
     public type Source = {
@@ -83,6 +81,21 @@ module Types{
         topic: Text;
         difficulty: Enums.Difficulty;
         keywords: [Text];
+        content: Content;
+    };
+
+    public type Content = {
+        name: Text;
+        contentType: Enums.ContentType;
+        url: Text;
+        description: Text;
+    };
+
+    public type SummarySection = {
+        id: Nat;
+        inforgraphic: ?Content;
+        slideDeck: ?Content;
+        podcast: ?Content;
     };
 
     // An assessment can be either a quiz or a flashcard set.

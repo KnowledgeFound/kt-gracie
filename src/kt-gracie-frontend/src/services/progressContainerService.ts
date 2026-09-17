@@ -193,6 +193,38 @@ export function getScoreDetails(): { currentScore: number; maxScore: number; per
     return { currentScore, maxScore, percentage, encouragementMessage };
 }
 
+export function getEncouragementMessage(percentage: number): string {
+
+    let encouragementMessage = "";
+
+    if (percentage <= 25) {
+        encouragementMessage = "Every expert was once a beginner!";
+    } else if (percentage >= 26 && percentage <= 49) {
+        encouragementMessage = "You are laying the groundwork!";
+    } else if (percentage >= 50 && percentage <= 69) {
+        encouragementMessage = "More than halfway there!";
+    } else if (percentage >= 70 && percentage <= 79) {
+        encouragementMessage = "Solid effort — you have got real momentum!";
+    }
+    else if (percentage >= 80 && percentage <= 89) {   
+        encouragementMessage = "Awesome work! You really know your stuff!";
+    }
+    else if (percentage >= 90) {
+        encouragementMessage = "Outstanding! Master of the game!";
+    }
+
+    return encouragementMessage;
+}
+
+export function getCompletionPercentage(): number {
+    const completedAssessments = getNumberOfAssessmentsCompleted();
+    const completedTeachings = getNumberOfTeachingsCompleted();
+    const totalAssessments = getTotalNumberOfAssessments();
+    const totalTeachings = getTotalNumberOfTeachings();
+
+    return Math.round(((completedAssessments + completedTeachings) / (totalAssessments + totalTeachings)) * 100);
+}
+
 export function getMaxScore(): number {
     const progressContainer = getProgressContainer();
     if (progressContainer) {

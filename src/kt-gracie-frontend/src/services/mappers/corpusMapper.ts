@@ -8,9 +8,10 @@ import type {
     QuizQuestion as BackendQuizQuestion,
     Source as BackendSource,
     Teaching as BackendTeaching,
+    Content as BackendContent,
 } from "declarations/kt-gracie-backend/kt-gracie-backend.did";
 
-import { AssessmentType, Difficulty, SourceType } from "../../ENUMS/enums";
+import { AssessmentType, ContentType, Difficulty, SourceType } from "../../ENUMS/enums";
 
 import type { Corpus } from "../../types/types";
 
@@ -31,12 +32,27 @@ function mapSource(source: BackendSource) {
     };
 }
 
+function mapContent(content: BackendContent) {
+    return {
+        name: content.name,
+        contentType: mapVariant<keyof typeof ContentType>(content.contentType) as ContentType,
+        url: content.url,
+        description: content.description,
+    };
+}
+
+function mapOptionalContent(content: [] | [BackendContent]) {
+    const unwrappedContent = unwrapOptional(content);
+    return unwrappedContent === null ? null : mapContent(unwrappedContent);
+}
+
 function mapTeaching(teaching: BackendTeaching) {
     return {
         id: Number(teaching.id),
         topic: teaching.topic,
         difficulty: mapVariant<keyof typeof Difficulty>(teaching.difficulty) as Difficulty,
         keywords: teaching.keywords,
+        content: mapContent(teaching.content),
     };
 }
 
@@ -96,10 +112,18 @@ function mapKnowledgeUnit(knowledgeUnit: BackendKnowledgeUnit) {
         topic: knowledgeUnit.topic,
         difficulty: mapVariant<keyof typeof Difficulty>(knowledgeUnit.difficulty) as Difficulty,
         prerequisites: knowledgeUnit.prerequisites,
+        learningObjectives: knowledgeUnit.learningObjectives,
+        duration: knowledgeUnit.duration,
         sources: knowledgeUnit.sources.map(mapSource),
         teachings: knowledgeUnit.teachings.map(mapTeaching),
         assessments: knowledgeUnit.assessments.map(mapAssessment),
         tokenReward: Number(knowledgeUnit.tokenReward),
+        summary: {
+            id: Number(knowledgeUnit.summary.id),
+            inforgraphic: mapOptionalContent(knowledgeUnit.summary.inforgraphic),
+            slideDeck: mapOptionalContent(knowledgeUnit.summary.slideDeck),
+            podcast: mapOptionalContent(knowledgeUnit.summary.podcast),
+        },
     };
 }
 
