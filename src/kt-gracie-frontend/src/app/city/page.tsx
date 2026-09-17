@@ -10,6 +10,7 @@ import {
 	ModuleDrawer,
 	Modules,
 	BalloonCursor,
+	TokenModal,
 	GracieGuide,
 	TokenModal,
 	ProgressModal,
@@ -40,6 +41,7 @@ export default function CityScene() {
 	const [healthOpen, setHealthOpen] = useState(false);
 	const [tokenOpen, setTokenOpen] = useState(false);
 	const [progressOpen, setProgressOpen] = useState(false);
+	const [tokensOpen, setTokensOpen] = useState(false);
 	const [moduleId, setModuleId] = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<CityBlockId | null>(null);
 	// Gracie's centre-stage intro runs on arrival; the city is inert behind its
@@ -206,11 +208,15 @@ export default function CityScene() {
 				onClickHealth={() => setHealthOpen(true)}
 				onClickToken={() => setTokenOpen(true)}
 				onClickTrend={() => setProgressOpen(true)}
+				onClickToken={() => setTokensOpen(true)}
 				onClickUser={() => setDrawerOpen(true)}
 				onClickSettings={() => navigate('/settings')}
 			/>
 
-			{/* User profile drawer — right side */}
+			{/* Knowledge Tokens modal — opened by tokens badge */}
+			<TokenModal open={tokensOpen} onClose={() => setTokensOpen(false)} />
+
+			{/* Left nav drawer — opened by username badge */}
 			<DrawerMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
 			{/* Module detail drawer */}

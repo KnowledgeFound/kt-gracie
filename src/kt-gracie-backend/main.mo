@@ -457,4 +457,19 @@ persistent actor Main {
     return arr_subjects;
   };
 
+
+  /**
+  * Create a token account for a user. Idempotent:
+  * returns `false` if the user already has an account, `true` if a fresh
+  * empty account was created. Called once after registration.
+  */
+  public func createAccount(userId : Text) : async Bool {
+    switch (findAccount(userId)) {
+      case (?_) { false };
+      case null {
+        upsertAccount(TokenLedger.emptyAccount(userId));
+        true;
+      };
+    };
+  };
 };
