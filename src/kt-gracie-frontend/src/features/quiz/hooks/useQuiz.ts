@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Question, UserAnswer, QuizScreen } from '../types';
 import { shuffleArray, calcScore } from '../utils';
 import { QUIZ_QUESTION_COUNT } from '../constants';
@@ -16,7 +16,7 @@ import data from '@/lib/gracie-qa-corpus.json';
  *                   until the backend serves per-subject questions.
  */
 export function useQuiz(subjectId?: string) {
-	const { updateProgression, user } = useUser();
+	const { updateProgression, user, creditTokens } = useUser();
 
 	// Fetch the subject when an id is present — skip otherwise
 	const subjectQuery = useSubjectById(subjectId);
@@ -29,6 +29,10 @@ export function useQuiz(subjectId?: string) {
 	const [score, setScore] = useState(0);
 	const [reviewIndex, setReviewIndex] = useState(0);
 	const [loading, setLoading] = useState(true);
+	// Knowledge Tokens earned by the latest completed quiz (1 KT per correct answer).
+	const [tokensEarned, setTokensEarned] = useState(0);
+	// Guards against a double-click on "Submit Quiz" crediting twice.
+	const rewardedRef = useRef(false);
 
 	useEffect(() => {
 		try {
@@ -48,6 +52,8 @@ export function useQuiz(subjectId?: string) {
 		setUserAnswers(new Array(selected.length).fill(null));
 		setCurrentIndex(0);
 		setScore(0);
+		setTokensEarned(0);
+		rewardedRef.current = false;
 		setScreen('quiz');
 	};
 
@@ -76,6 +82,20 @@ export function useQuiz(subjectId?: string) {
 		setScore(finalScore);
 		setScreen('results');
 
+		// Award 1 KT per correct answer, once per completed submission
+		// (guard against a double-click on "Submit Quiz").
+		if (rewardedRef.current) return;
+		rewardedRef.current = true;
+		setTokensEarned(finalScore);
+
+		if (user && finalScore > 0) {
+			creditTokens(
+				BigInt(finalScore),
+				'reward',
+				`quiz-${subjectId ?? 'general'}`,
+			);
+		}
+
 		if (user) {
 			const prev = user.progression;
 			// updateProgression({
@@ -92,6 +112,8 @@ export function useQuiz(subjectId?: string) {
 		setCurrentIndex(0);
 		setUserAnswers([]);
 		setScore(0);
+		setTokensEarned(0);
+		rewardedRef.current = false;
 	};
 
 	const viewAnswers = () => {
@@ -116,6 +138,7 @@ export function useQuiz(subjectId?: string) {
 		screen,
 		loading: loading || subjectQuery.isLoading,
 		score,
+		tokensEarned,
 		currentIndex,
 		reviewIndex,
 		quizQuestions,

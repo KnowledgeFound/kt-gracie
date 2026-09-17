@@ -4,6 +4,8 @@ import { motion, type Variants } from 'framer-motion';
 interface ResultsScreenProps {
 	score: number;
 	totalQuestions: number;
+	/** Knowledge Tokens earned for this run (1 KT per correct answer). */
+	tokensEarned?: number;
 	onRetake: () => void;
 	onReview: () => void;
 }
@@ -56,6 +58,7 @@ function getResultCopy(percentage: number): { title: string; message: string } {
 const ResultsScreen = ({
 	score,
 	totalQuestions,
+	tokensEarned = 0,
 	onRetake,
 	onReview,
 }: ResultsScreenProps) => {
@@ -134,6 +137,28 @@ const ResultsScreen = ({
 						<span className="text-2xl md:text-3xl font-bold text-indigo-600">
 							{percentage}%
 						</span>
+					</div>
+				</motion.div>
+
+				{/* Knowledge Tokens reward */}
+				<motion.div
+					className="flex items-center justify-center gap-4 mb-10"
+					variants={itemVariants}
+				>
+					<div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-200 via-brand-700 to-brand-500 flex items-center justify-center shadow-coin shrink-0">
+						<div className="w-8 h-8 rounded-full border-2 border-white/55 flex items-center justify-center">
+							<span className="text-coin-label text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">
+								KT
+							</span>
+						</div>
+					</div>
+					<div className="text-left">
+						<p className="text-xs text-ink-muted uppercase tracking-[0.6px]">
+							Knowledge Tokens Earned
+						</p>
+						<p className="text-3xl font-bold text-ink-deep leading-tight">
+							+{tokensEarned} KT
+						</p>
 					</div>
 				</motion.div>
 

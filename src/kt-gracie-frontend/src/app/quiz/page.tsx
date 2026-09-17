@@ -75,6 +75,7 @@ export default function QuizPage() {
 							key="results"
 							score={quiz.score}
 							totalQuestions={quiz.quizQuestions.length}
+							tokensEarned={quiz.tokensEarned}
 							onRetake={quiz.retakeQuiz}
 							onReview={quiz.viewAnswers}
 						/>
