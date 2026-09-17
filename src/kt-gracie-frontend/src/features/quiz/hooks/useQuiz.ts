@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useRef, useCallback } from 'react';
 import type { Question, UserAnswer, QuizScreen } from '../types';
 import { shuffleArray } from '../utils';
 import { QUIZ_QUESTION_COUNT } from '../constants';
@@ -66,7 +66,11 @@ export function useQuiz(moduleId?: string) {
 	// Clean up on unmount
 	useEffect(() => () => stopTimer(), [stopTimer]);
 
-	// ── Load corpus ─────────────────────────────────────────────────
+	// ── Load corpus ─────────────────────────────────────────────────	// Knowledge Tokens earned by the latest completed quiz (1 KT per correct answer).
+	const [tokensEarned, setTokensEarned] = useState(0);
+	// Guards against a double-click on "Submit Quiz" crediting twice.
+	const rewardedRef = useRef(false);
+
 	useEffect(() => {
 		try {
 			setQuestions(data.questions as Question[]);
@@ -85,6 +89,8 @@ export function useQuiz(moduleId?: string) {
 		setQuizQuestions(selected);
 		setUserAnswers(new Array(selected.length).fill(null));
 		setCurrentIndex(0);
+		setTokensEarned(0);
+		rewardedRef.current = false;
 		setScreen('quiz');
 		startTimer();
 	};
@@ -113,6 +119,20 @@ export function useQuiz(moduleId?: string) {
 		stopTimer();
 		setTimeTaken(elapsed);
 		setScreen('results');
+
+		// Award 1 KT per correct answer, once per completed submission
+		// (guard against a double-click on "Submit Quiz").
+		if (rewardedRef.current) return;
+		rewardedRef.current = true;
+		setTokensEarned(finalScore);
+
+		if (user && finalScore > 0) {
+			creditTokens(
+				BigInt(finalScore),
+				'reward',
+				`quiz-${subjectId ?? 'general'}`,
+			);
+		}
 	};
 
 	const retakeQuiz = () => {
@@ -122,6 +142,8 @@ export function useQuiz(moduleId?: string) {
 		setUserAnswers([]);
 		setElapsed(0);
 		setTimeTaken(0);
+		setTokensEarned(0);
+		rewardedRef.current = false;
 	};
 
 	const viewAnswers = () => {
@@ -147,6 +169,7 @@ export function useQuiz(moduleId?: string) {
 		loading: loading || subjectQuery.isLoading,
 		// score / answers
 		score,
+		tokensEarned,
 		currentIndex,
 		reviewIndex,
 		quizQuestions,
