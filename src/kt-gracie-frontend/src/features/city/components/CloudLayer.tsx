@@ -1,45 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Stage } from '@pixi/react';
 import DriftingCloud from './DriftingCloud';
 
 /**
- * Full-viewport PixiJS Stage that renders two drifting cloud layers.
- * Automatically resizes to fill the window.
+ * The two drifting clouds above the districts. Plain images moved with a CSS
+ * animation; the artwork is SVG, so it stays sharp at any size and density.
  *
- * NOTE: Replace the string paths with real asset imports once the PNGs are
- * added to src/assets/city/. e.g:
- *   import CLOUD1_SRC from '@/assets/city/cloud1.png';
+ * Size and position live in city.css (.cityCloud--left / .cityCloud--right).
  */
-const CLOUD1_SRC = '/assets/city/cloud1.png';
-const CLOUD2_SRC = '/assets/city/cloud2.png';
+const CLOUD1_SRC = '/assets/city/cloud1.svg';
+const CLOUD2_SRC = '/assets/city/cloud2.svg';
 
 export default function CloudLayer() {
-	const [dims, setDims] = useState({
-		w: window.innerWidth,
-		h: window.innerHeight,
-	});
-
-	useEffect(() => {
-		const onResize = () =>
-			setDims({ w: window.innerWidth, h: window.innerHeight });
-		window.addEventListener('resize', onResize);
-		return () => window.removeEventListener('resize', onResize);
-	}, []);
-
 	return (
-		<Stage width={dims.w} height={dims.h} options={{ backgroundAlpha: 0 }}>
-			<DriftingCloud
-				imageSrc={CLOUD1_SRC}
-				drift={-40}
-				stageWidth={dims.w}
-				stageHeight={dims.h}
-			/>
-			<DriftingCloud
-				imageSrc={CLOUD2_SRC}
-				drift={40}
-				stageWidth={dims.w}
-				stageHeight={dims.h}
-			/>
-		</Stage>
+		<>
+			<DriftingCloud imageSrc={CLOUD1_SRC} placement="right" drift={-40} />
+			<DriftingCloud imageSrc={CLOUD2_SRC} placement="left" drift={40} />
+		</>
 	);
 }

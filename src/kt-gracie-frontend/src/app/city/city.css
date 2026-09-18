@@ -36,6 +36,44 @@
   transition: opacity 0.35s ease, filter 0.35s ease;
 }
 
+/* Each cloud is its own SVG, sized by width only so it keeps its shape. */
+.cityCloud {
+  position: absolute;
+  height: auto;
+  user-select: none;
+  will-change: transform;
+  /* ~13s there-and-back on a sine ease, 0 → --cloud-drift → 0. */
+  animation: cloud-drift 13s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.cityCloud--left {
+  top: 8.5%;
+  left: 2.2%;
+  width: clamp(120px, 15.7vw, 320px);
+}
+
+.cityCloud--right {
+  top: 12%;
+  right: 2%;
+  width: clamp(110px, 13.9vw, 280px);
+}
+
+@keyframes cloud-drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(var(--cloud-drift, 60px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cityCloud {
+    animation: none;
+  }
+}
+
 /* The districts and the module buttons are drawn in two separate layers that
    each hold a `.cityBlocks` stage. The buttons are positioned in stage
    percentages, so the two stages must be laid out *identically* or every

@@ -1,4 +1,3 @@
-import '@pixi/unsafe-eval';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './city.css';
@@ -142,7 +141,7 @@ export default function CityScene() {
 			{/* City background */}
 			<div aria-hidden="true" className="cityBackground" />
 
-			{/* PixiJS cloud layer — ambience, opt-out in Settings */}
+			{/* Cloud layer — ambience, opt-out in Settings */}
 			{settings.city.clouds && (
 				<div className="cityCloudLayer">
 					<CloudLayer />

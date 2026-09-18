@@ -1,45 +1,32 @@
-import React, { useRef } from "react";
-import { Sprite, useTick } from "@pixi/react";
+import type { CSSProperties } from 'react';
 
 interface DriftingCloudProps {
-    imageSrc: string;
-    drift?: number;
-    stageWidth: number;
-    stageHeight: number;
+	imageSrc: string;
+	/** Where the cloud sits in the scene — sized and placed in city.css. */
+	placement: 'left' | 'right';
+	drift?: number;
 }
 
 /**
- * Animated cloud sprite that oscillates horizontally.
- * Must be rendered as a child of a PixiJS <Stage>.
+ * Cloud image that oscillates horizontally (see `cloud-drift` in city.css).
+ * Must be rendered inside `.cityCloudLayer`.
  *
- * @param drift  Positive = oscillate right, negative = oscillate left
+ * @param drift  Pixels. Positive = oscillate right, negative = oscillate left
  */
 export default function DriftingCloud({
-    imageSrc,
-    drift = 60,
-    stageWidth,
-    stageHeight,
+	imageSrc,
+	placement,
+	drift = 60,
 }: DriftingCloudProps) {
-    const spriteRef = useRef<any>(null);
-    const timeRef = useRef(0);
-    const SPEED = 0.008;
-
-    useTick((delta) => {
-        const s = spriteRef.current;
-        if (!s) return;
-        timeRef.current += SPEED * delta;
-        // cosine gives 1→-1→1, so (1 - cos) gives 0→2→0 → scaled to 0→drift→0
-        s.x = (drift / 2) * (1 - Math.cos(timeRef.current));
-    });
-
-    return (
-        <Sprite
-            ref={spriteRef}
-            image={imageSrc}
-            x={0}
-            y={0}
-            width={stageWidth}
-            height={stageHeight}
-        />
-    );
+	return (
+		<img
+			src={imageSrc}
+			alt=""
+			aria-hidden="true"
+			draggable={false}
+			decoding="async"
+			className={`cityCloud cityCloud--${placement}`}
+			style={{ '--cloud-drift': `${drift}px` } as CSSProperties}
+		/>
+	);
 }
