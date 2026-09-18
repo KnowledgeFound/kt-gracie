@@ -106,13 +106,26 @@ function mapAssessment(assessment: BackendAssessment) {
     };
 }
 
-function mapKnowledgeUnit(knowledgeUnit: BackendKnowledgeUnit) {
+function mapKnowledgeUnit(
+    knowledgeUnit: BackendKnowledgeUnit & {
+        expectations?: string[];
+        image?: string;
+        description?: string;
+        icon?: string;
+        block?: string;
+    }
+) {
     return {
         id: knowledgeUnit.id,
         topic: knowledgeUnit.topic,
         difficulty: mapVariant<keyof typeof Difficulty>(knowledgeUnit.difficulty) as Difficulty,
-        prerequisites: knowledgeUnit.prerequisites,
-        learningObjectives: knowledgeUnit.learningObjectives,
+        prerequisites: knowledgeUnit.prerequisites ?? [],
+        learningObjectives: knowledgeUnit.learningObjectives ?? [],
+        expectations: knowledgeUnit.expectations ?? [],
+        image: knowledgeUnit.image ?? "",
+        description: knowledgeUnit.description ?? "",
+        icon: knowledgeUnit.icon ?? "",
+        block: knowledgeUnit.block ?? "",
         duration: knowledgeUnit.duration,
         sources: knowledgeUnit.sources.map(mapSource),
         teachings: knowledgeUnit.teachings.map(mapTeaching),
