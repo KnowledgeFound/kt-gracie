@@ -14,11 +14,5 @@
   "type": "module",
   "workspaces": [
     "src/kt-gracie-frontend"
-  ],
-  "devDependencies": {
-    "vitest": "^4.1.11"
-  },
-  "dependencies": {
-    "@dfinity/agent": "^3.4.3"
-  }
+  ]
 }
