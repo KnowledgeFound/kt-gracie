@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Question, UserAnswer, QuizScreen } from '../types';
 import { shuffleArray } from '../utils';
 import { QUIZ_QUESTION_COUNT } from '../constants';
@@ -27,6 +27,8 @@ export function useQuiz(moduleId?: string) {
 
 	// Backend subject fetch (display-only for now)
 	const subjectQuery = useSubjectById(moduleId);
+
+	const { user, creditTokens } = useUser();
 
 	// ── Question state ──────────────────────────────────────────────
 	const [screen, setScreen]               = useState<QuizScreen>('welcome');
@@ -66,7 +68,9 @@ export function useQuiz(moduleId?: string) {
 	// Clean up on unmount
 	useEffect(() => () => stopTimer(), [stopTimer]);
 
-	// ── Load corpus ─────────────────────────────────────────────────	// Knowledge Tokens earned by the latest completed quiz (1 KT per correct answer).
+	// ── Load corpus ─────────────────────────────────────────────────
+
+	// Knowledge Tokens earned by the latest completed quiz (1 KT per correct answer).
 	const [tokensEarned, setTokensEarned] = useState(0);
 	// Guards against a double-click on "Submit Quiz" crediting twice.
 	const rewardedRef = useRef(false);
@@ -124,14 +128,10 @@ export function useQuiz(moduleId?: string) {
 		// (guard against a double-click on "Submit Quiz").
 		if (rewardedRef.current) return;
 		rewardedRef.current = true;
-		setTokensEarned(finalScore);
+		setTokensEarned(score);
 
-		if (user && finalScore > 0) {
-			creditTokens(
-				BigInt(finalScore),
-				'reward',
-				`quiz-${subjectId ?? 'general'}`,
-			);
+		if (user && score > 0) {
+			creditTokens(BigInt(score), 'reward', `quiz-${moduleId ?? 'general'}`);
 		}
 	};
 

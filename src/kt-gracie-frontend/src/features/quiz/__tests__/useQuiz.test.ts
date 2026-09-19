@@ -4,7 +4,6 @@ import { renderHook, act } from "@testing-library/react";
 const mockUser = vi.hoisted(() => ({
     user: { anonymousId: "user-1" },
     creditTokens: vi.fn(),
-    updateProgression: vi.fn(),
 }));
 
 vi.mock("@/features/auth", () => ({
@@ -46,12 +45,13 @@ function runQuiz(pickAnswer?: (question: { correctAnswer: string | boolean }) =>
 describe("useQuiz token reward", () => {
     it("awards 1 KT per correct answer and exposes tokensEarned", () => {
         const result = runQuiz((q) => q.correctAnswer);
+        const total = result.current.quizQuestions.length;
 
         expect(result.current.screen).toBe("results");
-        expect(result.current.score).toBe(10);
-        expect(result.current.tokensEarned).toBe(10);
+        expect(result.current.score).toBe(total);
+        expect(result.current.tokensEarned).toBe(total);
         expect(mockUser.creditTokens).toHaveBeenCalledExactlyOnceWith(
-            10n,
+            BigInt(total),
             "reward",
             "quiz-general"
         );

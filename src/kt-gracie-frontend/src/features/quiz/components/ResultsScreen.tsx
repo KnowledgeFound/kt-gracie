@@ -21,14 +21,14 @@ interface ResultsScreenProps {
 	totalQuestions: number;
 	questions: Question[];
 	userAnswers: UserAnswer[];
-	/** Knowledge Tokens earned for this run (1 KT per correct answer). */
-	tokensEarned?: number;
 	onRetake: () => void;
 	/** Legacy prop — kept for API compatibility */
 	onReview?: () => void;
 	/** Elapsed quiz time in seconds */
 	timeTaken?: number;
 	module?: Module | null;
+	/** Knowledge Tokens earned for this run (1 KT per correct answer). */
+	tokensEarned?: number;
 }
 
 // ─── Rank helpers ─────────────────────────────────────────────────────────────
@@ -281,10 +281,10 @@ const ResultsScreen = ({
 	totalQuestions,
 	questions,
 	userAnswers,
-	tokensEarned = 0,
 	onRetake,
 	timeTaken = 0,
 	module,
+	tokensEarned = 0,
 }: ResultsScreenProps) => {
 	const navigate = useNavigate();
 	const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -294,7 +294,8 @@ const ResultsScreen = ({
 	const missedCount = questions.filter(
 		(q, i) => userAnswers[i] !== q.correctAnswer,
 	).length;
-	const ktEarned = Math.round((score / totalQuestions) * 350);
+	// Real reward: 1 KT per correct answer (from the optimistic creditTokens call).
+	const ktEarned = tokensEarned;
 
 	const containerVariants: Variants = {
 		hidden: { opacity: 0 },
@@ -481,74 +482,86 @@ const ResultsScreen = ({
 					className="w-1/2 flex-shrink-0 flex flex-col items-center p-6 border rounded-2xl border-gray-100 bg-white overflow-y-auto shadow-card"
 					variants={itemVariants}
 				>
-					{title}
-				</motion.h2>
+					<div className="mb-6">
+						<h2 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-[10px] font-bold tracking-widest text-brand-600 uppercase">
+							<CheckCircle2 className="size-3" /> Assessment Complete
+						</h2>
+					</div>
 
-				<motion.p
-					className="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed"
-					variants={itemVariants}
-				>
-					{message}
-				</motion.p>
+					<motion.div
+						className="text-6xl mb-3 select-none"
+						initial={{ scale: 0 }}
+						animate={{ scale: [0, 1.2, 1] }}
+						transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+					>
+						{rank.emoji}
+					</motion.div>
 
-				{percentage >= 60 && (
+					<motion.div className="text-center mb-6" variants={itemVariants}>
+						<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-1">
+							Rank Achieved
+						</p>
+						<div className={`inline-block px-4 py-1.5`}>
+							<h2
+								className={`text-2xl font-black tracking-widest ${rank.color}`}
+							>
+								{rank.label}
+							</h2>
+						</div>
+					</motion.div>
+
 					<motion.div
 						className="w-full rounded-xl border border-amber-200 bg-amber-50 py-4 px-5 text-center mb-6"
 						variants={itemVariants}
 					>
-						<motion.div
-							className="w-24 h-24 rounded-full bg-gradient-to-r from-yellow-300 to-yellow-400 flex items-center justify-center text-5xl shadow-lg"
-							animate={{ rotate: 360 }}
-							transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-						>
-							{percentage === 100 ? '🏆' : '⭐'}
-						</motion.div>
-					</motion.div>
-
-				{/* Breakdown */}
-				<motion.div
-					className="grid grid-cols-2 gap-4 md:gap-6 p-6 md:p-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl mb-10"
-					variants={itemVariants}
-				>
-					<div className="flex flex-col">
-						<span className="text-gray-600 text-sm md:text-base mb-2">
-							Correct Answers
-						</span>
-						<span className="text-2xl md:text-3xl font-bold text-indigo-600">
-							{score}
-						</span>
-					</div>
-					<div className="flex flex-col">
-						<span className="text-gray-600 text-sm md:text-base mb-2">
-							Accuracy
-						</span>
-						<span className="text-2xl md:text-3xl font-bold text-indigo-600">
-							{percentage}%
-						</span>
-					</div>
-				</motion.div>
-
-				{/* Knowledge Tokens reward */}
-				<motion.div
-					className="flex items-center justify-center gap-4 mb-10"
-					variants={itemVariants}
-				>
-					<div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-200 via-brand-700 to-brand-500 flex items-center justify-center shadow-coin shrink-0">
-						<div className="w-8 h-8 rounded-full border-2 border-white/55 flex items-center justify-center">
-							<span className="text-coin-label text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">
-								KT
-							</span>
-						</div>
-					</div>
-					<div className="text-left">
-						<p className="text-xs text-ink-muted uppercase tracking-[0.6px]">
+						<p className="text-4xl font-semibold text-amber-600">
+							◎ {ktEarned}
+						</p>
+						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase mb-1">
 							Knowledge Tokens Earned
 						</p>
-						<p className="text-3xl font-bold text-ink-deep leading-tight">
-							+{tokensEarned} KT
-						</p>
-					</div>
-				</motion.div>
+					</motion.div>
+
+					<motion.div
+						className="w-full grid grid-cols-3 gap-2 mb-6"
+						variants={itemVariants}
+					>
+						{[
+							{
+								value: `${score}/${totalQuestions}`,
+								label: 'CORRECT',
+								color: 'text-brand-600',
+							},
+							{
+								value: `${percentage}%`,
+								label: 'ACCURACY',
+								color: 'text-brand-600',
+							},
+							{
+								value: formatTime(timeTaken),
+								label: 'TIME',
+								color: 'text-amber-600',
+							},
+						].map(({ value, label, color }) => (
+							<div
+								key={label}
+								className="flex flex-col items-center rounded-xl bg-gray-50 border border-gray-200 py-3"
+							>
+								<span
+									className={`text-base font-black leading-none mb-1 ${color}`}
+								>
+									{value}
+								</span>
+								<span className="text-[9px] font-bold tracking-widest text-ink-subtle uppercase">
+									{label}
+								</span>
+							</div>
+						))}
+					</motion.div>
+
+					<motion.div className="w-full mb-6" variants={itemVariants}>
+						<AnswerStrip questions={questions} userAnswers={userAnswers} />
+					</motion.div>
 
 					<motion.button
 						onClick={onRetake}
