@@ -33,6 +33,11 @@ export async function getBalance(userId: string): Promise<bigint> {
   return kt_gracie_backend.getBalance(userId);
 }
 
+/** Create a token account for a user. Idempotent — returns true only when newly created. */
+export async function createAccount(userId: string): Promise<boolean> {
+  return kt_gracie_backend.createAccount(userId);
+}
+
 /** Get a user's full transaction history, oldest first. */
 export async function getTransactions(userId: string): Promise<Transaction[]> {
   const txs = await kt_gracie_backend.getTransactions(userId);

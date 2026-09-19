@@ -72,6 +72,7 @@ export default function QuizPage() {
 							totalQuestions={quiz.quizQuestions.length}
 							questions={quiz.quizQuestions}
 							userAnswers={quiz.userAnswers}
+							tokensEarned={quiz.tokensEarned}
 							onRetake={quiz.retakeQuiz}
 							timeTaken={quiz.timeTaken}
 							module={quiz.module}

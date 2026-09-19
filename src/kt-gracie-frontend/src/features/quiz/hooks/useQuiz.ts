@@ -28,6 +28,8 @@ export function useQuiz(moduleId?: string) {
 	// Backend subject fetch (display-only for now)
 	const subjectQuery = useSubjectById(moduleId);
 
+	const { user, creditTokens } = useUser();
+
 	// ── Question state ──────────────────────────────────────────────
 	const [screen, setScreen]               = useState<QuizScreen>('welcome');
 	const [questions, setQuestions]         = useState<Question[]>([]);
@@ -67,6 +69,12 @@ export function useQuiz(moduleId?: string) {
 	useEffect(() => () => stopTimer(), [stopTimer]);
 
 	// ── Load corpus ─────────────────────────────────────────────────
+
+	// Knowledge Tokens earned by the latest completed quiz (1 KT per correct answer).
+	const [tokensEarned, setTokensEarned] = useState(0);
+	// Guards against a double-click on "Submit Quiz" crediting twice.
+	const rewardedRef = useRef(false);
+
 	useEffect(() => {
 		try {
 			setQuestions(data.questions as Question[]);
@@ -85,6 +93,8 @@ export function useQuiz(moduleId?: string) {
 		setQuizQuestions(selected);
 		setUserAnswers(new Array(selected.length).fill(null));
 		setCurrentIndex(0);
+		setTokensEarned(0);
+		rewardedRef.current = false;
 		setScreen('quiz');
 		startTimer();
 	};
@@ -113,6 +123,16 @@ export function useQuiz(moduleId?: string) {
 		stopTimer();
 		setTimeTaken(elapsed);
 		setScreen('results');
+
+		// Award 1 KT per correct answer, once per completed submission
+		// (guard against a double-click on "Submit Quiz").
+		if (rewardedRef.current) return;
+		rewardedRef.current = true;
+		setTokensEarned(score);
+
+		if (user && score > 0) {
+			creditTokens(BigInt(score), 'reward', `quiz-${moduleId ?? 'general'}`);
+		}
 	};
 
 	const retakeQuiz = () => {
@@ -122,6 +142,8 @@ export function useQuiz(moduleId?: string) {
 		setUserAnswers([]);
 		setElapsed(0);
 		setTimeTaken(0);
+		setTokensEarned(0);
+		rewardedRef.current = false;
 	};
 
 	const viewAnswers = () => {
@@ -147,6 +169,7 @@ export function useQuiz(moduleId?: string) {
 		loading: loading || subjectQuery.isLoading,
 		// score / answers
 		score,
+		tokensEarned,
 		currentIndex,
 		reviewIndex,
 		quizQuestions,

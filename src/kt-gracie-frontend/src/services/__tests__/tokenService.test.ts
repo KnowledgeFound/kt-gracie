@@ -9,6 +9,7 @@ const mockBackend = vi.hoisted(() => ({
     debit: vi.fn(),
     getBalance: vi.fn(),
     getTransactions: vi.fn(),
+    createAccount: vi.fn(),
 }));
 
 vi.mock("declarations/kt-gracie-backend", () => ({
@@ -20,6 +21,7 @@ import {
     debit,
     getBalance,
     getTransactions,
+    createAccount,
 } from "../tokenService";
 
 beforeEach(() => {
@@ -67,6 +69,22 @@ describe("getBalance", () => {
 
         expect(await getBalance("user-1")).toBe(70n);
         expect(mockBackend.getBalance).toHaveBeenCalledWith("user-1");
+    });
+});
+
+describe("createAccount", () => {
+    it("forwards the userId and returns whether the account was created", async () => {
+        mockBackend.createAccount.mockResolvedValue(true);
+
+        expect(await createAccount("user-1")).toBe(true);
+        expect(mockBackend.createAccount).toHaveBeenCalledWith("user-1");
+    });
+
+    it("returns false when the account already exists", async () => {
+        mockBackend.createAccount.mockResolvedValue(false);
+
+        expect(await createAccount("user-1")).toBe(false);
+        expect(mockBackend.createAccount).toHaveBeenCalledTimes(1);
     });
 });
 

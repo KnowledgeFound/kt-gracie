@@ -66,7 +66,7 @@ export type SummarySection = {
   slideDeck: Content | null;
   podcast: Content | null;
 };
-
+ 
 export type Quiz = {
   id: number;
   assessmentType: AssessmentType.QUIZ;
