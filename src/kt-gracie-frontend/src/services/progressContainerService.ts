@@ -124,7 +124,7 @@ export function getTotalScore(): number {
     if (progressContainer) {
         return progressContainer.arr_progress.reduce((total, p) => {
             return total + (p.subProgress.reduce((subTotal, sp) => subTotal + sp.score, 0)) +
-                (p.subProgressTeachings.reduce((subTotal, sp) => subTotal + (sp.completed ? 1 : 0), 0));
+                (p.subProgressTeachings.reduce((subTotal, sp) => subTotal + (sp.completed ? getPointScoreForTeachings() : 0), 0));
         }, 0);
     }
 
@@ -162,6 +162,18 @@ export function getTotalNumberOfTeachings(): number {
         return progressContainer.arr_progress.reduce((count, p) => {
             return count + p.subProgressTeachings.length;
         }, 0);
+    }
+
+    return 0;
+}
+
+export function getPointScoreForTeachings(): number {
+    const progressContainer = getProgressContainer();
+
+    if(progressContainer) {
+        const numOfTeachings = getTotalNumberOfTeachings();
+
+        return 50 / numOfTeachings;
     }
 
     return 0;

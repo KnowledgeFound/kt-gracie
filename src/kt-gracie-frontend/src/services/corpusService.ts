@@ -2,6 +2,7 @@ import { Corpus } from "../types/types";
 import { kt_gracie_backend } from "declarations/kt-gracie-backend";
 import { mapFromBackend } from "./mappers/corpusMapper";
 import { setLocalStorage, getLocalStorage } from "../commons/utilts";
+import { Module } from "@/features/city/types";
 
 
 export async function getCorpus(): Promise<Corpus> {
@@ -37,3 +38,25 @@ export async function persistCorpus(corpus: Corpus): Promise<void> {
 export async function getPersistedCorpus(): Promise<Corpus | null> {
     return getLocalStorage("corpus");
 }
+
+// export async function getAllModules(): Promise<Module[]> {
+//     const corpus = await getCorpus();
+
+//     if(corpus)
+//     {
+//         let modules: Module[] = [];
+//         let counter: number = 1;
+
+//         corpus.knowledgeUnits.forEach((knowledgeUnit) => {
+//             const module: Module = {
+//                 id: counter++,
+//                 name: knowledgeUnit.topic,
+//                 description: knowledgeUnit.description,
+            
+//             }
+
+
+//             modules.push(module);
+//         });
+//     }
+// }

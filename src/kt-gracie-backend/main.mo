@@ -116,6 +116,16 @@ persistent actor Main {
           "Understand the impact of corruption on society.",
           "Identify common examples of corrupt practices."
         ];
+        expectations = [
+          "Anti-Corruption Bodies & frameworks",
+          "UNCAC principles and enforcement",
+          "Whistleblower protection mechanisms",
+          "Transparency and accountability in governance",
+        ];
+        image = "anti_corruption_img.png";
+        description = "This knowledge unit provides an overview of corruption, its definitions, and its impact on society. It introduces learners to the concept of corruption, its various forms, and the importance of anti-corruption measures.";
+        icon = "BookOpen";
+        block = "leftUp";
         duration = "30 minutes";
         sources = [
           {

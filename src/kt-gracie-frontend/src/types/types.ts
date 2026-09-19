@@ -17,6 +17,11 @@ export type KnowledgeUnit = {
   topic: string;
   difficulty: Difficulty;
   prerequisites: string[];
+  expectations: string[];
+  image: string;
+  description: string;
+  icon: string;
+  block: string;
   sources: Source[];
   teachings: Teaching[];
   assessments: Assessment[];
