@@ -13,8 +13,9 @@ export function completeAssessment(knowledgeUnitID: string, assessmentID: number
 
         const subProgress = progress.subProgress.find(sp => sp.assessmentID === assessmentID);
 
-        if (subProgress && subProgress.score >= subProgress.maxScore) {
+        if (subProgress && subProgress.completed == false) {
             subProgress.completed = true;
+            subProgress.ktEarned = subProgress.ktMax;
 
             validateProgress(progress);
 
@@ -24,6 +25,7 @@ export function completeAssessment(knowledgeUnitID: string, assessmentID: number
     }
 }
 
+// I don't think this will be used. To tired to rationalise
 export function addScoreToAssessment(knowledgeUnitID: string, assessmentID: number, score: number): void {
     const progress = getProgressFromContainer(knowledgeUnitID);
 
@@ -49,8 +51,9 @@ export function completeTeaching(knowledgeUnitID: string, teachingID: number): v
     if (progress) {
         const subProgressTeaching = progress.subProgressTeachings.find(sp => sp.teachingID === teachingID);
 
-        if (subProgressTeaching) {
+        if (subProgressTeaching && subProgressTeaching.completed == false) {
             subProgressTeaching.completed = true;
+            subProgressTeaching.ktEarned = subProgressTeaching.ktMax;
 
             validateProgress(progress);
 

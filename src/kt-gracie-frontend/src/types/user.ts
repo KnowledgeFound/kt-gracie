@@ -111,6 +111,8 @@ export type SubProgress = {
     maxScore: number;
     pointScore: number;
     completed: boolean; 
+    ktMax: number; // Knowledge Token max score for this assessment
+    ktEarned: number; // Knowledge Token earned for this assessment (optional, can be undefined if not yet earned)
 };
 
 // contains details about each teaching
@@ -119,6 +121,8 @@ export type SubProgressTeaching = {
     topic: string;
     difficulty: string;
     completed: boolean; 
+    ktMax: number; // Knowledge Token max score for this teaching
+    ktEarned: number; // Knowledge Token earned for this teaching (optional, can be undefined if not yet earned)
 };
 
 

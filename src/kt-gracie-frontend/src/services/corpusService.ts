@@ -1,9 +1,10 @@
-import { Corpus } from "../types/types";
+import { Assessment, Corpus, KnowledgeUnit } from "../types/types";
 import { kt_gracie_backend } from "declarations/kt-gracie-backend";
 import { mapFromBackend } from "./mappers/corpusMapper";
 import { setLocalStorage, getLocalStorage } from "../commons/utilts";
-import { Module } from "@/features/city/types";
-
+import { AssessmentDifficulty, Module, ModuleAssessment } from "@/features/city/types";
+import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
+import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
 
 export async function getCorpus(): Promise<Corpus> {
     const persistedCorpus = await getPersistedCorpus();
@@ -39,24 +40,44 @@ export async function getPersistedCorpus(): Promise<Corpus | null> {
     return getLocalStorage("corpus");
 }
 
-// export async function getAllModules(): Promise<Module[]> {
-//     const corpus = await getCorpus();
+export async function getAllModules(): Promise<Module[]> {
+    
+    const corpus = await getCorpus();
+    let modules: Module[] = [];
 
-//     if(corpus)
-//     {
-//         let modules: Module[] = [];
-//         let counter: number = 1;
+    if(corpus)
+    {
+        let counter: number = 1;
 
-//         corpus.knowledgeUnits.forEach((knowledgeUnit) => {
-//             const module: Module = {
-//                 id: counter++,
-//                 name: knowledgeUnit.topic,
-//                 description: knowledgeUnit.description,
-            
-//             }
+        corpus.knowledgeUnits.forEach((knowledgeUnit) => {
+            const module: Module = {
+                id: counter++,
+                name: knowledgeUnit.topic,
+                description: knowledgeUnit.description,
+                audience: 'Youth',
+                icon: resolveIcon(knowledgeUnit.icon),
+                image: knowledgeUnit.image,
+                block: cityBlockIdMapper(knowledgeUnit.block),
+                objectives: knowledgeUnit.learningObjectives,
+                expectations: knowledgeUnit.expectations,
+                assessments: knowledgeUnit.assessments.map((assessment) => ({
+                    id: assessment.id,
+                    title: assessment.quiz ? knowledgeUnit.topic + " Quiz" : (assessment.flashcard ? knowledgeUnit.topic + " Flashcard" : "Assessment"),
+                    description: knowledgeUnit.description,
+                    difficulty: mapAssessmentDifficulty(assessment.difficulty),
+                    questionCount: assessment.quiz ? assessment.quiz.questions.length : (assessment.flashcard ? assessment.flashcard.cards.length : 0),
+                    durationLabel: mapDuration(assessment.duration),
+                    ktMax: assessment.ktMax,
+                    status: 'available',
+                    ktEarned: 0
+                })),
+                progress: null // resolve later
+            }
 
+            modules.push(module);
+        });
+    }
 
-//             modules.push(module);
-//         });
-//     }
-// }
+    return modules;
+}
+

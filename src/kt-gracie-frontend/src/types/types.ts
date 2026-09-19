@@ -18,10 +18,12 @@ export type KnowledgeUnit = {
   difficulty: Difficulty;
   prerequisites: string[];
   expectations: string[];
+  learningObjectives: string[];
   image: string;
   description: string;
   icon: string;
-  block: string;
+  block: string; // returned as string from backend, but will be mapped to CityBlockId in frontend
+  duration: string;
   sources: Source[];
   teachings: Teaching[];
   assessments: Assessment[];
@@ -36,6 +38,9 @@ export type Assessment = {
   pointScore: number;
   quiz: Quiz | null;
   flashcard: Flashcard | null; // Placeholder for future implementation
+  ktMax: number; // Knowledge Token max score for this assessment
+  duration: number; // Duration in minutes
+  difficulty: Difficulty;
 };
 
 export type Source = {
@@ -51,6 +56,8 @@ export type Teaching = {
   difficulty: Difficulty;
   keywords: string[];
   content: Content;
+  ktMax: number; // Knowledge Token max score for this teaching
+  duration: number; // Duration in minutes
 };
 
 export type Content = {

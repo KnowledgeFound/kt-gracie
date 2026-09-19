@@ -53,6 +53,8 @@ function mapTeaching(teaching: BackendTeaching) {
         difficulty: mapVariant<keyof typeof Difficulty>(teaching.difficulty) as Difficulty,
         keywords: teaching.keywords,
         content: mapContent(teaching.content),
+        ktMax: Number(teaching.ktMax),
+        duration: Number(teaching.duration),
     };
 }
 
@@ -102,7 +104,10 @@ function mapAssessment(assessment: BackendAssessment) {
         maxScore: Number(assessment.maxScore),
         pointScore: Number(assessment.pointScore),
         quiz: quiz === null ? null : mapQuiz(quiz),
+        difficulty: mapVariant<keyof typeof Difficulty>(assessment.difficulty) as Difficulty,
         flashcard: flashcard === null ? null : mapFlashcard(flashcard),
+        ktMax: Number(assessment.ktMax),
+        duration: Number(assessment.duration),
     };
 }
 

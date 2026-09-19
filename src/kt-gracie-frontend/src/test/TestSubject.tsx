@@ -22,6 +22,7 @@ export default function TestSubject() {
         //  console.log(res);
 
         console.log(await CorpusService.getCorpus());
+        console.log(await CorpusService.getAllModules());
 
         // console.log(await CorpusService.getPersistedCorpus());
 

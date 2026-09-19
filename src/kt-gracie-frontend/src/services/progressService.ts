@@ -48,7 +48,9 @@ export function createSubProgress(assessmentID: number, assessmentType: Assessme
         score: 0,
         maxScore: maxScore,
         completed: false,
-        pointScore: pointScore
+        pointScore: pointScore,
+        ktMax: 0,
+        ktEarned: 0
     }
 }
 
@@ -124,7 +126,9 @@ export function addSubProgress(assessmentID: number, assessmentType: AssessmentT
             score: score,
             maxScore: maxScore,
             completed: false,
-            pointScore: pointScore
+            pointScore: pointScore,
+            ktMax: 0,
+            ktEarned: 0
         });
     }
 
