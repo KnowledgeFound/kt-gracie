@@ -60,6 +60,11 @@ module Types{
         topic: Text;
         difficulty: Enums.Difficulty; 
         learningObjectives: [Text];
+        expectations: [Text];
+        image: Text;
+        description: Text;
+        icon: Text;
+        block: Text;
         duration: Text; // e.g. "30 minutes", "1 hour", "2 hours"
         prerequisites: [Text]; // List of Knowledge Unit IDs
         sources: [Source];
