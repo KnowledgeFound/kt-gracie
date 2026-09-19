@@ -47,6 +47,16 @@ export enum SourceType {
   TUTORIAL = "TUTORIAL",
 }
 
+export enum ContentType {
+    VIDEO = "VIDEO",
+    AUDIO = "AUDIO",
+    ARTICLE = "ARTICLE",
+    TUTORIAL = "TUTORIAL",
+    PODCAST = "PODCAST",
+    INFORGRAPHIC = "INFORGRAPHIC",
+    SLIDEDECK = "SLIDEDECK",
+}
+
 export enum CityState {
     VIBRANT = "Vibrant",
     NORMAL = "Normal",

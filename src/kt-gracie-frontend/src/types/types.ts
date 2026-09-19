@@ -1,4 +1,4 @@
-import { Difficulty, SourceType, AssessmentType } from "../ENUMS/enums";
+import { ContentType, Difficulty, SourceType, AssessmentType } from "../ENUMS/enums";
 
 export type Corpus = {
   schema: string;
@@ -21,6 +21,7 @@ export type KnowledgeUnit = {
   teachings: Teaching[];
   assessments: Assessment[];
   tokenReward: number;
+  summary: SummarySection;
 };
 
 
@@ -44,6 +45,21 @@ export type Teaching = {
   topic: string;
   difficulty: Difficulty;
   keywords: string[];
+  content: Content;
+};
+
+export type Content = {
+  name: string;
+  contentType: ContentType;
+  url: string;
+  description: string;
+};
+
+export type SummarySection = {
+  id: number;
+  inforgraphic: Content | null;
+  slideDeck: Content | null;
+  podcast: Content | null;
 };
  
 export type Quiz = {

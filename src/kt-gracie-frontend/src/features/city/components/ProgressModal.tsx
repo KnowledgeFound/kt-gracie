@@ -27,9 +27,6 @@ const ACHIEVEMENT_DEFS: AchievementDef[] = [
 	{ id: 'perfect-semester',  title: 'Perfect Semester',   description: 'All subjects completed'         },
 ];
 
-const TOTAL_ASSESSMENTS = ProgressContainer.getTotalNumberOfAssessments();
-const TOTAL_TEACHINGS   = ProgressContainer.getTotalNumberOfTeachings();
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function ProgressBar({ value, color }: { value: number; color: string }) {
@@ -51,8 +48,11 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
 export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 	const user = useOptionalUser();
 
-	const streak        = 5; // consult Leo about this 
-	const bestStreak    = Math.max(streak, 14); // fallback best
+	const TOTAL_ASSESSMENTS = ProgressContainer.getTotalNumberOfAssessments() ?? 1;
+	const TOTAL_TEACHINGS   = ProgressContainer.getTotalNumberOfTeachings() ?? 1;
+	const completionPct = ProgressContainer.getCompletionPercentage();
+	const completionMsg = ProgressContainer.getEncouragementMessage(completionPct);
+ 
 	const teachingsDone = ProgressContainer.getNumberOfTeachingsCompleted();
 	const teachingsLeft = TOTAL_TEACHINGS - teachingsDone;
 	const teachingsPct  = Math.round((teachingsDone / TOTAL_TEACHINGS) * 100);
@@ -64,6 +64,7 @@ export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 	const earnedIds = new Set(ProgressContainer.getAllAchievements().map(a => a.achievementId) ?? [
 		'first-steps', 'quiz-master', 'on-fire', // fallback demo
 	]);
+
 	const earnedCount = earnedIds.size;
 
 	return (
@@ -113,19 +114,19 @@ export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 							{/* Streak card */}
 							<div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-center justify-between">
 								<div className="flex items-center gap-3">
-									<span className="text-2xl select-none">🔥</span>
+									{/* <span className="text-2xl select-none">🔥</span> */}
 									<div>
 										<p className="text-2xl font-black text-amber-600 leading-none">
-											{streak} days
+											{completionPct} %
 										</p>
 										<p className="text-xs text-amber-600/70 font-medium mt-0.5">
-											Current streak
+											Completion Rate
 										</p>
 									</div>
 								</div>
 								<div className="text-right">
-									<p className="text-[9px] font-black tracking-widest text-ink-subtle uppercase">Best</p>
-									<p className="text-lg font-black text-amber-500">{bestStreak} days</p>
+									{/* <p className="text-[9px] font-black tracking-widest text-ink-subtle uppercase">Best</p> */}
+									<p className="text-sm font-black text-amber-500">{completionMsg}</p>
 								</div>
 							</div>
 

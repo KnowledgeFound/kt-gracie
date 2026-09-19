@@ -14,6 +14,9 @@ module Enums{
         #AUDIO;
         #ARTICLE;
         #TUTORIAL;
+        #PODCAST;
+        #INFORGRAPHIC;
+        #SLIDEDECK;
     }; 
 
     public type Difficulty = {
