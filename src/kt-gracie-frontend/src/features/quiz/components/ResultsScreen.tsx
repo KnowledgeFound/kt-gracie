@@ -27,6 +27,8 @@ interface ResultsScreenProps {
 	/** Elapsed quiz time in seconds */
 	timeTaken?: number;
 	module?: Module | null;
+	/** Knowledge Tokens earned for this run (1 KT per correct answer). */
+	tokensEarned?: number;
 }
 
 // ─── Rank helpers ─────────────────────────────────────────────────────────────
@@ -282,6 +284,7 @@ const ResultsScreen = ({
 	onRetake,
 	timeTaken = 0,
 	module,
+	tokensEarned = 0,
 }: ResultsScreenProps) => {
 	const navigate = useNavigate();
 	const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -291,7 +294,8 @@ const ResultsScreen = ({
 	const missedCount = questions.filter(
 		(q, i) => userAnswers[i] !== q.correctAnswer,
 	).length;
-	const ktEarned = Math.round((score / totalQuestions) * 350);
+	// Real reward: 1 KT per correct answer (from the optimistic creditTokens call).
+	const ktEarned = tokensEarned;
 
 	const containerVariants: Variants = {
 		hidden: { opacity: 0 },

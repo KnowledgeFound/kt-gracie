@@ -43,6 +43,7 @@ import {
     debit,
     getBalance,
     getTransactions,
+    createAccount,
 } from "../tokenService";
 
 const live = !!process.env.CANISTER_ID_KT_GRACIE_BACKEND;
@@ -58,6 +59,17 @@ describe.skipIf(!live)("tokenService <-> live canister", () => {
 
     it("a brand-new user has a zero balance", async () => {
         expect(await getBalance(user)).toBe(0n);
+    });
+
+    it("createAccount creates a fresh account, and is idempotent", async () => {
+        expect(await createAccount(user)).toBe(true);
+        expect(await createAccount(user)).toBe(false);
+        expect(await getBalance(user)).toBe(0n);
+    });
+
+    it("createAccount only creates the account for that user", async () => {
+        expect(await createAccount(other)).toBe(true);
+        expect(await getBalance(other)).toBe(0n);
     });
 
     it("credit adds tokens and returns the new balance", async () => {
