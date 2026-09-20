@@ -139,7 +139,9 @@ persistent actor Main {
           {
             id = 1;
             topic = "What is Corruption?";
+            ktMax = 10;
             difficulty = #EASY;
+            duration = 30; // Duration in minutes
             keywords = ["corruption", "definition", "Introduction to Corruption"];
             content = {
               name = "What is Corruption?";
@@ -154,6 +156,9 @@ persistent actor Main {
             id = 1;
             maxScore = 7;
             pointScore = 1; // how much each answer to a question is worth
+            ktMax = 10;
+            duration = 30; // Duration in minutes
+            difficulty = #EASY;
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;
@@ -209,6 +214,9 @@ persistent actor Main {
             maxScore = 5;
             pointScore = 1; // how much each answer to a question is worth
             quiz = null;
+            ktMax = 10;
+            duration = 30;
+            difficulty = #EASY;
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;

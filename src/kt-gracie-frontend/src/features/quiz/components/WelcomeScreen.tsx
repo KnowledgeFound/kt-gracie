@@ -303,7 +303,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 				</div>
 
 				{/* Previous best */}
-				<div className="mt-auto rounded-xl border border-amber-200 bg-amber-50 p-3 flex items-center gap-3">
+				{/* <div className="mt-auto rounded-xl border border-amber-200 bg-amber-50 p-3 flex items-center gap-3">
 					<Medal className="size-5 text-amber-500 flex-shrink-0" />
 					<div className="flex-1 min-w-0">
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase">
@@ -319,7 +319,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 							{highScore > 0 ? highScore : 325} KT
 						</span>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

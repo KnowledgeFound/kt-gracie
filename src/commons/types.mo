@@ -87,6 +87,8 @@ module Types{
         difficulty: Enums.Difficulty;
         keywords: [Text];
         content: Content;
+        ktMax: Nat; // Knowledge Token max score for this teaching
+        duration: Nat; // Duration in minutes
     };
 
     public type Content = {
@@ -110,6 +112,9 @@ module Types{
         pointScore: Nat;
         quiz: ?Quiz;
         flashcard: ?Flashcard;
+        ktMax: Nat; // Knowledge Token max score for this assessment
+        duration: Nat; // Duration in minutes
+        difficulty: Enums.Difficulty;
     };
 
     public type Quiz = {
