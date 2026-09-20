@@ -61,6 +61,10 @@ export async function getAllModules(): Promise<Module[]> {
                 block: cityBlockIdMapper(knowledgeUnit.block),
                 objectives: knowledgeUnit.learningObjectives,
                 expectations: knowledgeUnit.expectations,
+                lessons: knowledgeUnit.assessments.length + knowledgeUnit.teachings.length,
+                level: knowledgeUnit.level,
+                duration: knowledgeUnit.duration,
+                ktReward: getMaxNumberOfKtTokens(knowledgeUnit),
                 assessments: knowledgeUnit.assessments.map((assessment) => ({
                     id: assessment.id,
                     title: assessment.quiz ? knowledgeUnit.topic + " Quiz" : (assessment.flashcard ? knowledgeUnit.topic + " Flashcard" : "Assessment"),
@@ -80,5 +84,18 @@ export async function getAllModules(): Promise<Module[]> {
     }
 
     return modules;
+}
+
+function getMaxNumberOfKtTokens(knowledgeUnit: KnowledgeUnit) : number {
+    const totalFromAssessments = knowledgeUnit.assessments.reduce((kt, assessment) => {
+        return kt + (assessment.ktMax)
+    }, 0);
+
+    const totalFromTeachings = knowledgeUnit.teachings.reduce((kt, teaching) => {
+        return kt + (teaching.ktMax)
+    }, 0);
+
+    return totalFromAssessments + totalFromTeachings;
+
 }
 

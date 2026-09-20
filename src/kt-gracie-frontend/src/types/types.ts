@@ -30,6 +30,7 @@ export type KnowledgeUnit = {
   tokenReward: number;
   summary: SummarySection;
   audience: string;
+  level: string;
 };
 
 

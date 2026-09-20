@@ -137,6 +137,7 @@ function mapKnowledgeUnit(
         assessments: knowledgeUnit.assessments.map(mapAssessment) ?? [],
         tokenReward: Number(knowledgeUnit.tokenReward),
         audience: knowledgeUnit.audience,
+        level: knowledgeUnit.level,
         summary: {
             id: Number(knowledgeUnit.summary.id),
             inforgraphic: mapOptionalContent(knowledgeUnit.summary.inforgraphic),
