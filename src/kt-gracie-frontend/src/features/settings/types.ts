@@ -78,6 +78,8 @@ export interface CitySettings {
 	balloonCursor: boolean;
 	/** Idle bobbing of the district islands. */
 	floatingDistricts: boolean;
+	/** Rain, lightning and fires over a corrupt city. */
+	stormEffects: boolean;
 }
 
 export interface AppSettings {

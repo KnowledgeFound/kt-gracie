@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 interface DriftingCloudProps {
 	imageSrc: string;
 	/** Where the cloud sits in the scene — sized and placed in city.css. */
-	placement: 'left' | 'right';
+	placement: 'left' | 'right' | 'stormA' | 'stormB';
 	drift?: number;
 }
 
