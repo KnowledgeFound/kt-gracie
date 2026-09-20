@@ -133,9 +133,10 @@ function mapKnowledgeUnit(
         block: knowledgeUnit.block ?? "",
         duration: knowledgeUnit.duration,
         sources: knowledgeUnit.sources.map(mapSource),
-        teachings: knowledgeUnit.teachings.map(mapTeaching),
-        assessments: knowledgeUnit.assessments.map(mapAssessment),
+        teachings: knowledgeUnit.teachings.map(mapTeaching) ?? [],
+        assessments: knowledgeUnit.assessments.map(mapAssessment) ?? [],
         tokenReward: Number(knowledgeUnit.tokenReward),
+        audience: knowledgeUnit.audience,
         summary: {
             id: Number(knowledgeUnit.summary.id),
             inforgraphic: mapOptionalContent(knowledgeUnit.summary.inforgraphic),

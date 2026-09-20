@@ -5,6 +5,7 @@ import { setLocalStorage, getLocalStorage } from "../commons/utilts";
 import { AssessmentDifficulty, Module, ModuleAssessment } from "@/features/city/types";
 import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
+import { resolveImage } from "./mappers/imageMapper";
 
 export async function getCorpus(): Promise<Corpus> {
     const persistedCorpus = await getPersistedCorpus();
@@ -54,9 +55,9 @@ export async function getAllModules(): Promise<Module[]> {
                 id: counter++,
                 name: knowledgeUnit.topic,
                 description: knowledgeUnit.description,
-                audience: 'Youth',
+                audience: knowledgeUnit.audience,
                 icon: resolveIcon(knowledgeUnit.icon),
-                image: knowledgeUnit.image,
+                image: resolveImage(knowledgeUnit.image),
                 block: cityBlockIdMapper(knowledgeUnit.block),
                 objectives: knowledgeUnit.learningObjectives,
                 expectations: knowledgeUnit.expectations,

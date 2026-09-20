@@ -29,6 +29,7 @@ export type KnowledgeUnit = {
   assessments: Assessment[];
   tokenReward: number;
   summary: SummarySection;
+  audience: string;
 };
 
 
