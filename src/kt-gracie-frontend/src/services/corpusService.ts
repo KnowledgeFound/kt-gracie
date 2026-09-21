@@ -7,6 +7,8 @@ import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
 import { resolveImage } from "./mappers/imageMapper";
 
+let GLOBAL_MODULES : Module [] = [];
+
 export async function getCorpus(): Promise<Corpus> {
     const persistedCorpus = await getPersistedCorpus();
 
@@ -42,6 +44,9 @@ export async function getPersistedCorpus(): Promise<Corpus | null> {
 }
 
 export async function getAllModules(): Promise<Module[]> {
+
+    if(GLOBAL_MODULES.length > 0)
+        return GLOBAL_MODULES;
     
     const corpus = await getCorpus();
     let modules: Module[] = [];
@@ -83,6 +88,8 @@ export async function getAllModules(): Promise<Module[]> {
         });
     }
 
+    GLOBAL_MODULES = modules;
+
     return modules;
 }
 
@@ -97,5 +104,10 @@ function getMaxNumberOfKtTokens(knowledgeUnit: KnowledgeUnit) : number {
 
     return totalFromAssessments + totalFromTeachings;
 
+}
+
+export async function getModule(moduleId: number) : Promise<Module | null>
+{
+    return (await getAllModules()).find((m) => m.id == moduleId) ?? null;
 }
 
