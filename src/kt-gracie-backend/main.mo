@@ -17,8 +17,7 @@ persistent actor Main {
 
   transient let SUBJECT_SUCCESSFULLY_CREATED = "subject successfully created";
   transient let SUBJECT_NOT_CREATED = "subject not created";
-  transient let GRACIE_INTRODUCTION = "GRACIE introduction";
-  transient let COURSE_INTRODUCTION = "course introduction";
+  transient let BEGINNER = "Beginner";
 
   var subjectIdCounter: Nat = 0;
 
@@ -108,9 +107,11 @@ persistent actor Main {
     knowledgeUnits = [
       {
         id = "KU-001";
-        topic = "Introduction to Corruption";
+        topic = "Anti-Corruption";
         difficulty = #EASY;
+        audience = "Private Sector & Civil Society";
         prerequisites = [];
+        level = BEGINNER;
         learningObjectives = [
           "Define corruption and its various forms.",
           "Understand the impact of corruption on society.",
@@ -122,7 +123,7 @@ persistent actor Main {
           "Whistleblower protection mechanisms",
           "Transparency and accountability in governance",
         ];
-        image = "anti_corruption_img.png";
+        image = "anti_corruption_img";
         description = "This knowledge unit provides an overview of corruption, its definitions, and its impact on society. It introduces learners to the concept of corruption, its various forms, and the importance of anti-corruption measures.";
         icon = "BookOpen";
         block = "leftUp";
@@ -250,6 +251,238 @@ persistent actor Main {
             };
           }
         ];
+        tokenReward = 10;
+        summary = {
+          id = 1;
+          inforgraphic = ?{
+            name = "Corruption Overview";
+            contentType = #INFORGRAPHIC;
+            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+          };
+          slideDeck = ?{
+            name = "Understanding Corruption";
+            contentType = #SLIDEDECK;
+            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+          };
+          podcast = ?{
+            name = "The Corruption Podcast";
+            contentType = #PODCAST;
+            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+          };  
+        };
+      },
+      {
+        id = "KU-002";
+        topic = "Policy";
+        difficulty = #EASY;
+        prerequisites = [];
+        audience = "Government & Public Sector";
+        level = BEGINNER;
+        learningObjectives = [
+          "Understand the policy development cycle.",
+          "Map stakeholders and their influence.",
+          "Apply evidence-based approaches to policy.",
+          "Draft and evaluate policy briefs.",
+          "Navigate public consultation processes."
+        ];
+        expectations = [
+          "Policy fundamentals and cycles",
+          "Stakeholder engagement strategies",
+          "Evidence-based policy tools",
+          "Writing effective policy briefs",
+        ];
+        image = "policy_img";
+        description = "Explore the world of policy-making, including how policies are developed, implemented, and evaluated.";
+        icon = "Target";
+        block = "leftDown";
+        duration = "2 hours";
+        sources = [
+          {
+            id = 1;
+            sourceType = #ARTICLE;
+            detail = "What is Corruption?";
+            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+          }
+        ];
+        teachings = [];
+        assessments = [];
+        tokenReward = 10;
+        summary = {
+          id = 1;
+          inforgraphic = ?{
+            name = "Corruption Overview";
+            contentType = #INFORGRAPHIC;
+            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+          };
+          slideDeck = ?{
+            name = "Understanding Corruption";
+            contentType = #SLIDEDECK;
+            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+          };
+          podcast = ?{
+            name = "The Corruption Podcast";
+            contentType = #PODCAST;
+            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+          };  
+        };
+      },
+      {
+        id = "KU-003";
+        topic = "Youth Led";
+        difficulty = #EASY;
+        prerequisites = [];
+        audience = "Young People & Communities";
+        level = BEGINNER;
+        learningObjectives = [
+          "Identify youth-led advocacy strategies.",
+          "Build community engagement campaigns.",
+          "Understand governance and civic participation.",
+          "Develop peer-education skills.",
+          "Apply design thinking to social problems."
+        ];
+        expectations = [
+          "Youth governance and civic action",
+          "Community campaign design",
+          "Peer education methodologies",
+          "Digital advocacy tools",
+        ];
+        image = "youth_led_img";
+        description = "Discover the power of youth-led initiatives and how young people are driving change in their communities.";
+        icon = "Users";
+        block = "central";
+        duration = "2 hours";
+        sources = [
+          {
+            id = 1;
+            sourceType = #ARTICLE;
+            detail = "What is Corruption?";
+            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+          }
+        ];
+        teachings = [];
+        assessments = [];
+        tokenReward = 10;
+        summary = {
+          id = 1;
+          inforgraphic = ?{
+            name = "Corruption Overview";
+            contentType = #INFORGRAPHIC;
+            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+          };
+          slideDeck = ?{
+            name = "Understanding Corruption";
+            contentType = #SLIDEDECK;
+            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+          };
+          podcast = ?{
+            name = "The Corruption Podcast";
+            contentType = #PODCAST;
+            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+          };  
+        };
+      },
+      {
+        id = "KU-004";
+        topic = "Digital Innovation";
+        difficulty = #EASY;
+        prerequisites = [];
+        level = BEGINNER;
+        audience = "Tech & Civil Society";
+        learningObjectives = [
+          "Understand AI, open data and civic tech.",
+          "Apply digital ethics principles.",
+          "Build technology-enabled solutions.",
+          "Evaluate digital transformation strategies.",
+          "Navigate data privacy regulations."
+        ];
+        expectations = [
+          "Emerging technologies overview",
+          "AI & Society impacts",
+          "Digital ethics and governance",
+          "Civic technology applications",
+        ];
+        image = "digital_innovation_img";
+        description = "Delve into digital innovation and learn about the latest technologies and trends shaping our future.";
+        icon = "Lightbulb";
+        block = "rightUp";
+        duration = "2 hours";
+        sources = [
+          {
+            id = 1;
+            sourceType = #ARTICLE;
+            detail = "What is Corruption?";
+            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+          }
+        ];
+        teachings = [];
+        assessments = [];
+        tokenReward = 10;
+        summary = {
+          id = 1;
+          inforgraphic = ?{
+            name = "Corruption Overview";
+            contentType = #INFORGRAPHIC;
+            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+          };
+          slideDeck = ?{
+            name = "Understanding Corruption";
+            contentType = #SLIDEDECK;
+            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+          };
+          podcast = ?{
+            name = "The Corruption Podcast";
+            contentType = #PODCAST;
+            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+          };  
+        };
+      },
+      {
+        id = "KU-005";
+        topic = "Community";
+        difficulty = #EASY;
+        prerequisites = [];
+        audience = "Local Leaders & NGOs";
+        level = BEGINNER;
+        learningObjectives = [
+          "Understand community development principles.",
+          "Facilitate inclusive participation.",
+          "Design community monitoring systems.",
+          "Apply conflict-resolution techniques.",
+          "Build sustainable local coalitions."
+        ];
+        expectations = [
+          "Emerging technologies overview",
+          "AI & Society impacts",
+          "Digital ethics and governance",
+          "Civic technology applications",
+        ];
+        image = "community_img";
+        description = "Connect with others and learn about the importance of community engagement and development.";
+        icon = "Globe";
+        block = "rightDown";
+        duration = "2 hours";
+        sources = [
+          {
+            id = 1;
+            sourceType = #ARTICLE;
+            detail = "What is Corruption?";
+            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+          }
+        ];
+        teachings = [];
+        assessments = [];
         tokenReward = 10;
         summary = {
           id = 1;

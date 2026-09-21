@@ -96,4 +96,8 @@ export interface Module {
 	assessments: ModuleAssessment[];
 	/** Live progress, null if never started */
 	progress: ModuleProgress | null;
+	lessons: number;
+	ktReward:number;
+	level: string;
+	duration: string;
 }

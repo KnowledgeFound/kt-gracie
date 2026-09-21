@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight, CheckCircle2, Clock, Zap, BookOpen } from 'lucide-react';
-import { modules } from '../constants';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { CityBlockId, Module } from '../types';
+import { getAllModules } from '@/services/corpusService';
 
 // const CITY_SRC = '/assets/city/city.png';
 
@@ -22,6 +23,28 @@ export default function ModuleDrawer({
 	moduleId,
 }: ModuleDrawerProps) {
 	const navigate = useNavigate();
+
+	const [modules, setModules ] = useState<Module[]>([])
+
+	useEffect(() => {
+		async function fetchModules(){
+			try{
+				const res = await getAllModules();
+
+				//console.log("fetching modules", res);
+
+				if(res){
+					setModules(res);
+				}
+			}
+			catch(err){
+				console.error("Failed to load Modules: ", err);
+			};
+		};
+
+		fetchModules();
+	}, []);
+
 	const module = modules.find((m) => m.id === moduleId) ?? null;
 
 	function handleCTA() {
@@ -85,7 +108,7 @@ export default function ModuleDrawer({
 // ─── Header ───────────────────────────────────────────────────────────────────
 
 interface ModuleHeaderProps {
-	module: (typeof modules)[number];
+	module: Module;
 	onClose: () => void;
 }
 
@@ -150,7 +173,7 @@ function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
-function ModuleBody({ module }: { module: (typeof modules)[number] }) {
+function ModuleBody({ module }: { module: Module }) {
 	return (
 		<section className="px-5 py-5 space-y-5 bg-white">
 			{/* Overview stats */}
@@ -158,22 +181,22 @@ function ModuleBody({ module }: { module: (typeof modules)[number] }) {
 				<StatCard
 					icon={<BookOpen className="w-4 h-4 text-blue-500" />}
 					label="Lessons"
-					value="8 lessons"
+					value= {`${module.lessons} lessons`}
 				/>
 				<StatCard
 					icon={<Clock className="w-4 h-4 text-ink-muted" />}
 					label="Duration"
-					value="~2 hrs"
+					value= {module.duration}
 				/>
 				<StatCard
 					icon={<Zap className="w-4 h-4 text-amber-500" />}
-					label="XP Reward"
-					value="400 XP"
+					label="KT Reward"
+					value={`${module.ktReward} KT`}
 				/>
 				<StatCard
 					icon={<CheckCircle2 className="w-4 h-4 text-green-500" />}
 					label="Level"
-					value="Beginner"
+					value={module.level}
 				/>
 			</div>
 			<div>

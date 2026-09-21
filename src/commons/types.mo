@@ -72,6 +72,8 @@ module Types{
         assessments: [Assessment];
         tokenReward: Nat;
         summary: SummarySection;
+        audience: Text;
+        level: Text;
     };
 
     public type Source = {

@@ -194,6 +194,10 @@ export const modules: Module[] = [
 		name: 'Anti-Corruption',
 		audience: 'Private Sector & Civil Society',
 		image: anti_corruption_img,
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		icon: BookOpen,
 		block: 'leftUp',
 		description:
@@ -230,6 +234,10 @@ export const modules: Module[] = [
 		image: policy_img,
 		icon: Target,
 		block: 'leftDown',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Explore the world of policy-making, including how policies are developed, implemented, and evaluated.',
 		objectives: [
@@ -262,6 +270,10 @@ export const modules: Module[] = [
 		icon: Users,
 		image: youth_led_img,
 		block: 'central',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Discover the power of youth-led initiatives and how young people are driving change in their communities.',
 		objectives: [
@@ -287,6 +299,10 @@ export const modules: Module[] = [
 		audience: 'Tech & Civil Society',
 		icon: Lightbulb,
 		block: 'rightUp',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Delve into digital innovation and learn about the latest technologies and trends shaping our future.',
 		objectives: [
@@ -320,6 +336,10 @@ export const modules: Module[] = [
 		image: community_img,
 		icon: Globe,
 		block: 'rightDown',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Connect with others and learn about the importance of community engagement and development.',
 		objectives: [

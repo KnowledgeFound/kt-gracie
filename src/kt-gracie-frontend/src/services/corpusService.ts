@@ -5,6 +5,7 @@ import { setLocalStorage, getLocalStorage } from "../commons/utilts";
 import { AssessmentDifficulty, Module, ModuleAssessment } from "@/features/city/types";
 import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
+import { resolveImage } from "./mappers/imageMapper";
 
 export async function getCorpus(): Promise<Corpus> {
     const persistedCorpus = await getPersistedCorpus();
@@ -54,12 +55,16 @@ export async function getAllModules(): Promise<Module[]> {
                 id: counter++,
                 name: knowledgeUnit.topic,
                 description: knowledgeUnit.description,
-                audience: 'Youth',
+                audience: knowledgeUnit.audience,
                 icon: resolveIcon(knowledgeUnit.icon),
-                image: knowledgeUnit.image,
+                image: resolveImage(knowledgeUnit.image),
                 block: cityBlockIdMapper(knowledgeUnit.block),
                 objectives: knowledgeUnit.learningObjectives,
                 expectations: knowledgeUnit.expectations,
+                lessons: knowledgeUnit.assessments.length + knowledgeUnit.teachings.length,
+                level: knowledgeUnit.level,
+                duration: knowledgeUnit.duration,
+                ktReward: getMaxNumberOfKtTokens(knowledgeUnit),
                 assessments: knowledgeUnit.assessments.map((assessment) => ({
                     id: assessment.id,
                     title: assessment.quiz ? knowledgeUnit.topic + " Quiz" : (assessment.flashcard ? knowledgeUnit.topic + " Flashcard" : "Assessment"),
@@ -79,5 +84,18 @@ export async function getAllModules(): Promise<Module[]> {
     }
 
     return modules;
+}
+
+function getMaxNumberOfKtTokens(knowledgeUnit: KnowledgeUnit) : number {
+    const totalFromAssessments = knowledgeUnit.assessments.reduce((kt, assessment) => {
+        return kt + (assessment.ktMax)
+    }, 0);
+
+    const totalFromTeachings = knowledgeUnit.teachings.reduce((kt, teaching) => {
+        return kt + (teaching.ktMax)
+    }, 0);
+
+    return totalFromAssessments + totalFromTeachings;
+
 }
 
