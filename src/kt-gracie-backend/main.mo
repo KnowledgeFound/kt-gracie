@@ -257,6 +257,7 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
+          sequenceNo = 4;
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
@@ -315,6 +316,7 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
+          sequenceNo = 1;
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
@@ -373,6 +375,7 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
+          sequenceNo = 1;
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
@@ -431,6 +434,7 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
+          sequenceNo = 1;
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
@@ -489,6 +493,7 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
+          sequenceNo = 1;
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;

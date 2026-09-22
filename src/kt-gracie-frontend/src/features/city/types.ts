@@ -1,5 +1,5 @@
 import { AssessmentType } from '@/ENUMS/enums';
-import { Content, Flashcard, FlashcardQuestion, Quiz, QuizQuestion, Teaching } from '@/types/types';
+import { Content, Flashcard, FlashcardQuestion, Quiz, QuizQuestion, SummarySection, Teaching } from '@/types/types';
 import { ComponentType } from 'react';
 
 // ─── Lesson & Progress ────────────────────────────────────────────────────────
@@ -48,6 +48,7 @@ export interface ModuleAssessment {
 	keywords: string [];
 	content?: Content;
 	sequenceNo: number;
+	summarySection?: SummarySection
 }
 
 export interface Activity {

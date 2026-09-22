@@ -83,5 +83,6 @@ export enum AssessmentType {
     EXAM = "EXAM",
     FLASHCARD = "FLASHCARD",
     CHAT_QA = "CHAT_QA",
-    TEACHING = "TEACHING"
+    TEACHING = "TEACHING",
+    SUMMARY = "SUMMARY"
 }

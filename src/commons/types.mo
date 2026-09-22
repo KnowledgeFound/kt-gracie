@@ -103,6 +103,7 @@ module Types{
 
     public type SummarySection = {
         id: Nat;
+        sequenceNo: Nat;
         inforgraphic: ?Content;
         slideDeck: ?Content;
         podcast: ?Content;

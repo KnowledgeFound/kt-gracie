@@ -6,7 +6,7 @@ import { AssessmentDifficulty, Module, ModuleAssessment } from "@/features/city/
 import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
 import { resolveImage } from "./mappers/imageMapper";
-import { AssessmentType } from "@/ENUMS/enums";
+import { AssessmentType, Difficulty } from "@/ENUMS/enums";
 
 let GLOBAL_MODULES : Module [] = [];
 
@@ -107,10 +107,31 @@ export async function getAllModules(): Promise<Module[]> {
                         questions: [],
                         cards: [],
                         sequenceNo: teaching.sequenceNo,
-                        keywords: teaching.keywords
+                        keywords: teaching.keywords,
+                        content: teaching.content
                     }
                 )
             });
+
+            // add the summary section
+            module.assessments.push(
+                {
+                    id:knowledgeUnit.summary.id,
+                    type: AssessmentType.SUMMARY,
+                    title: knowledgeUnit.topic + " Summary Section",
+                    description: "Explore additional Content on " + knowledgeUnit.topic,
+                    difficulty: 'easy',
+                    questionCount: 0,
+                    durationLabel: "NA",
+                    ktMax: 0,
+                    status: 'available',
+                    ktEarned: 0,
+                    questions: [],
+                    cards: [],
+                    sequenceNo: knowledgeUnit.summary.sequenceNo,
+                    keywords: [],
+                }
+            )
 
             // replace current assessment array with sorted version.
             module.assessments = sortAssessments(module.assessments);

@@ -142,6 +142,7 @@ function mapKnowledgeUnit(
         level: knowledgeUnit.level,
         summary: {
             id: Number(knowledgeUnit.summary.id),
+            sequenceNo: Number(knowledgeUnit.summary.sequenceNo),
             inforgraphic: mapOptionalContent(knowledgeUnit.summary.inforgraphic),
             slideDeck: mapOptionalContent(knowledgeUnit.summary.slideDeck),
             podcast: mapOptionalContent(knowledgeUnit.summary.podcast),

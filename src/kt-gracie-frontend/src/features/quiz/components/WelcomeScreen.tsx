@@ -389,7 +389,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					{mobileTab === 'assessments' ? (
 						<div className="p-4 space-y-3">
 							<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
-								Choose Assessment
+								Choose Activity
 							</p>
 							<p className="text-xs text-ink-muted -mt-1">
 								Complete in order — some unlock after prerequisites are passed.

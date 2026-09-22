@@ -73,6 +73,7 @@ export type Content = {
 
 export type SummarySection = {
   id: number;
+  sequenceNo: number;
   inforgraphic: Content | null;
   slideDeck: Content | null;
   podcast: Content | null;
