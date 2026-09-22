@@ -144,9 +144,10 @@ persistent actor Main {
             difficulty = #EASY;
             duration = 30; // Duration in minutes
             keywords = ["corruption", "definition", "Introduction to Corruption"];
+            sequenceNo = 1;
             content = {
               name = "What is Corruption?";
-              contentType = #ARTICLE;
+              contentType = #VIDEO;
               url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
               description = "An article by the United Nations Office on Drugs and Crime (UNODC) that provides a comprehensive overview of corruption, its forms, and its impact on society.";
             };
@@ -160,6 +161,7 @@ persistent actor Main {
             ktMax = 10;
             duration = 30; // Duration in minutes
             difficulty = #EASY;
+            sequenceNo = 2;
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;
@@ -218,6 +220,7 @@ persistent actor Main {
             ktMax = 10;
             duration = 30;
             difficulty = #EASY;
+            sequenceNo = 3;
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;
