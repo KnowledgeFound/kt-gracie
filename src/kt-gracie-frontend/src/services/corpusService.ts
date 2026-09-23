@@ -8,46 +8,48 @@ import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
 import { resolveImage } from "./mappers/imageMapper";
 import { AssessmentType, Difficulty } from "@/ENUMS/enums";
 
-let GLOBAL_MODULES : Module [] = [];
+let allModules : Module [] = [];
+let numberOfModules: number = 0;
+let numberOfAssessments: number = 0;
 
 export async function getCorpus(): Promise<Corpus> {
-    const persistedCorpus = await getPersistedCorpus();
-
-    if (persistedCorpus) {
-        return persistedCorpus;
-    }
+    const persistedCorpus = getPersistedCorpus();
 
     const corpus = await kt_gracie_backend.getCorpus();
 
     const normalizedCorpus = mapFromBackend(corpus);
 
-    await persistCorpus(normalizedCorpus);
+    if(persistedCorpus && (persistedCorpus.lastUpdated >= normalizedCorpus.lastUpdated))
+        return persistedCorpus;
+
+    numberOfAssessments = normalizedCorpus.numberOfAssessments;
+    numberOfModules = normalizedCorpus.numberOfModules;
+
+    persistCorpus(normalizedCorpus);
 
     return normalizedCorpus;
 }
 
-export async function getNumberOfModules(): Promise<number> {
-    const corpus = await getCorpus();
-    return corpus.numberOfModules;
+export function getNumberOfModules(): number {
+    return numberOfModules;
 }
 
-export async function getNumberOfAssessments(): Promise<number> {
-    const corpus = await getCorpus();
-    return corpus.numberOfAssessments;
+export function getNumberOfAssessments(): number {
+    return numberOfAssessments;
 }
 
-export async function persistCorpus(corpus: Corpus): Promise<void> {
+export function persistCorpus(corpus: Corpus): void {
     setLocalStorage("corpus", corpus);
 }
 
-export async function getPersistedCorpus(): Promise<Corpus | null> {
+export function getPersistedCorpus(): Corpus {
     return getLocalStorage("corpus");
 }
 
 export async function getAllModules(): Promise<Module[]> {
 
-    if(GLOBAL_MODULES.length > 0)
-        return GLOBAL_MODULES;
+    if(allModules.length > 0)
+        return allModules;
     
     const corpus = await getCorpus();
     let modules: Module[] = [];
@@ -141,7 +143,7 @@ export async function getAllModules(): Promise<Module[]> {
         });
     }
 
-    GLOBAL_MODULES = modules;
+    allModules = modules;
 
     return modules;
 }

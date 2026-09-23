@@ -156,6 +156,7 @@ export function mapFromBackend(corpus: BackendCorpus): Corpus {
         id: corpus.id,
         title: corpus.title,
         description: corpus.description,
+        lastUpdated: new Date(corpus.lastUpdated),
         numberOfModules: Number(corpus.numberOfModules),
         numberOfAssessments: Number(corpus.numberOfAssessments),
         typeOfObject: corpus.typeOfObject,

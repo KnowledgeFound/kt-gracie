@@ -47,6 +47,7 @@ module Types{
         schema: Text;
         id: Text;
         title: Text;
+        lastUpdated: Text;
         description: Text;
         typeOfObject: Text;
         additionalProperties: Bool;

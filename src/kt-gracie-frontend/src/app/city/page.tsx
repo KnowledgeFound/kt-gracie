@@ -79,7 +79,6 @@ export default function CityScene() {
 				// create Knowledge container
 				createAndPersistProgressContainer();
 
-
 				corpus.knowledgeUnits.forEach((knowledgeUnit) => {
 
 					let arr_subProgress : SubProgress [] = [];

@@ -5,6 +5,7 @@ export type Corpus = {
   id: string;
   title: string;
   description: string;
+  lastUpdated: Date;
   typeOfObject: string;
   additionalProperties: boolean;
   knowledgeUnits: KnowledgeUnit[];
