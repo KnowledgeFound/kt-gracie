@@ -55,6 +55,7 @@ function mapTeaching(teaching: BackendTeaching) {
         content: mapContent(teaching.content),
         ktMax: Number(teaching.ktMax),
         duration: Number(teaching.duration),
+        sequenceNo: Number(teaching.sequenceNo)
     };
 }
 
@@ -108,6 +109,7 @@ function mapAssessment(assessment: BackendAssessment) {
         flashcard: flashcard === null ? null : mapFlashcard(flashcard),
         ktMax: Number(assessment.ktMax),
         duration: Number(assessment.duration),
+        sequenceNo: Number(assessment.sequenceNo)
     };
 }
 
@@ -140,6 +142,7 @@ function mapKnowledgeUnit(
         level: knowledgeUnit.level,
         summary: {
             id: Number(knowledgeUnit.summary.id),
+            sequenceNo: Number(knowledgeUnit.summary.sequenceNo),
             inforgraphic: mapOptionalContent(knowledgeUnit.summary.inforgraphic),
             slideDeck: mapOptionalContent(knowledgeUnit.summary.slideDeck),
             podcast: mapOptionalContent(knowledgeUnit.summary.podcast),

@@ -43,6 +43,7 @@ export type Assessment = {
   ktMax: number; // Knowledge Token max score for this assessment
   duration: number; // Duration in minutes
   difficulty: Difficulty;
+  sequenceNo: number;
 };
 
 export type Source = {
@@ -60,6 +61,7 @@ export type Teaching = {
   content: Content;
   ktMax: number; // Knowledge Token max score for this teaching
   duration: number; // Duration in minutes
+  sequenceNo: number;
 };
 
 export type Content = {
@@ -71,6 +73,7 @@ export type Content = {
 
 export type SummarySection = {
   id: number;
+  sequenceNo: number;
   inforgraphic: Content | null;
   slideDeck: Content | null;
   podcast: Content | null;

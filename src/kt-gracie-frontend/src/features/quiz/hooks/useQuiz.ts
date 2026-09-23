@@ -4,9 +4,9 @@ import { shuffleArray } from '../utils';
 import { QUIZ_QUESTION_COUNT } from '../constants';
 import { useUser } from '@/features/auth';
 import { useSubjectById } from '@/features/subject';
-import { getModule } from '@/features/city/constants';
 import type { Module } from '@/features/city/types';
 import data from '@/lib/gracie-qa-corpus.json';
+import { getModule } from '@/services/corpusService';
 
 /**
  * Core quiz state machine.
@@ -22,8 +22,31 @@ export function useQuiz(moduleId?: string) {
 	// Numeric module id
 	const numericId = moduleId ? Number(moduleId) : undefined;
 
-	// Rich module data from city constants (objectives, assessments, progress)
-	const module: Module | null = numericId ? (getModule(numericId) ?? null) : null;
+	const [module, setModule] = useState<Module | null>(null);
+
+	useEffect(() => {
+		if (numericId === undefined) {
+			setModule(null);
+			return;
+		}
+
+		const loadModule = async () => {
+			try {
+				setLoading(true);
+
+				const result = await getModule(numericId);
+
+				setModule(result);
+			} catch (error) {
+				console.error('Failed to load module:', error);
+				setModule(null);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		loadModule();
+	}, [numericId]);
 
 	// Backend subject fetch (display-only for now)
 	const subjectQuery = useSubjectById(moduleId);
