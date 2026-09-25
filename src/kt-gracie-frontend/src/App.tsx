@@ -12,6 +12,7 @@ import { GracieAIProvider } from '@/features/gracie-ai';
 import RootLayout from './app/layout';
 import HomePage from './app/home/page';
 import QuizPage from './app/quiz/page';
+import CoursePage from './app/course/page';
 import LeaderboardPage from './app/leaderboard/page';
 import ProfilePage from './app/profile/page';
 import CityScene from './app/city/page';
@@ -70,6 +71,7 @@ export default function App() {
 								<Route path="/leaderboard" element={<LeaderboardPage />} />
 								<Route path="/profile" element={<ProfilePage />} />
 								<Route path="/subjects" element={<SubjectPage />} />
+								<Route path="/course/:moduleId" element={<CoursePage />} />
 								<Route path="/quiz" element={<QuizPage />} />
 								<Route path="/quiz/:id" element={<QuizPage />} />
 								<Route path="/settings" element={<SettingsPage />} />

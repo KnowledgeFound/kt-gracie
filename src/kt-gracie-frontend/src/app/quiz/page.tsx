@@ -1,12 +1,8 @@
 import { AnimatePresence } from 'framer-motion';
 import { useParams } from 'react-router-dom';
-import {
-	useQuiz,
-	WelcomeScreen,
-	QuizScreen,
-	ResultsScreen,
-} from '@/features/quiz';
+import { useQuiz, QuizScreen, ResultsScreen } from '@/features/quiz';
 import { GracieFeedback } from '@/features/gracie-ai';
+import { WelcomeScreen } from '@/features/course';
 
 /**
  * Quiz route — /quiz/:id
@@ -24,7 +20,24 @@ export default function QuizPage() {
 	if (quiz.loading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-surface-page">
-				<p className="text-xl font-bold text-brand-600 animate-pulse">Loading…</p>
+				<p className="text-xl font-bold text-brand-600 animate-pulse">
+					Loading…
+				</p>
+			</div>
+		);
+	}
+
+	if (quiz.module === null) {
+		return (
+			<div className="flex h-full min-h-screen w-full items-center justify-center p-4">
+				<div className="rounded-2xl border border-red-200/50 bg-white/80 p-6 text-center shadow-xl backdrop-blur-md">
+					<p className="text-base font-semibold text-gray-800">
+						Something went wrong
+					</p>
+					<p className="mt-1 text-sm text-gray-500">
+						Failed to fetch Module Data
+					</p>
+				</div>
 			</div>
 		);
 	}

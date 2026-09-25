@@ -15,6 +15,7 @@ import community_img from '/assets/city/community.jpeg';
 import policy_img from '/assets/city/policy.jpeg';
 import youth_led_img from '/assets/city/youth-led.jpeg';
 import digital_innovation_img from '/assets/city/digital-innovation.jpeg';
+import { AssessmentType } from '@/ENUMS/enums';
 
 // ─── Progress builder (same logic as old mockProgress.ts) ────────────────────
 
@@ -64,6 +65,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			ktMax: 200,
 			ktEarned: 115,
 			status: 'completed',
+			cards: [],
+			questions: [],
+			type: AssessmentType.QUIZ,
+			keywords: [],
+			sequenceNo: 1
 		},
 		{
 			id: 2,
@@ -79,6 +85,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			ktMax: 350,
 			ktEarned: 125,
 			status: 'in_progress',
+			cards: [],
+			questions: [],
+			type: AssessmentType.FLASHCARD,
+			keywords: [],
+			sequenceNo: 2
 		},
 		{
 			id: 3,
@@ -93,6 +104,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			durationLabel: '2m',
 			ktMax: 350,
 			status: 'available',
+			cards: [],
+			questions: [],
+			type: AssessmentType.QUIZ,
+			keywords: [],
+			sequenceNo: 3
 		},
 		{
 			id: 4,
@@ -107,6 +123,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			durationLabel: '2m',
 			ktMax: 525,
 			status: 'locked',
+			cards: [],
+			questions: [],
+			type: AssessmentType.QUIZ,
+			keywords: [],
+			sequenceNo: 4
 		},
 	];
 }
@@ -208,6 +229,7 @@ const BLOCK_LAYOUT: Record<
 export const modules: Module[] = [
 	{
 		id: 1,
+		kuId: 'KU-001',
 		name: 'Anti-Corruption',
 		audience: 'Private Sector & Civil Society',
 		image: anti_corruption_img,
@@ -279,6 +301,7 @@ export const modules: Module[] = [
 	},
 	{
 		id: 2,
+		kuId: 'KU-002',
 		name: 'Policy',
 		audience: 'Government & Public Sector',
 		image: policy_img,
@@ -348,6 +371,7 @@ export const modules: Module[] = [
 	},
 	{
 		id: 3,
+		kuId: 'KU-003',
 		name: 'Youth Led',
 		audience: 'Young People & Communities',
 		icon: Users,
@@ -410,6 +434,7 @@ export const modules: Module[] = [
 	},
 	{
 		id: 4,
+		kuId: 'KU-004',
 		name: 'Digital Innovation',
 		image: digital_innovation_img,
 		audience: 'Tech & Civil Society',
@@ -480,6 +505,7 @@ export const modules: Module[] = [
 	},
 	{
 		id: 5,
+		kuId: 'KU-005',
 		name: 'Community',
 		audience: 'Local Leaders & NGOs',
 		image: community_img,

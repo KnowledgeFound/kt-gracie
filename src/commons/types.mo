@@ -47,6 +47,7 @@ module Types{
         schema: Text;
         id: Text;
         title: Text;
+        lastUpdated: Text;
         description: Text;
         typeOfObject: Text;
         additionalProperties: Bool;
@@ -91,6 +92,7 @@ module Types{
         content: Content;
         ktMax: Nat; // Knowledge Token max score for this teaching
         duration: Nat; // Duration in minutes
+        sequenceNo: Nat;
     };
 
     public type Content = {
@@ -102,6 +104,7 @@ module Types{
 
     public type SummarySection = {
         id: Nat;
+        sequenceNo: Nat;
         inforgraphic: ?Content;
         slideDeck: ?Content;
         podcast: ?Content;
@@ -117,6 +120,7 @@ module Types{
         ktMax: Nat; // Knowledge Token max score for this assessment
         duration: Nat; // Duration in minutes
         difficulty: Enums.Difficulty;
+        sequenceNo: Nat;
     };
 
     public type Quiz = {

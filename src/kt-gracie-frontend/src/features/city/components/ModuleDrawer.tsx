@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
 import { useReadingLevel } from '@/features/settings';
+import { getResume, getUnitCompletionPercentage } from '@/services/progressContainerService';
 
 // const CITY_SRC = '/assets/city/city.png';
 
@@ -51,7 +52,7 @@ export default function ModuleDrawer({
 	function handleCTA() {
 		if (!module) return;
 		onClose();
-		navigate(`/quiz/${module.id}`);
+		navigate(`/course/${module.id}`);
 	}
 
 	return (
@@ -89,7 +90,7 @@ export default function ModuleDrawer({
 									<ModuleBody module={module} />
 								</div>
 
-								<DrawerFooter onCTA={handleCTA} />
+								<DrawerFooter onCTA={handleCTA} kuId={module.kuId} />
 							</>
 						) : (
 							<div className="flex flex-col items-center justify-center flex-1 gap-4 text-ink-muted p-6">
@@ -227,14 +228,29 @@ function ModuleBody({ module }: { module: Module }) {
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
-function DrawerFooter({ onCTA }: { onCTA: () => void }) {
+function DrawerFooter({ onCTA, kuId }: { onCTA: () => void; kuId: string }) {
+	const percent = getUnitCompletionPercentage(kuId);
+	const started = getResume(kuId) !== null || percent > 0;
+	const label = percent >= 100 ? 'Review Module' : started ? 'Continue Learning' : 'Start Learning';
+
 	return (
 		<div className="px-5 py-4 border-t border-gray-100 shrink-0 bg-white">
+			{started && (
+				<div className="mb-3">
+					<div className="flex justify-between text-xs text-ink-muted mb-1">
+						<span>Your progress</span>
+						<span>{percent}%</span>
+					</div>
+					<div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+						<div className="h-full bg-brand-500 transition-all" style={{ width: `${percent}%` }} />
+					</div>
+				</div>
+			)}
 			<button
 				onClick={onCTA}
 				className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-semibold transition-colors bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
 			>
-				<span>Start Learning</span>
+				<span>{label}</span>
 				<ArrowRight className="w-4 h-4 shrink-0" />
 			</button>
 		</div>

@@ -11,7 +11,10 @@ import {
 	Zap,
 	BookOpen,
 	Target,
+	Layers,
+	ClipboardCheck,
 } from 'lucide-react';
+import { AssessmentType } from '@/ENUMS/enums';
 import { useOptionalUser } from '@/features/auth';
 import { useReadingLevel } from '@/features/settings';
 import type {
@@ -25,9 +28,40 @@ import { useNavigate } from 'react-router-dom';
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface WelcomeScreenProps {
-	onStart: () => void;
+	/** Receives the chosen activity's index within `activities`. */
+	onStart: (activityIndex: number) => void;
 	module?: Module | null;
+	/** Course activities in order (defaults to the module's own). */
+	activities?: ModuleAssessment[];
+	isDone?: (a: ModuleAssessment) => boolean;
+	/** 0–100 module completion */
+	percent?: number;
 }
+
+type Filter = 'all' | 'lessons' | 'flashcards' | 'quizzes';
+
+const FILTERS: { key: Filter; label: string; types: AssessmentType[] }[] = [
+	{
+		key: 'all',
+		label: 'All',
+		types: [
+			AssessmentType.TEACHING,
+			AssessmentType.FLASHCARD,
+			AssessmentType.QUIZ,
+		],
+	},
+	{ key: 'lessons', label: 'Lessons', types: [AssessmentType.TEACHING] },
+	{ key: 'flashcards', label: 'Flashcards', types: [AssessmentType.FLASHCARD] },
+	{ key: 'quizzes', label: 'Quizzes', types: [AssessmentType.QUIZ] },
+];
+
+const typeMeta: Partial<
+	Record<AssessmentType, { label: string; Icon: typeof BookOpen }>
+> = {
+	[AssessmentType.TEACHING]: { label: 'LESSON', Icon: BookOpen },
+	[AssessmentType.FLASHCARD]: { label: 'FLASHCARDS', Icon: Layers },
+	[AssessmentType.QUIZ]: { label: 'QUIZ', Icon: ClipboardCheck },
+};
 
 // ─── Config maps ──────────────────────────────────────────────────────────────
 
@@ -90,6 +124,13 @@ function AssessmentCard({
 	const isLocked = assessment.status === 'locked';
 	const isCompleted = assessment.status === 'completed';
 	const statusInfo = statusConfig[assessment.status];
+	const meta = typeMeta[assessment.type];
+	const count =
+		assessment.type === AssessmentType.QUIZ
+			? `${assessment.questionCount} Q`
+			: assessment.type === AssessmentType.FLASHCARD
+				? `${assessment.questionCount} cards`
+				: null;
 
 	return (
 		<motion.button
@@ -136,6 +177,12 @@ function AssessmentCard({
 						>
 							{assessment.title}
 						</span>
+						{meta && (
+							<span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold tracking-widest border rounded-full text-brand-700 bg-brand-50 border-brand-200">
+								<meta.Icon className="size-3" />
+								{meta.label}
+							</span>
+						)}
 						<DifficultyBadge difficulty={assessment.difficulty} />
 						{statusInfo.label && (
 							<span
@@ -153,10 +200,12 @@ function AssessmentCard({
 					<div
 						className={`flex items-center gap-3 text-[11px] ${isLocked ? 'text-gray-300' : 'text-ink-subtle'}`}
 					>
-						<span className="flex items-center gap-1">
-							<Hash className="size-3" />
-							{assessment.questionCount} Q
-						</span>
+						{count && (
+							<span className="flex items-center gap-1">
+								<Hash className="size-3" />
+								{count}
+							</span>
+						)}
 						<span className="flex items-center gap-1">
 							<Circle className="size-2 fill-current" />
 							{assessment.durationLabel}
@@ -193,21 +242,60 @@ type MobileTab = 'overview' | 'assessments';
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
+const WelcomeScreen = ({
+	onStart,
+	module,
+	activities,
+	isDone,
+	percent,
+}: WelcomeScreenProps) => {
 	const user = useOptionalUser();
 	const navigate = useNavigate();
 	const { t } = useReadingLevel();
 
-	const assessments = module?.assessments ?? [];
-	const [selectedIndex, setSelectedIndex] = useState(
-		Math.max(
-			0,
-			assessments.findIndex((a) => a.status !== 'locked'),
-		),
-	);
+	const all = activities ?? module?.assessments ?? [];
+	const [filter, setFilter] = useState<Filter>('all');
+	const allowed = FILTERS.find((f) => f.key === filter)!.types;
+
+	// Keep each activity's index in the full course order so onStart can jump to it.
+	const assessments = all
+		.map((a, courseIndex) => ({
+			...a,
+			courseIndex,
+			status: (isDone?.(a) ? 'completed' : a.status) as AssessmentStatus,
+		}))
+		.filter((a) => allowed.includes(a.type));
+
+	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [mobileTab, setMobileTab] = useState<MobileTab>('overview');
 
-	const selectedAssessment = assessments[selectedIndex];
+	const selectedAssessment =
+		assessments[Math.min(selectedIndex, assessments.length - 1)];
+	const start = () =>
+		selectedAssessment && onStart(selectedAssessment.courseIndex);
+
+	const changeFilter = (f: Filter) => {
+		setFilter(f);
+		setSelectedIndex(0);
+	};
+
+	const FilterChips = (
+		<div className="flex flex-wrap gap-2">
+			{FILTERS.map(({ key, label }) => (
+				<button
+					key={key}
+					onClick={() => changeFilter(key)}
+					className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${
+						filter === key
+							? 'bg-brand-500 border-brand-500 text-white'
+							: 'bg-white border-gray-200 text-ink-mid hover:border-brand-300'
+					}`}
+				>
+					{label}
+				</button>
+			))}
+		</div>
+	);
 
 	const highScore = 100; // update later with actual high score from user data
 	const lastTaken = 100; // update later with actual last taken date from user data
@@ -239,13 +327,13 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 			<div className="mb-4 md:mb-0 md:bg-surface-page md:p-6 pb-4">
 				<span className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3 rounded-full bg-brand-50 border border-brand-200 text-[10px] font-bold tracking-widest text-brand-600 uppercase">
 					<CheckCircle2 className="size-3" />
-					Integrity Assessment Unit
+					Course Module
 				</span>
 				<h1 className="text-2xl font-black text-ink-deep leading-tight">
 					{module?.name ?? 'Anti-Corruption'}
 				</h1>
 				<h2 className="text-xl font-black text-brand-500 leading-tight">
-					Knowledge Test
+					Choose your activity
 				</h2>
 				<p className="text-ink-subtle text-xs mt-1">
 					{module?.audience ?? 'Private Sector & Civil Society'}
@@ -260,30 +348,24 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 				)}
 
 				{/* Progress bar */}
-				{module?.progress?.startedAt && (
-					<div className="mb-4">
-						<div className="flex items-center justify-between mb-1">
-							<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
-								Module Progress
-							</p>
-							<span className="text-xs font-bold text-brand-600">
-								{module.progress.percentComplete}%
-							</span>
-						</div>
-						<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-							<motion.div
-								className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full"
-								initial={{ width: 0 }}
-								animate={{ width: `${module.progress.percentComplete}%` }}
-								transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
-							/>
-						</div>
-						<p className="text-[10px] text-ink-subtle mt-1">
-							{module.progress.completedLessons} /{' '}
-							{module.progress.totalLessons} lessons completed
+				{/* {percent !== undefined && percent > 0 && ( */}
+				<div className="mb-4">
+					<div className="flex items-center justify-between mb-1">
+						<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
+							Module Progress
 						</p>
+						<span className="text-xs font-bold text-brand-600">{percent}%</span>
 					</div>
-				)}
+					<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+						<motion.div
+							className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full"
+							initial={{ width: 0 }}
+							animate={{ width: `${percent}%` }}
+							transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+						/>
+					</div>
+				</div>
+				{/* )} */}
 
 				{/* Learning objectives */}
 				<div className="mb-4">
@@ -361,7 +443,9 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					<h1 className="text-lg font-black text-ink-deep leading-tight">
 						{module?.name ?? 'Anti-Corruption'}
 					</h1>
-					<p className="text-xs text-brand-500 font-bold">Knowledge Test</p>
+					<p className="text-xs text-brand-500 font-bold">
+						Choose your activity
+					</p>
 				</div>
 
 				{/* Tab bar */}
@@ -369,7 +453,7 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					{(
 						[
 							{ key: 'overview', label: 'Overview', Icon: BookOpen },
-							{ key: 'assessments', label: 'Assessments', Icon: Target },
+							{ key: 'assessments', label: 'Activities', Icon: Target },
 						] as { key: MobileTab; label: string; Icon: typeof Target }[]
 					).map(({ key, label, Icon }) => (
 						<button
@@ -392,13 +476,17 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					{mobileTab === 'assessments' ? (
 						<div className="p-4 space-y-3">
 							<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase">
-								Choose Assessment
+								Choose Activity
 							</p>
 							<p className="text-xs text-ink-muted -mt-1">
-								Complete in order — some unlock after prerequisites are passed.
+								Pick a lesson, flashcards or a quiz — any order.
 							</p>
+							{FilterChips}
 							{assessments.map((assessment, index) => (
-								<motion.div key={assessment.id} variants={itemVariants}>
+								<motion.div
+									key={`${assessment.type}-${assessment.id}`}
+									variants={itemVariants}
+								>
 									<AssessmentCard
 										assessment={assessment}
 										index={index}
@@ -416,13 +504,15 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 				{/* Mobile sticky footer */}
 				<div className="flex-shrink-0 p-4 border-t border-gray-100 bg-white space-y-2 safe-area-bottom">
 					<motion.button
-						onClick={onStart}
-						disabled={selectedAssessment?.status === 'locked'}
+						onClick={start}
+						disabled={
+							!selectedAssessment || selectedAssessment.status === 'locked'
+						}
 						className="w-full py-3.5 rounded-xl font-semibold text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700 disabled:opacity-50 disabled:cursor-not-allowed"
 						whileTap={{ scale: 0.98 }}
 					>
 						Start
-						{selectedAssessment ? ` — ${selectedAssessment.title}` : ' Quiz'}
+						{selectedAssessment ? ` — ${selectedAssessment.title}` : ''}
 						<ChevronRight className="size-4" />
 					</motion.button>
 					<button
@@ -472,18 +562,21 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					{/* Header */}
 					<div className="flex-shrink-0 px-6 pt-6 pb-4 border-b border-gray-100">
 						<p className="text-[10px] font-bold tracking-widest text-ink-subtle uppercase mb-0.5">
-							Choose Assessment
+							Choose Activity
 						</p>
-						<p className="text-xs text-ink-muted">
-							Complete assessments in order — some unlock only after
-							prerequisites are passed.
+						<p className="text-xs text-ink-muted mb-3">
+							Pick a lesson, flashcards or a quiz — any order.
 						</p>
+						{FilterChips}
 					</div>
 
 					{/* Assessment list */}
 					<div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
 						{assessments.map((assessment, index) => (
-							<motion.div key={assessment.id} variants={itemVariants}>
+							<motion.div
+								key={`${assessment.type}-${assessment.id}`}
+								variants={itemVariants}
+							>
 								<AssessmentCard
 									assessment={assessment}
 									index={index}
@@ -497,8 +590,10 @@ const WelcomeScreen = ({ onStart, module }: WelcomeScreenProps) => {
 					{/* Start CTA */}
 					<div className="flex-shrink-0 px-6 py-4 border-t border-gray-100 bg-white">
 						<motion.button
-							onClick={onStart}
-							disabled={selectedAssessment?.status === 'locked'}
+							onClick={start}
+							disabled={
+								!selectedAssessment || selectedAssessment.status === 'locked'
+							}
 							className="w-full py-3 rounded-xl font-bold text-sm tracking-widest uppercase text-white flex items-center justify-center gap-2 shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 disabled:opacity-50 disabled:cursor-not-allowed"
 							whileHover={{
 								scale: 1.02,

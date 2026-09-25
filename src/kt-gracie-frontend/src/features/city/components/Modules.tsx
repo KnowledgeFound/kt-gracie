@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { cityBlocks, getModuleProgress, modules } from '../constants';
+import { cityBlocks } from '../constants';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
+import { getResume, getUnitCompletionPercentage } from '@/services/progressContainerService';
 
 interface Props {
 	onClickModule?: (id: number) => void;
@@ -91,9 +92,9 @@ export default function Modules({
 					const module = modules.find((m) => m.id === block.moduleId);
 					if (!module) return null;
 
-					const progress = getModuleProgress(module.id);
-					const isStarted = progress !== null;
-					const pct = progress?.percentComplete ?? 0;
+					// Real course progress, saved by the course flow (localStorage).
+					const pct = getUnitCompletionPercentage(module.kuId);
+					const isStarted = pct > 0 || getResume(module.kuId) !== null;
 					const isActive =
 						hoveredBlock === block.id || activeModuleId === module.id;
 					// Fade with the district underneath when a sibling is hovered.

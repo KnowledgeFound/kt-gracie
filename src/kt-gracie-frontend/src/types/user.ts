@@ -101,6 +101,19 @@ export type Progress = {
     subProgressTeachings: SubProgressTeaching[]; // for each teaching within the KnowledgeUnit
     completed: boolean; // indicates if the knowledge unit is fully completed
     achievments: Achievement[]; // list of achievements earned by the user
+    resume?: CourseResume; // where the learner left off (course flow)
+};
+
+// Where the learner stopped inside a knowledge unit, so the course can pick up from there
+export type CourseResume = {
+    activityId: number; // teaching / assessment id being worked on
+    activityType: AssessmentType;
+    sectionIndex: number; // lesson section reached
+    questionIndex: number; // quiz question or flashcard reached
+    answers: (string | boolean | null)[]; // quiz answers so far
+    watched?: string[]; // lesson section ids whose compulsory video was finished
+    startedAt: string;
+    updatedAt: string;
 };
 
 // contains details about each assessment

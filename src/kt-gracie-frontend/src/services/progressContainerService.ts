@@ -1,5 +1,5 @@
 import { getLocalStorage, setLocalStorage } from "../commons/utilts";
-import { ProgressContainer, Progress, Achievement, SubProgress } from "@/types/user";
+import { ProgressContainer, Progress, Achievement, SubProgress, CourseResume } from "@/types/user";
 import { getUser } from "./userServices";
 import { AssessmentType } from "@/ENUMS/enums";
 import { KnowledgeUnit } from "@/types/types";
@@ -292,4 +292,133 @@ export function getTheBestAssessmentScore(): {score: number, maxScore: number} {
     }
 
     return { score: 0, maxScore: 0 };
+}
+
+
+// ─── Course resume & per-unit completion ──────────────────────────────────────
+
+function saveProgress(progress: Progress): void {
+    addProgressToContainer(progress);
+}
+
+export function getResume(knowledgeUnitID: string): CourseResume | null {
+    return getProgressFromContainer(knowledgeUnitID)?.resume ?? null;
+}
+
+/** Merge a partial resume position into the unit's progress (creates the progress if missing). */
+export function saveResume(
+    knowledgeUnitID: string,
+    patch: Partial<CourseResume> & Pick<CourseResume, "activityId" | "activityType">,
+): void {
+    const progress = getProgressFromContainer(knowledgeUnitID) ?? createProgress(knowledgeUnitID, [], []);
+    const now = new Date().toISOString();
+    const sameActivity =
+        progress.resume?.activityId === patch.activityId &&
+        progress.resume?.activityType === patch.activityType;
+    const base: CourseResume = sameActivity && progress.resume
+        ? progress.resume
+        : { sectionIndex: 0, questionIndex: 0, answers: [], startedAt: now, ...patch, updatedAt: now };
+
+    progress.resume = { ...base, ...patch, updatedAt: now };
+    saveProgress(progress);
+}
+
+export function clearResume(knowledgeUnitID: string): void {
+    const progress = getProgressFromContainer(knowledgeUnitID);
+    if (!progress?.resume) return;
+    delete progress.resume;
+    saveProgress(progress);
+}
+
+export function isTeachingCompleted(knowledgeUnitID: string, teachingID: number): boolean {
+    return !!getProgressFromContainer(knowledgeUnitID)?.subProgressTeachings
+        .find(t => t.teachingID === teachingID)?.completed;
+}
+
+export function isAssessmentCompleted(knowledgeUnitID: string, assessmentID: number, type: AssessmentType): boolean {
+    return !!getProgressFromContainer(knowledgeUnitID)?.subProgress
+        .find(a => a.assessmentID === assessmentID && a.assessmentType === type)?.completed;
+}
+
+export function markTeachingCompleted(knowledgeUnitID: string, teachingID: number, topic = "", ktMax = 0): void {
+    const progress = getProgressFromContainer(knowledgeUnitID) ?? createProgress(knowledgeUnitID, [], []);
+    const existing = progress.subProgressTeachings.find(t => t.teachingID === teachingID);
+
+    if (existing) {
+        existing.completed = true;
+        existing.ktEarned = existing.ktMax;
+    } else {
+        progress.subProgressTeachings.push({
+            teachingID, topic, difficulty: "", completed: true, ktMax, ktEarned: ktMax,
+        });
+    }
+    saveProgress(refreshTotals(progress));
+}
+
+/** Record a finished quiz / flashcard run. Keeps the best score. */
+export function markAssessmentCompleted(
+    knowledgeUnitID: string,
+    assessmentID: number,
+    type: AssessmentType,
+    score: number,
+    maxScore: number,
+    ktEarned = 0,
+    ktMax = 0,
+): void {
+    const progress = getProgressFromContainer(knowledgeUnitID) ?? createProgress(knowledgeUnitID, [], []);
+    const existing = progress.subProgress.find(a => a.assessmentID === assessmentID && a.assessmentType === type);
+
+    if (existing) {
+        existing.completed = true;
+        existing.score = Math.max(existing.score, score);
+        existing.maxScore = maxScore || existing.maxScore;
+        existing.ktEarned = Math.max(existing.ktEarned, ktEarned);
+    } else {
+        progress.subProgress.push({
+            assessmentID, assessmentType: type, score, maxScore, pointScore: 1,
+            completed: true, ktMax, ktEarned,
+        });
+    }
+    saveProgress(refreshTotals(progress));
+}
+
+/** Recompute the unit's teaching/assessment percentages and `completed` flag. */
+function refreshTotals(progress: Progress): Progress {
+    const pct = (done: number, total: number) => (total === 0 ? 0 : Math.round((done / total) * 100));
+    const t = progress.subProgressTeachings;
+    const a = progress.subProgress;
+    const teachingPct = pct(t.filter(x => x.completed).length, t.length);
+    const assessmentPct = pct(a.filter(x => x.completed).length, a.length);
+
+    progress.teaching = (Math.round(teachingPct / 10) * 10) as Progress["teaching"];
+    progress.assessment = (Math.round(assessmentPct / 10) * 10) as Progress["assessment"];
+    progress.completed =
+        t.length + a.length > 0 && t.every(x => x.completed) && a.every(x => x.completed);
+    return progress;
+}
+
+/** 0–100 completion for one unit, or 0 if never started. */
+export function getUnitCompletionPercentage(knowledgeUnitID: string): number {
+    const p = getProgressFromContainer(knowledgeUnitID);
+    if (!p) return 0;
+    const total = p.subProgress.length + p.subProgressTeachings.length;
+    if (total === 0) return 0;
+    const done =
+        p.subProgress.filter(x => x.completed).length +
+        p.subProgressTeachings.filter(x => x.completed).length;
+    return Math.round((done / total) * 100);
+}
+
+/** The unit the learner touched most recently that isn't finished yet. */
+export function getContinueTarget(): { knowledgeUnitID: string; updatedAt: string } | null {
+    const container = getProgressContainer();
+    if (!container) return null;
+
+    const candidates = container.arr_progress
+        .filter(p => p.resume && !p.completed)
+        .sort((x, y) => (y.resume!.updatedAt).localeCompare(x.resume!.updatedAt));
+
+    return candidates.length
+        ? { knowledgeUnitID: candidates[0].knowledgeUnitID, updatedAt: candidates[0].resume!.updatedAt }
+        : null;
 }
