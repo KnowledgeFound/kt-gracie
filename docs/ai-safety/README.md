@@ -9,6 +9,7 @@ Safety documentation for the on-device model in AI Gracie ([#50](https://github.
 | [2026-09-20-safety-evaluation.md](2026-09-20-safety-evaluation.md) | **The report.** Method, results, findings, what to do, limitations, governance mapping |
 | [model-card-lfm2-350m.md](model-card-lfm2-350m.md) | What is deployed, why this model, intended and out-of-scope use, known limitations |
 | [adjudication.md](adjudication.md) | What a human reviewed and concluded, including where the automated scoring was wrong in both directions |
+| [handover.md](handover.md) | **Start here if you're picking this up.** Current status, fix order, and why a bigger model doesn't replace the fixes |
 | [results/](results/) | Raw output from all three layers, one JSON per layer, every transcript included |
 
 The harness that produced the results lives in
