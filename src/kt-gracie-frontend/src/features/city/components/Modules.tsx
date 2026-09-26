@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { cityBlocks, getModuleProgress, modules } from '../constants';
+import { cityBlocks } from '../constants';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
+import { getResume, getUnitCompletionPercentage } from '@/services/progressContainerService';
 
 interface Props {
 	onClickModule?: (id: number) => void;
@@ -91,9 +92,9 @@ export default function Modules({
 					const module = modules.find((m) => m.id === block.moduleId);
 					if (!module) return null;
 
-					const progress = getModuleProgress(module.id);
-					const isStarted = progress !== null;
-					const pct = progress?.percentComplete ?? 0;
+					// Real course progress, saved by the course flow (localStorage).
+					const pct = getUnitCompletionPercentage(module.kuId);
+					const isStarted = pct > 0 || getResume(module.kuId) !== null;
 					const isActive =
 						hoveredBlock === block.id || activeModuleId === module.id;
 					// Fade with the district underneath when a sibling is hovered.
@@ -158,7 +159,12 @@ interface ProgressRingProps {
 	className?: string;
 }
 
-function ProgressRing({ pct, size, stroke, className = '' }: ProgressRingProps) {
+function ProgressRing({
+	pct,
+	size,
+	stroke,
+	className = '',
+}: ProgressRingProps) {
 	const r = (size - stroke) / 2;
 	const circ = 2 * Math.PI * r;
 	const dash = circ * (pct / 100);
@@ -230,7 +236,9 @@ function MapButtonInner({
 			</span>
 			<span
 				className={`font-medium text-[11px] leading-tight md:text-base transition-colors ${
-					isActive ? 'text-white' : 'text-ink-deep group-hover:text-white'
+					isActive
+						? 'text-white'
+						: 'text-ink-deep group-hover:text-white dark:text-black'
 				}`}
 			>
 				{module.name}
@@ -239,8 +247,8 @@ function MapButtonInner({
 				<span
 					className={`cityModuleBadge md:ml-0.5 px-1 md:px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold transition-colors shrink-0 ${
 						isActive
-							? 'bg-white/20 text-white'
-							: 'bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white'
+							? 'bg-white/20 text-white '
+							: 'bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white dark:text-black'
 					}`}
 				>
 					{pct}%

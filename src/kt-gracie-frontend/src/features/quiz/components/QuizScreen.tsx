@@ -27,6 +27,8 @@ interface QuizScreenProps {
 	onPrevious: () => void;
 	onNext: () => void;
 	canGoPrevious: boolean;
+	/** Quit handler; defaults to going back to the module's course. */
+	onQuit?: () => void;
 	score: number;
 	/** Live elapsed seconds from useQuiz hook */
 	elapsed?: number;
@@ -72,14 +74,18 @@ const QuizScreen = ({
 	selectedAnswer,
 	onSelectOption,
 	onNext,
+	onPrevious,
+	canGoPrevious,
+	onQuit,
 	score,
 	elapsed = 0,
 	module,
 }: QuizScreenProps) => {
 	const navigate = useNavigate();
+	const quit = () => (onQuit ? onQuit() : navigate(`/course/${module?.id}`));
 
 	/** Whether the user has clicked "Confirm Answer" for the current question */
-	const [confirmed, setConfirmed] = useState(false);
+	const [confirmed, setConfirmed] = useState(selectedAnswer !== null);
 
 	// Reset confirmed state when the question changes
 	// (framer-motion re-mounts the whole screen on question change via key,
@@ -94,6 +100,11 @@ const QuizScreen = ({
 	function handleConfirm() {
 		if (selectedAnswer === null) return;
 		setConfirmed(true);
+	}
+
+	function handlePrevious() {
+		setConfirmed(false);
+		onPrevious();
 	}
 
 	function handleNext() {
@@ -161,7 +172,7 @@ const QuizScreen = ({
 				variant="ghost"
 				size="sm"
 				className="p-1.5 absolute top-4 right-4 z-10 text-white/70 hover:text-white rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
-				onClick={() => navigate('/city')}
+				onClick={quit}
 				aria-label="Close quiz"
 			>
 				<X className="size-4" />
@@ -186,7 +197,7 @@ const QuizScreen = ({
 						{/* Quit */}
 						<button
 							className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-colors"
-							onClick={() => navigate('/')}
+							onClick={quit}
 						>
 							<ChevronLeft className="size-4" />
 							Quit
@@ -303,7 +314,16 @@ const QuizScreen = ({
 					</div>
 
 					{/* ── Footer ───────────────────────────────────────────── */}
-					<div className="px-5 pb-5 pt-1">
+					<div className="px-5 pb-5 pt-1 flex items-stretch gap-3">
+						<button
+							type="button"
+							onClick={handlePrevious}
+							disabled={!canGoPrevious}
+							className="flex items-center justify-center gap-1 px-4 rounded-xl border-2 border-gray-200 bg-white text-ink-mid text-sm font-bold uppercase tracking-widest hover:border-brand-300 hover:text-brand-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-ink-mid"
+						>
+							<ChevronLeft className="size-4" />
+							<span className="hidden sm:inline">Previous</span>
+						</button>
 						<AnimatePresence mode="wait">
 							{!confirmed ? (
 								/* Confirm Answer button — disabled until an option is picked */
@@ -312,7 +332,7 @@ const QuizScreen = ({
 									onClick={handleConfirm}
 									disabled={selectedAnswer === null}
 									className={classnames(
-										'w-full py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-widest',
+										'flex-1 py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-widest',
 										selectedAnswer !== null
 											? 'bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 text-white shadow-lg cursor-pointer'
 											: 'bg-gray-100 border border-white/10 text-gray-400 cursor-not-allowed',
@@ -331,7 +351,7 @@ const QuizScreen = ({
 								<motion.button
 									key="next"
 									onClick={handleNext}
-									className="w-full py-3.5 px-6 font-bold text-sm rounded-xl uppercase tracking-widest text-white shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 cursor-pointe"
+									className="flex-1 py-3.5 px-6 font-bold text-sm rounded-xl uppercase tracking-widest text-white shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 cursor-pointe"
 									initial={{ opacity: 0, y: 6 }}
 									animate={{ opacity: 1, y: 0 }}
 									exit={{ opacity: 0, y: -6 }}

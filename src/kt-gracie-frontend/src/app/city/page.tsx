@@ -21,7 +21,13 @@ import { useSettings } from '@/features/settings';
 import { cityBlocks, getCityBlock } from '@/features/city/constants';
 import type { CityBlockId } from '@/features/city/types';
 import { getCorpus } from '@/services/corpusService';
-import { addProgressToContainer, createAndPersistProgressContainer, getProgressContainer } from '@/services/progressContainerService';
+import {
+	addProgressToContainer,
+	createAndPersistProgressContainer,
+	getContinueTarget,
+	getProgressContainer,
+} from '@/services/progressContainerService';
+import { getAllModules } from '@/services/corpusService';
 import { createProgress } from '@/services/progressService';
 import { SubProgress, SubProgressTeaching } from '@/types/user';
 import { AssessmentType, CityState } from '@/ENUMS/enums';
@@ -34,7 +40,7 @@ import { AssessmentType, CityState } from '@/ENUMS/enums';
  *  - CityMenu    (right) — city/progression stats, opened by the health badge
  */
 export default function CityScene() {
-	const { user, city } = useUser();
+	const { user, city, refreshCity } = useUser();
 	const { settings } = useSettings();
 	const navigate = useNavigate();
 	const [drawerOpen, setDrawerOpen] = useState(false);
@@ -51,11 +57,28 @@ export default function CityScene() {
 	// local storage on mount, updated on account creation).
 	const cityHealth = city?.getHealth() ?? 0;
 
+	// "Continue learning": the unfinished module the learner touched last.
+	const [continueModule, setContinueModule] = useState<{
+		id: number;
+		name: string;
+	} | null>(null);
+	useEffect(() => {
+		const target = getContinueTarget();
+		if (!target) return;
+		getAllModules()
+			.then((all) => {
+				const m = all.find((x) => x.kuId === target.knowledgeUnitID);
+				if (m) setContinueModule({ id: m.id, name: m.name });
+			})
+			.catch(() => setContinueModule(null));
+	}, []);
 	// Low health corrupts the city: ruined districts, fires, a storm overhead.
 	// In development `?cityState=corrupt` (or `=vibrant`) forces a look, so the
 	// artwork can be checked without editing the stored health.
 	const [searchParams] = useSearchParams();
-	const forcedState = import.meta.env.DEV ? searchParams.get('cityState') : null;
+	const forcedState = import.meta.env.DEV
+		? searchParams.get('cityState')
+		: null;
 	const isCorrupt = forcedState
 		? forcedState === 'corrupt'
 		: city?.getCityState() === CityState.CORRUPT;
@@ -79,27 +102,26 @@ export default function CityScene() {
 	};
 
 	useEffect(() => {
-    	async function fetchCorpus() {
-			try{
+		async function fetchCorpus() {
+			try {
 				// corpus will be persisted in local storage
 				const corpus = await getCorpus();
 
 				//console.log(corpus);
 
-				if(getProgressContainer() != null)
+				if (getProgressContainer() != null) {
+					refreshCity();
 					return;
+				}
 
 				// create Knowledge container
 				createAndPersistProgressContainer();
 
 				corpus.knowledgeUnits.forEach((knowledgeUnit) => {
+					let arr_subProgress: SubProgress[] = [];
 
-					let arr_subProgress : SubProgress [] = [];
-
-					knowledgeUnit.assessments.forEach((assessment) =>{
-						
-						if(assessment.quiz != null)
-						{
+					knowledgeUnit.assessments.forEach((assessment) => {
+						if (assessment.quiz != null) {
 							arr_subProgress.push({
 								assessmentID: assessment.id,
 								assessmentType: AssessmentType.QUIZ,
@@ -108,11 +130,9 @@ export default function CityScene() {
 								maxScore: assessment.maxScore,
 								completed: false,
 								ktMax: assessment.ktMax,
-								ktEarned: 0
+								ktEarned: 0,
 							});
-						}
-						else if(assessment.flashcard != null)
-						{
+						} else if (assessment.flashcard != null) {
 							arr_subProgress.push({
 								assessmentID: assessment.id,
 								assessmentType: AssessmentType.FLASHCARD,
@@ -121,39 +141,42 @@ export default function CityScene() {
 								maxScore: assessment.maxScore,
 								completed: false,
 								ktMax: assessment.ktMax,
-								ktEarned: 0
+								ktEarned: 0,
 							});
 						}
 					});
 
-					let arr_subProgressTeachings : SubProgressTeaching [] = [];
+					let arr_subProgressTeachings: SubProgressTeaching[] = [];
 
-					knowledgeUnit.teachings.forEach((teaching) =>{
+					knowledgeUnit.teachings.forEach((teaching) => {
 						arr_subProgressTeachings.push({
 							teachingID: teaching.id,
 							topic: teaching.topic,
 							difficulty: teaching.difficulty,
 							completed: false,
 							ktMax: teaching.ktMax,
-							ktEarned: 0
+							ktEarned: 0,
 						});
 					});
 
 					// create a progress object for each Knowledge Unit
-					const progress = createProgress(knowledgeUnit.id, arr_subProgress, arr_subProgressTeachings);
-					
+					const progress = createProgress(
+						knowledgeUnit.id,
+						arr_subProgress,
+						arr_subProgressTeachings,
+					);
+
 					addProgressToContainer(progress);
 				});
 
+				refreshCity();
+			} catch (err) {
+				console.error('Failed to load Corpus: ', err);
 			}
-			catch(err){
-				console.error("Failed to load Corpus: ", err)
-			}
-    	};
+		}
 
-    	fetchCorpus();
-  	}, []); 
-
+		fetchCorpus();
+	}, []);
 
 	return (
 		<div
@@ -226,6 +249,16 @@ export default function CityScene() {
 				</div>
 			</div>
 
+			{/* {continueModule && (
+				<button
+					type="button"
+					onClick={() => navigate(`/course/${continueModule.id}`)}
+					className="fixed bottom-4 right-4 z-30 flex items-center gap-2 rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-xl hover:bg-brand-700"
+				>
+					Continue: {continueModule.name} →
+				</button>
+			)} */}
+
 			{/* Header badges */}
 			<CityHeader
 				health={cityHealth}
@@ -275,7 +308,10 @@ export default function CityScene() {
 			{/* Talking Gracie guide — enters centre stage, then docks lower-left.
 			    Hidden entirely when the user has turned the guide off. */}
 			{settings.guide.visible && (
-				<GracieGuide moduleId={moduleId} onIntroDone={() => setIntroDone(true)} />
+				<GracieGuide
+					moduleId={moduleId}
+					onIntroDone={() => setIntroDone(true)}
+				/>
 			)}
 
 			{/* Hot-air balloon that follows the mouse — would only compete with

@@ -3,6 +3,7 @@ import type {
 	AppSettings,
 	GuidePace,
 	IntroFrequency,
+	ReadingLevelSetting,
 	TextScale,
 	ThemeMode,
 } from './types';
@@ -51,6 +52,11 @@ export const DEFAULT_SETTINGS: AppSettings = {
 		brain: 'robot',
 		preload: false,
 		showDebug: false,
+	},
+	learning: {
+		// Follow the learner's age band until they choose for themselves —
+		// see AUTO_LEVEL_BY_AGE_BAND in readingLevel.ts.
+		readingLevel: 'auto',
 	},
 };
 
@@ -123,6 +129,33 @@ export const INTRO_FREQUENCY_OPTIONS: {
 	},
 ];
 
+export const READING_LEVEL_OPTIONS: {
+	value: ReadingLevelSetting;
+	label: string;
+	description: string;
+}[] = [
+	{
+		value: 'auto',
+		label: 'Match my profile',
+		description: 'Picks a level from the age range on your profile.',
+	},
+	{
+		value: 'simple',
+		label: 'Simple English',
+		description: 'Short sentences and everyday words. Great if English is new to you.',
+	},
+	{
+		value: 'standard',
+		label: 'Standard',
+		description: 'Clear, everyday explanations with a few key terms.',
+	},
+	{
+		value: 'advanced',
+		label: 'Advanced',
+		description: 'Policy, legal and technical language for experienced learners.',
+	},
+];
+
 /** Speech-synthesis rate per pace. 1 is the browser's normal speed. */
 export const PACE_RATE: Record<GuidePace, number> = {
 	slow: 0.82,
@@ -132,4 +165,4 @@ export const PACE_RATE: Record<GuidePace, number> = {
 
 /** Spoken when the user previews a voice in Settings. */
 export const VOICE_SAMPLE =
-	"Hi, I'm Gracie. I'll guide you through your city and keep corruption out.";
+	"Hi, I'm Gracie. I'll guide you through your city and help it grow.";

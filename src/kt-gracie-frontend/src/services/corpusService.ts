@@ -1,12 +1,13 @@
-import { Assessment, Corpus, KnowledgeUnit, QuizQuestion } from "../types/types";
+import { Corpus, KnowledgeUnit } from "../types/types";
 import { kt_gracie_backend } from "declarations/kt-gracie-backend";
 import { mapFromBackend } from "./mappers/corpusMapper";
 import { setLocalStorage, getLocalStorage } from "../commons/utilts";
-import { AssessmentDifficulty, Module, ModuleAssessment } from "@/features/city/types";
+import { Module, ModuleAssessment } from "@/features/city/types";
 import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
 import { resolveImage } from "./mappers/imageMapper";
-import { AssessmentType, Difficulty } from "@/ENUMS/enums";
+import { AssessmentType } from "@/ENUMS/enums";
+import { withLeveledCopy } from "./mappers/readingLevelMapper";
 
 let allModules : Module [] = [];
 let numberOfModules: number = 0;
@@ -61,6 +62,7 @@ export async function getAllModules(): Promise<Module[]> {
         corpus.knowledgeUnits.forEach((knowledgeUnit) => {
             var module: Module = {
                 id: counter++,
+                kuId: knowledgeUnit.id,
                 name: knowledgeUnit.topic,
                 description: knowledgeUnit.description,
                 audience: knowledgeUnit.audience,
@@ -138,7 +140,7 @@ export async function getAllModules(): Promise<Module[]> {
             // replace current assessment array with sorted version.
             module.assessments = sortAssessments(module.assessments);
 
-            modules.push(module);
+            modules.push(withLeveledCopy(module));
 
         });
     }
@@ -150,11 +152,6 @@ export async function getAllModules(): Promise<Module[]> {
 
 export function sortAssessments(assessments: ModuleAssessment[]): ModuleAssessment[] {
     return assessments.toSorted((a, b) => a.sequenceNo - b.sequenceNo);
-}
-
-function sequenceActivities(module: Module): void {
-
-    let temp: Module [] = [];
 }
 
 function getQuizDescription(topic: string, ktMax: number) : string {
@@ -187,4 +184,3 @@ export async function getModule(moduleId: number) : Promise<Module | null>
 {
     return (await getAllModules()).find((m) => m.id == moduleId) ?? null;
 }
-

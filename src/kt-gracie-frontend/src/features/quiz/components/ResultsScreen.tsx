@@ -29,6 +29,13 @@ interface ResultsScreenProps {
 	module?: Module | null;
 	/** Knowledge Tokens earned for this run (1 KT per correct answer). */
 	tokensEarned?: number;
+	/** Most KT this assessment can award, shown as "of N". */
+	ktMax?: number;
+	/** KT actually added to the wallet this time (less than earned on a retake). */
+	ktCredited?: number | null;
+	/** When set, a primary button moves on to the next course step. */
+	onContinue?: () => void;
+	continueLabel?: string;
 }
 
 // ─── Rank helpers ─────────────────────────────────────────────────────────────
@@ -285,6 +292,10 @@ const ResultsScreen = ({
 	timeTaken = 0,
 	module,
 	tokensEarned = 0,
+	ktMax,
+	ktCredited = null,
+	onContinue,
+	continueLabel = 'Continue',
 }: ResultsScreenProps) => {
 	const navigate = useNavigate();
 	const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -376,8 +387,15 @@ const ResultsScreen = ({
 					<div className="w-full rounded-xl border border-amber-200 bg-amber-50 py-3 px-5 text-center mb-4">
 						<p className="text-3xl font-black text-amber-600">◎ {ktEarned}</p>
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase">
-							Knowledge Tokens Earned
+							Knowledge Tokens Earned{ktMax ? ` · of ${ktMax}` : ''}
 						</p>
+						{ktCredited !== null && (
+							<p className="mt-1 text-[11px] text-amber-700">
+								{ktCredited > 0
+									? `+${ktCredited} added to your wallet`
+									: 'Your best score is already banked'}
+							</p>
+						)}
 					</div>
 
 					{/* Stats */}
@@ -459,6 +477,14 @@ const ResultsScreen = ({
 
 				{/* Footer */}
 				<div className="flex-shrink-0 px-4 py-4 border-t border-gray-100 bg-white">
+					{onContinue && (
+						<button
+							onClick={onContinue}
+							className="w-full mb-2 py-3 rounded-xl font-bold text-sm tracking-widest uppercase text-white shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800"
+						>
+							{continueLabel} →
+						</button>
+					)}
 					<button
 						onClick={() => navigate('/city')}
 						className="w-full py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold hover:bg-gray-100"
@@ -472,7 +498,7 @@ const ResultsScreen = ({
 			    DESKTOP  (md+) — side-by-side modal
 			═══════════════════════════════════════════════════════════ */}
 			<motion.div
-				className="hidden md:flex relative z-10 w-full max-w-4xl mx-4 max-h-[90vh] flex-row rounded-2xl overflow-hidden gap-2"
+				className="hidden md:flex relative z-10 w-full max-w-6xl mx-4 max-h-[90vh] flex-row rounded-2xl overflow-hidden gap-2"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"
@@ -518,8 +544,15 @@ const ResultsScreen = ({
 							◎ {ktEarned}
 						</p>
 						<p className="text-[10px] font-bold tracking-widest text-amber-600/70 uppercase mb-1">
-							Knowledge Tokens Earned
+							Knowledge Tokens Earned{ktMax ? ` · of ${ktMax}` : ''}
 						</p>
+						{ktCredited !== null && (
+							<p className="text-xs text-amber-700">
+								{ktCredited > 0
+									? `+${ktCredited} added to your wallet`
+									: 'Your best score is already banked'}
+							</p>
+						)}
 					</motion.div>
 
 					<motion.div
@@ -613,6 +646,14 @@ const ResultsScreen = ({
 					</div>
 
 					<div className="flex-shrink-0 px-6 py-4 border-t border-gray-100 bg-white">
+						{onContinue && (
+							<button
+								onClick={onContinue}
+								className="w-full mb-2 py-3 rounded-xl font-bold text-sm tracking-widest uppercase text-white shadow-md bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800"
+							>
+								{continueLabel} →
+							</button>
+						)}
 						<button
 							onClick={() => navigate('/city')}
 							className="w-full py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-ink-mid text-sm font-semibold hover:bg-gray-100 hover:text-ink-deep transition-colors"

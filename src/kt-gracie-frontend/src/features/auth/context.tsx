@@ -37,6 +37,8 @@ interface UserContextValue {
 	creditTokens: (amount: bigint, txType: string, reference?: string) => void;
 	/** Fire-and-forget optimistic debit (backend reconciles in the background). */
 	debitTokens: (amount: bigint, txType: string, reference?: string) => void;
+	/** Recompute city health from course progress and update the UI. */
+	refreshCity: () => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -81,6 +83,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
 		setUser(null);
 		cityServices.deleteCityFromLocalStorage();
 		setCity(null);
+	}, []);
+
+	const refreshCity = useCallback((): void => {
+		const updated = cityServices.syncCityHealth();
+		if (updated) setCity(updated);
 	}, []);
 
 	const updateGracie = useCallback((gracie: Partial<GracieConfig>): User => {
@@ -149,6 +156,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 				syncTokenBalance,
 				creditTokens,
 				debitTokens,
+				refreshCity,
 			}}
 		>
 			{children}

@@ -11,7 +11,10 @@ vi.mock(import("../../commons/utilts"), async (importOriginal) => {
 import {
     getScoreDetails,
     getTotalScore,
-    getMaxScore
+    getMaxScore,
+    getTotalNumberOfTeachings,
+    getNumberOfTeachingsCompleted,
+    getTotalNumberOfAssessments,
 } from "../progressContainerService";
 
 import { getLocalStorage } from "../../commons/utilts";
@@ -103,4 +106,26 @@ describe("progressContainerService", () => {
         expect(scoreDetails.encouragementMessage).toBe("Solid effort — you have got real momentum!");
     });
 
+
+    it("tolerates progress saved before subProgressTeachings existed", () => {
+        // Progress persisted by an earlier release has no `subProgressTeachings`
+        // (and may even lack `subProgress`). The app must not blank-screen.
+        (getLocalStorage as ReturnType<typeof vi.fn>).mockReturnValue({
+            arr_progress: [
+                {
+                    knowledgeUnitID: "ku-old",
+                    subProgress: [{ score: 3, maxScore: 5, completed: true }],
+                    achievments: []
+                },
+                { knowledgeUnitID: "ku-older" },
+            ]
+        });
+
+        expect(() => getMaxScore()).not.toThrow();
+        expect(getMaxScore()).toBe(5);
+        expect(() => getTotalScore()).not.toThrow();
+        expect(getTotalNumberOfTeachings()).toBe(0);
+        expect(getNumberOfTeachingsCompleted()).toBe(0);
+        expect(getTotalNumberOfAssessments()).toBe(1);
+    });
 });

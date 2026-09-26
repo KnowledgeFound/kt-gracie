@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, ShieldCheck, Zap, Trophy, Target, BookOpen, Flame, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { X, Heart, ShieldCheck, Zap, Trophy, Target, BookOpen, Flame, Sprout, CheckCircle2 } from 'lucide-react';
 import { useOptionalUser, useUser } from '@/features/auth';
+import { leveled, useReadingLevel, type Leveled } from '@/features/settings';
 import * as ProgressContainer from '@/services/progressContainerService';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -26,15 +27,69 @@ interface ScoreDetails {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-type TierInfo = { label: string; color: string; bg: string; bar: string; emoji: string; description: string };
+type TierInfo = {
+	label: string;
+	color: string;
+	bg: string;
+	bar: string;
+	emoji: string;
+	/** Written per reading level — resolve with `useReadingLevel().t`. */
+	description: Leveled<string>;
+};
 
+/**
+ * The city's mood at each health band. Every tier reads as an invitation to
+ * play, never a telling-off: the lowest band is a seedling waiting to grow,
+ * not a ruin.
+ */
 function getTierInfo(health: number): TierInfo {
-	if (health >= 85) return { label: 'Pristine',   color: 'text-emerald-700', bg: 'bg-emerald-50  border-emerald-200', bar: 'from-emerald-400 to-emerald-600', emoji: '🏙️', description: 'Your city is thriving. Keep learning to maintain it.' };
-	if (health >= 65) return { label: 'Healthy',    color: 'text-brand-700',   bg: 'bg-brand-50    border-brand-200',   bar: 'from-brand-400   to-brand-600',   emoji: '🌆', description: 'Good shape. Regular assessments keep the city healthy.' };
-	if (health >= 45) return { label: 'Fading',     color: 'text-amber-700',   bg: 'bg-amber-50    border-amber-200',   bar: 'from-amber-400   to-amber-500',   emoji: '🌇', description: 'Some neglect showing. Complete more subjects to recover.' };
-	if (health >= 25) return { label: 'Neglected',  color: 'text-orange-700',  bg: 'bg-orange-50   border-orange-200',  bar: 'from-orange-400  to-rose-400',    emoji: '🏚️', description: 'City is struggling. Get back on track immediately.' };
-	return               { label: 'Ruined',     color: 'text-rose-700',    bg: 'bg-rose-50     border-rose-200',    bar: 'from-rose-400    to-rose-600',    emoji: '💀', description: 'Critical condition! Complete assessments urgently.' };
+	if (health >= 85) return {
+		label: 'Thriving', color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200', bar: 'from-emerald-400 to-emerald-600', emoji: '🏙️',
+		description: leveled(
+			'Your city is shining! Keep learning to keep it that way.',
+			'Your city is thriving. Keep learning to keep it shining.',
+			'Your city is thriving. Sustained learning keeps every district at full strength.',
+		),
+	};
+	if (health >= 65) return {
+		label: 'Happy', color: 'text-brand-700', bg: 'bg-brand-50 border-brand-200', bar: 'from-brand-400 to-brand-600', emoji: '🌆',
+		description: leveled(
+			'Your city is happy. A quiz now and then keeps it smiling.',
+			'Looking good. A quiz now and then keeps the city happy.',
+			'In good shape. Regular assessments maintain the city\'s momentum.',
+		),
+	};
+	if (health >= 45) return {
+		label: 'Getting quiet', color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200', bar: 'from-amber-400 to-amber-500', emoji: '🌇',
+		description: leveled(
+			'Some parts of your city are getting quiet. One lesson will wake them up!',
+			'A few districts are getting quiet. A lesson or two will brighten them up.',
+			'Several districts are losing momentum. Completing a subject restores them.',
+		),
+	};
+	if (health >= 25) return {
+		label: 'Needs some care', color: 'text-orange-700', bg: 'bg-orange-50 border-orange-200', bar: 'from-orange-300 to-amber-400', emoji: '🏡',
+		description: leveled(
+			'Your city misses you! Pick a district and let\'s play.',
+			'Your city could use some attention. Pick a district and get going.',
+			'The city needs attention. Resuming a module will begin the recovery.',
+		),
+	};
+	return {
+		label: 'Ready to grow', color: 'text-teal-700', bg: 'bg-teal-50 border-teal-200', bar: 'from-teal-300 to-emerald-400', emoji: '🌱',
+		description: leveled(
+			'Every city can grow again. Start one lesson and watch it bloom!',
+			'Every city can grow back. Start a lesson and watch it bloom.',
+			'A fresh start. Each completed lesson and assessment rebuilds the city from here.',
+		),
+	};
 }
+
+const NUDGE = leveled(
+	'Your city is waiting for you. Try a lesson or a quiz and help it grow!',
+	'Your city is waiting for you. A lesson or a quiz will help it grow.',
+	'The city is waiting. Completing lessons and assessments restores its health.',
+);
 
 function StatPill({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string | number; color: string }) {
 	return (
@@ -64,6 +119,7 @@ function AnimatedBar({ pct, colorClass }: { pct: number; colorClass: string }) {
 export default function HealthModal({ open, onClose, health }: HealthModalProps) {
 	
 	const user   = useOptionalUser();
+	const { t }  = useReadingLevel();
 	const pct    = Math.min(100, Math.max(0, health));
 	const tier   = getTierInfo(pct);
 
@@ -77,7 +133,8 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const assessmentScore = city?.getFinalAssessmentScore() ?? 0;
 	const contentScore = city?.getContentScore() ?? 0;
 
-	const isWarning = pct < 45;
+	// Below this the modal adds a nudge to play — a friendly one.
+	const needsNudge = pct < 45;
 
 	const bestAssessmentScore: BestAssessmentScore = ProgressContainer.getTheBestAssessmentScore();
 	const assessmentsCompleted = ProgressContainer.getNumberOfAssessmentsCompleted();
@@ -138,7 +195,7 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 										<span className="text-lg font-bold text-ink-subtle">/ 100</span>
 									</div>
 									<div className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-xs font-bold mt-1 ${tier.bg} ${tier.color}`}>
-										{pct >= 65 ? <CheckCircle2 className="size-3" /> : <AlertTriangle className="size-3" />}
+										{pct >= 65 ? <CheckCircle2 className="size-3" /> : <Sprout className="size-3" />}
 										{tier.label}
 									</div>
 								</div>
@@ -148,22 +205,22 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 							<AnimatedBar pct={pct} colorClass={tier.bar} />
 
 							{/* Status text */}
-							<p className="text-xs text-ink-muted mt-2 leading-relaxed">{tier.description}</p>
+							<p className="text-xs text-ink-muted mt-2 leading-relaxed">{t(tier.description)}</p>
 						</div>
 
 						{/* ── Scrollable body ─────────────────────────────────── */}
 						<div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
 
-							{/* Warning banner */}
-							{isWarning && (
+							{/* Friendly nudge */}
+							{needsNudge && (
 								<motion.div
-									className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-rose-50 border border-rose-200"
+									className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl bg-teal-50 border border-teal-200"
 									initial={{ opacity: 0, scale: 0.97 }}
 									animate={{ opacity: 1, scale: 1 }}
 								>
-									<AlertTriangle className="size-4 text-rose-500 shrink-0 mt-0.5" />
-									<p className="text-xs text-rose-700 font-medium leading-relaxed">
-										City health is low. Complete assessments and maintain your streak to recover.
+									<Sprout className="size-4 text-teal-600 shrink-0 mt-0.5" />
+									<p className="text-xs text-teal-800 font-medium leading-relaxed">
+										{t(NUDGE)}
 									</p>
 								</motion.div>
 							)}

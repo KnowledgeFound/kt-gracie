@@ -1,6 +1,7 @@
 import { AssessmentType } from '@/ENUMS/enums';
 import { Content, Flashcard, FlashcardQuestion, Quiz, QuizQuestion, SummarySection, Teaching } from '@/types/types';
 import { ComponentType } from 'react';
+import type { MaybeLeveled } from '@/features/settings/readingLevel';
 
 // ─── Lesson & Progress ────────────────────────────────────────────────────────
 
@@ -33,7 +34,11 @@ export type AssessmentStatus = 'completed' | 'in_progress' | 'available' | 'lock
 export interface ModuleAssessment {
 	id: number;
 	title: string;
-	description: string;
+	/**
+	 * Resolve with `useReadingLevel().t`. Hand-written copy is leveled; text
+	 * that comes straight from the corpus is a plain string.
+	 */
+	description: MaybeLeveled<string>;
 	difficulty: AssessmentDifficulty;
 	questionCount: number;
 	durationLabel: string;
@@ -110,18 +115,24 @@ export interface CityBlock {
 
 export interface Module {
 	id: number;
+	/** Knowledge-unit id from the corpus (e.g. "KU-001") — key for saved progress */
+	kuId: string;
 	name: string;
-	description: string;
+	/**
+	 * Resolve with `useReadingLevel().t`. Hand-written copy is leveled; text
+	 * that comes straight from the corpus is a plain string.
+	 */
+	description: MaybeLeveled<string>;
 	/** Short audience label shown under the title */
 	audience: string;
 	icon: ComponentType<{ className?: string }>;
 	image: string;
 	/** Which floating district on the city map this module lives on */
 	block: CityBlockId;
-	/** Learning objectives shown on WelcomeScreen left panel */
-	objectives: string[];
-	/** What learners will cover — shown in ModuleDrawer "not started" body */
-	expectations: string[];
+	/** Learning objectives shown on WelcomeScreen left panel (see `description`) */
+	objectives: MaybeLeveled<string[]>;
+	/** What learners will cover — shown in the ModuleDrawer body (see `description`) */
+	expectations: MaybeLeveled<string[]>;
 	/** Ordered list of quiz assessments for this module */
 	assessments: ModuleAssessment[];
 	/** Live progress, null if never started */

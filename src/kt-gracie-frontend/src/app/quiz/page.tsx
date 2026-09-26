@@ -1,12 +1,8 @@
 import { AnimatePresence } from 'framer-motion';
 import { useParams } from 'react-router-dom';
-import {
-	useQuiz,
-	WelcomeScreen,
-	QuizScreen,
-	ResultsScreen,
-} from '@/features/quiz';
+import { useQuiz, QuizScreen, ResultsScreen } from '@/features/quiz';
 import { GracieFeedback } from '@/features/gracie-ai';
+import { WelcomeScreen } from '@/features/course';
 
 /**
  * Quiz route — /quiz/:id
@@ -24,7 +20,9 @@ export default function QuizPage() {
 	if (quiz.loading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-surface-page">
-				<p className="text-xl font-bold text-brand-600 animate-pulse">Loading…</p>
+				<p className="text-xl font-bold text-brand-600 animate-pulse">
+					Loading…
+				</p>
 			</div>
 		);
 	}
