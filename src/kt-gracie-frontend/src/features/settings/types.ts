@@ -91,12 +91,14 @@ export interface LearningSettings {
 }
 
 export interface CitySettings {
-	/** Drifting PixiJS cloud layer. */
+	/** Drifting cloud layer. */
 	clouds: boolean;
 	/** Hot-air balloon that trails the cursor. */
 	balloonCursor: boolean;
 	/** Idle bobbing of the district islands. */
 	floatingDistricts: boolean;
+	/** Rain, lightning and fires over a corrupt city. */
+	stormEffects: boolean;
 }
 
 export interface AppSettings {

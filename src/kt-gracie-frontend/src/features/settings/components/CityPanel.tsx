@@ -7,7 +7,8 @@ import Toggle from './Toggle';
 /** Ambient effects on the city map — all pure decoration, all optional. */
 export default function CityPanel() {
 	const { settings, update } = useSettings();
-	const { clouds, balloonCursor, floatingDistricts } = settings.city;
+	const { clouds, balloonCursor, floatingDistricts, stormEffects } =
+		settings.city;
 	const reduceMotion = settings.appearance.reduceMotion;
 
 	return (
@@ -59,6 +60,17 @@ export default function CityPanel() {
 						label="Floating districts"
 						checked={floatingDistricts}
 						onChange={(next) => update('city', { floatingDistricts: next })}
+					/>
+				</SettingRow>
+
+				<SettingRow
+					title="Storm and fire"
+					description="Rain, lightning and fires over the city while its health is low."
+				>
+					<Toggle
+						label="Storm and fire"
+						checked={stormEffects}
+						onChange={(next) => update('city', { stormEffects: next })}
 					/>
 				</SettingRow>
 			</SettingsCard>

@@ -44,6 +44,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
 		clouds: true,
 		balloonCursor: true,
 		floatingDistricts: true,
+		stormEffects: true,
 	},
 	ai: {
 		// Robot by default. Intelligence mode pulls a ~229MB model, which is not
