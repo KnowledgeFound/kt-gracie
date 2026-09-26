@@ -49,8 +49,9 @@ export function getPersistedCorpus(): Corpus {
 
 export async function getAllModules(): Promise<Module[]> {
 
-    if(allModules.length > 0)
-        return allModules;
+    // remove when we go to Prod
+    // if(allModules.length > 0)
+    //     return allModules;
     
     const corpus = await getCorpus();
     let modules: Module[] = [];
@@ -134,6 +135,7 @@ export async function getAllModules(): Promise<Module[]> {
                     cards: [],
                     sequenceNo: knowledgeUnit.summary.sequenceNo,
                     keywords: [],
+                    summarySection: knowledgeUnit.summary
                 }
             )
 
