@@ -127,7 +127,7 @@ export default function Modules({
 										'backdrop-blur-sm shadow-lg shadow-brand-500/20 active:scale-95',
 										'transition-all duration-150',
 										isActive
-											? 'bg-brand-500/80 text-white shadow-brand-600 backdrop-blur-lg -translate-y-0.5'
+											? 'cityModuleBtn--active bg-brand-500/80 text-white shadow-brand-600 backdrop-blur-lg -translate-y-0.5'
 											: 'bg-white/80 hover:bg-brand-500/60',
 									].join(' ')}
 								>
@@ -178,7 +178,7 @@ function ProgressRing({ pct, size, stroke, className = '' }: ProgressRingProps) 
 				fill="none"
 				stroke="currentColor"
 				strokeWidth={stroke}
-				className="text-blue-100"
+				className="cityModuleRing__track text-blue-100"
 			/>
 			<circle
 				cx={size / 2}
@@ -189,7 +189,7 @@ function ProgressRing({ pct, size, stroke, className = '' }: ProgressRingProps) 
 				strokeWidth={stroke}
 				strokeDasharray={`${dash} ${circ}`}
 				strokeLinecap="round"
-				className="text-blue-500 transition-[stroke-dasharray] duration-700"
+				className="cityModuleRing__fill text-blue-500 transition-[stroke-dasharray] duration-700"
 			/>
 		</svg>
 	);
@@ -237,7 +237,7 @@ function MapButtonInner({
 			</span>
 			{isStarted && (
 				<span
-					className={`md:ml-0.5 px-1 md:px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold transition-colors shrink-0 ${
+					className={`cityModuleBadge md:ml-0.5 px-1 md:px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold transition-colors shrink-0 ${
 						isActive
 							? 'bg-white/20 text-white'
 							: 'bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white'

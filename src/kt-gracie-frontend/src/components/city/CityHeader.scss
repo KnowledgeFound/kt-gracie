@@ -1,0 +1,177 @@
+/* ═══════════════════════════════════════
+   City Header — badge bar styles
+   ═══════════════════════════════════════ */
+
+.city-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 18px 24px 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(214, 238, 254, 0.85) 0%,
+    rgba(214, 238, 254, 0) 100%
+  );
+  animation: fadeSlideDown 0.6s ease-out both;
+
+  &__badges {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* ── Shared badge pill ── */
+
+.city-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(56, 152, 216, 0.35);
+  border-radius: 40px;
+  padding: 10px 22px;
+  box-shadow:
+    0 4px 14px rgba(56, 152, 216, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+
+  &__icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b8faa;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  &__value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a3d5c;
+  }
+}
+
+/* ── Health badge (blue heart + progress bar) ── */
+
+.health-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(235, 245, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(56, 152, 216, 0.35);
+  border-radius: 40px;
+  padding: 10px 22px;
+  box-shadow:
+    0 4px 14px rgba(56, 152, 216, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+
+  &__heart {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d0eaff 0%, #eef7ff 100%);
+    border: 2px solid rgba(110, 198, 240, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #3a6d8c;
+    letter-spacing: 0.6px;
+  }
+
+  &__track {
+    width: 140px;
+    height: 14px;
+    background: #c8dce8;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(56, 152, 216, 0.25);
+  }
+
+  &__fill {
+    height: 100%;
+    background: linear-gradient(90deg, #5cb8e8 0%, #3a9ad9 100%);
+    border-radius: 8px;
+    transition: width 0.6s ease-in-out;
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.25) 8px,
+      rgba(255, 255, 255, 0.25) 10px
+    );
+  }
+}
+
+/* ── KT Coin icon ── */
+
+.kt-coin {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #b8d8f0 0%, #6aafe0 50%, #4a98d4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 2px 8px rgba(74, 152, 212, 0.35),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+
+  &__inner {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 100%
+    );
+  }
+
+  &__text {
+    font-size: 12px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}

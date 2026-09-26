@@ -71,6 +71,17 @@ export type CityBlockId =
 export type CityBlockFloat = 'float' | 'floatReverse' | 'floatSlow';
 
 /**
+ * A fire on a district. `x`/`y` mark the *base* of the flame as a fraction of
+ * the district's box (same convention as `labelBias` in constants.ts); `size`
+ * is the flame's width as a fraction of the box width.
+ */
+export interface CityBlockFire {
+	x: number;
+	y: number;
+	size: number;
+}
+
+/**
  * A district's geometry, in percentages of the `.cityBlocks` stage — the
  * fixed-ratio box the whole map is laid out in. Both the district image and
  * its module button are positioned from these numbers, so they can never
@@ -81,7 +92,11 @@ export interface CityBlock {
 	/** Module this district represents. */
 	moduleId: number;
 	src: string;
+	/** Ruined artwork shown while the city is corrupt — same canvas as `src`. */
+	corruptSrc: string;
 	alt: string;
+	/** Fires burning on the district while the city is corrupt. */
+	fires: CityBlockFire[];
 	/** Image box within the stage. */
 	box: { left: number; top: number; width: number; height: number };
 	/** Where the module button clips onto the district. */

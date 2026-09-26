@@ -1,9 +1,10 @@
-import '@pixi/unsafe-eval';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import './city.css';
 import {
 	CloudLayer,
+	StormLayer,
+	DistrictArt,
 	CityHeader,
 	DrawerMenu,
 	CityMenu,
@@ -23,7 +24,7 @@ import { getCorpus } from '@/services/corpusService';
 import { addProgressToContainer, createAndPersistProgressContainer, getProgressContainer } from '@/services/progressContainerService';
 import { createProgress } from '@/services/progressService';
 import { SubProgress, SubProgressTeaching } from '@/types/user';
-import { AssessmentType } from '@/ENUMS/enums';
+import { AssessmentType, CityState } from '@/ENUMS/enums';
 
 /**
  * Top-level city page.
@@ -49,6 +50,18 @@ export default function CityScene() {
 	// Single source of truth: the city held in auth context (loaded from
 	// local storage on mount, updated on account creation).
 	const cityHealth = city?.getHealth() ?? 0;
+
+	// Low health corrupts the city: ruined districts, fires, a storm overhead.
+	// In development `?cityState=corrupt` (or `=vibrant`) forces a look, so the
+	// artwork can be checked without editing the stored health.
+	const [searchParams] = useSearchParams();
+	const forcedState = import.meta.env.DEV ? searchParams.get('cityState') : null;
+	const isCorrupt = forcedState
+		? forcedState === 'corrupt'
+		: city?.getCityState() === CityState.CORRUPT;
+	const reduceMotion =
+		settings.appearance.reduceMotion ||
+		window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	// One entry point for both ways into a module — the district itself and the
 	// button sitting on it. Picking a module opens its drawer and hands it to
@@ -143,15 +156,28 @@ export default function CityScene() {
 
 
 	return (
-		<div className={`cityScene${hoveredBlock ? ' cityScene--hovering' : ''}`}>
+		<div
+			className={[
+				'cityScene',
+				hoveredBlock ? 'cityScene--hovering' : '',
+				isCorrupt ? 'cityScene--corrupt' : '',
+			]
+				.filter(Boolean)
+				.join(' ')}
+		>
 			{/* City background */}
 			<div aria-hidden="true" className="cityBackground" />
 
-			{/* PixiJS cloud layer — ambience, opt-out in Settings */}
+			{/* Cloud layer — ambience, opt-out in Settings */}
 			{settings.city.clouds && (
 				<div className="cityCloudLayer">
-					<CloudLayer />
+					<CloudLayer stormy={isCorrupt} />
 				</div>
+			)}
+
+			{/* Rain and lightning over a corrupt city — opt-out in Settings */}
+			{isCorrupt && settings.city.stormEffects && (
+				<StormLayer reduceMotion={reduceMotion} />
 			)}
 
 			{/* Floating districts. Geometry comes from features/city/constants.ts,
@@ -188,14 +214,11 @@ export default function CityScene() {
 								onFocus={() => setHoveredBlock(block.id)}
 								onBlur={() => setHoveredBlock(null)}
 							>
-								<img
-									src={block.src}
-									alt=""
-									className={`cityBlock${
-										settings.city.floatingDistricts
-											? ` cityFloat--${block.float}`
-											: ''
-									}`}
+								<DistrictArt
+									block={block}
+									corrupt={isCorrupt}
+									floating={settings.city.floatingDistricts}
+									fires={settings.city.stormEffects}
 								/>
 							</button>
 						);
