@@ -1,22 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-	X,
-	ArrowRight,
-	CheckCircle2,
-	Circle,
-	Clock,
-	Zap,
-	BookOpen,
-	PlayCircle,
-} from 'lucide-react';
-import { modules } from '../constants';
-import {
-	getModuleProgress,
-	type ModuleProgress,
-	type Lesson,
-} from '../mockProgress';
-import { useState } from 'react';
+import { X, ArrowRight, CheckCircle2, Clock, Zap, BookOpen } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CityBlockId, Module } from '../types';
+import { getAllModules } from '@/services/corpusService';
 
 // const CITY_SRC = '/assets/city/city.png';
 
@@ -36,11 +23,29 @@ export default function ModuleDrawer({
 	moduleId,
 }: ModuleDrawerProps) {
 	const navigate = useNavigate();
-	const module = modules.find((m) => m.id === moduleId) ?? null;
 
-	// TODO: replace with useModuleProgress(moduleId) when backend is ready
-	const progress = moduleId !== null ? getModuleProgress(moduleId) : null;
-	const isStarted = progress !== null;
+	const [modules, setModules ] = useState<Module[]>([])
+
+	useEffect(() => {
+		async function fetchModules(){
+			try{
+				const res = await getAllModules();
+
+				//console.log("fetching modules", res);
+
+				if(res){
+					setModules(res);
+				}
+			}
+			catch(err){
+				console.error("Failed to load Modules: ", err);
+			};
+		};
+
+		fetchModules();
+	}, []);
+
+	const module = modules.find((m) => m.id === moduleId) ?? null;
 
 	function handleCTA() {
 		if (!module) return;
@@ -77,21 +82,13 @@ export default function ModuleDrawer({
 					>
 						{module ? (
 							<>
-								<ModuleHeader
-									module={module}
-									progress={progress}
-									onClose={onClose}
-								/>
+								<ModuleHeader module={module} onClose={onClose} />
 
 								<div className="flex-1 overflow-y-auto">
-									{isStarted ? (
-										<InProgressBody progress={progress!} />
-									) : (
-										<NotStartedBody module={module} />
-									)}
+									<ModuleBody module={module} />
 								</div>
 
-								<DrawerFooter isStarted={isStarted} onCTA={handleCTA} />
+								<DrawerFooter onCTA={handleCTA} />
 							</>
 						) : (
 							<div className="flex flex-col items-center justify-center flex-1 gap-4 text-ink-muted p-6">
@@ -111,14 +108,12 @@ export default function ModuleDrawer({
 // ─── Header ───────────────────────────────────────────────────────────────────
 
 interface ModuleHeaderProps {
-	module: (typeof modules)[number];
-	progress: ModuleProgress | null;
+	module: Module;
 	onClose: () => void;
 }
 
-function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
+function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
 	const Icon = module.icon;
-	const pct = progress?.percentComplete ?? 0;
 	const [loading, setLoading] = useState(false);
 
 	return (
@@ -148,38 +143,10 @@ function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
 					</div>
 				</div>
 
-				{/* Progress bar — only when started */}
-				{progress ? (
-					<div className="mt-4">
-						<div className="flex justify-between text-xs text-blue-100 mb-1.5">
-							<span>
-								{progress.completedLessons} / {progress.totalLessons} lessons
-							</span>
-							<span className="font-semibold">{pct}%</span>
-						</div>
-						<div
-							className="h-2 bg-white/20 rounded-full overflow-hidden"
-							role="progressbar"
-							aria-valuenow={pct}
-							aria-valuemin={0}
-							aria-valuemax={100}
-						>
-							<motion.div
-								className="h-full bg-white rounded-full"
-								initial={{ width: 0 }}
-								animate={{ width: `${pct}%` }}
-								transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-							/>
-						</div>
-					</div>
-				) : (
-					<div className="mt-4">
-						{/* Description */}
-						<p className="text-sm text-white leading-tight">
-							{module.description}
-						</p>
-					</div>
-				)}
+				{/* Description */}
+				<p className="mt-4 text-sm text-white leading-tight">
+					{module.description}
+				</p>
 			</div>
 			{/* Video Frame */}
 			<div className="relative w-full h-[250px] bg-blue-50 overflow-hidden">
@@ -204,80 +171,9 @@ function ModuleHeader({ module, progress, onClose }: ModuleHeaderProps) {
 	);
 }
 
-// ─── In-progress body ─────────────────────────────────────────────────────────
+// ─── Body ─────────────────────────────────────────────────────────────────────
 
-function InProgressBody({ progress }: { progress: ModuleProgress }) {
-	const remaining = progress.totalLessons - progress.completedLessons;
-
-	return (
-		<section className="bg-white px-5 py-5 space-y-5">
-			{/* ── Stats row ── */}
-			<div className="grid grid-cols-2 gap-3 bg-white">
-				<StatCard
-					icon={<CheckCircle2 className="w-4 h-4 text-green-500" />}
-					label="Completed"
-					value={`${progress.completedLessons} lessons`}
-				/>
-				<StatCard
-					icon={<BookOpen className="w-4 h-4 text-blue-500" />}
-					label="Remaining"
-					value={`${remaining} lesson${remaining !== 1 ? 's' : ''}`}
-				/>
-				<StatCard
-					icon={<Zap className="w-4 h-4 text-amber-500" />}
-					label="XP Earned"
-					value={`${progress.xpEarned} / ${progress.xpTotal} XP`}
-				/>
-				<StatCard
-					icon={<Clock className="w-4 h-4 text-ink-muted" />}
-					label="Est. remaining"
-					value={formatRemaining(progress.lessons)}
-				/>
-			</div>
-
-			{/* ── Continue from ── */}
-			<section className="bg-white">
-				<h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2">
-					Continue from
-				</h3>
-				<div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 border border-blue-100">
-					<div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
-						<PlayCircle className="w-4 h-4 text-white" />
-					</div>
-					<div className="min-w-0">
-						<p className="text-sm font-semibold text-ink-deep truncate">
-							{progress.currentLesson.title}
-						</p>
-						<p className="text-xs text-ink-muted">
-							Lesson {progress.currentLesson.id} ·{' '}
-							{progress.currentLesson.durationMin} min
-						</p>
-					</div>
-				</div>
-			</section>
-
-			{/* ── Lesson list ── */}
-			<section className="bg-white">
-				<h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2">
-					All lessons
-				</h3>
-				<ol className="space-y-1.5">
-					{progress.lessons.map((lesson) => (
-						<LessonRow
-							key={lesson.id}
-							lesson={lesson}
-							isCurrent={lesson.id === progress.currentLesson.id}
-						/>
-					))}
-				</ol>
-			</section>
-		</section>
-	);
-}
-
-// ─── Not-started body ─────────────────────────────────────────────────────────
-
-function NotStartedBody({ module }: { module: (typeof modules)[number] }) {
+function ModuleBody({ module }: { module: Module }) {
 	return (
 		<section className="px-5 py-5 space-y-5 bg-white">
 			{/* Overview stats */}
@@ -285,22 +181,22 @@ function NotStartedBody({ module }: { module: (typeof modules)[number] }) {
 				<StatCard
 					icon={<BookOpen className="w-4 h-4 text-blue-500" />}
 					label="Lessons"
-					value="8 lessons"
+					value= {`${module.lessons} lessons`}
 				/>
 				<StatCard
 					icon={<Clock className="w-4 h-4 text-ink-muted" />}
 					label="Duration"
-					value="~2 hrs"
+					value= {module.duration}
 				/>
 				<StatCard
 					icon={<Zap className="w-4 h-4 text-amber-500" />}
-					label="XP Reward"
-					value="400 XP"
+					label="KT Reward"
+					value={`${module.ktReward} KT`}
 				/>
 				<StatCard
 					icon={<CheckCircle2 className="w-4 h-4 text-green-500" />}
 					label="Level"
-					value="Beginner"
+					value={module.level}
 				/>
 			</div>
 			<div>
@@ -328,30 +224,15 @@ function NotStartedBody({ module }: { module: (typeof modules)[number] }) {
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
-function DrawerFooter({
-	isStarted,
-	onCTA,
-}: {
-	isStarted: boolean;
-	onCTA: () => void;
-}) {
+function DrawerFooter({ onCTA }: { onCTA: () => void }) {
 	return (
 		<div className="px-5 py-4 border-t border-gray-100 shrink-0 bg-white">
 			<button
 				onClick={onCTA}
 				className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-semibold transition-colors bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
 			>
-				{isStarted ? (
-					<>
-						<PlayCircle className="w-4 h-4 shrink-0" />
-						<span>Continue Learning</span>
-					</>
-				) : (
-					<>
-						<span>Start Learning</span>
-						<ArrowRight className="w-4 h-4 shrink-0" />
-					</>
-				)}
+				<span>Start Learning</span>
+				<ArrowRight className="w-4 h-4 shrink-0" />
 			</button>
 		</div>
 	);
@@ -375,58 +256,4 @@ function StatCard({ icon, label, value }: StatCardProps) {
 			</div>
 		</div>
 	);
-}
-
-interface LessonRowProps {
-	lesson: Lesson;
-	isCurrent: boolean;
-}
-
-function LessonRow({ lesson, isCurrent }: LessonRowProps) {
-	return (
-		<li
-			className={[
-				'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors',
-				isCurrent
-					? 'bg-blue-50 border border-blue-200'
-					: lesson.completed
-						? 'bg-gray-50 border border-transparent'
-						: 'border border-transparent',
-			].join(' ')}
-		>
-			{lesson.completed ? (
-				<CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-			) : isCurrent ? (
-				<PlayCircle className="w-4 h-4 text-blue-500 shrink-0" />
-			) : (
-				<Circle className="w-4 h-4 text-gray-300 shrink-0" />
-			)}
-
-			<span
-				className={[
-					'flex-1 truncate',
-					lesson.completed ? 'text-ink-muted line-through' : 'text-ink-deep',
-					isCurrent ? 'font-semibold text-blue-700' : '',
-				].join(' ')}
-			>
-				{lesson.title}
-			</span>
-
-			<span className="text-xs text-ink-muted shrink-0 ml-auto pl-2">
-				{lesson.durationMin}m
-			</span>
-		</li>
-	);
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatRemaining(lessons: Lesson[]): string {
-	const mins = lessons
-		.filter((l) => !l.completed)
-		.reduce((acc, l) => acc + l.durationMin, 0);
-	if (mins < 60) return `${mins} min`;
-	const h = Math.floor(mins / 60);
-	const m = mins % 60;
-	return m > 0 ? `${h}h ${m}m` : `${h}h`;
 }

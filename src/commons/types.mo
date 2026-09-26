@@ -47,6 +47,7 @@ module Types{
         schema: Text;
         id: Text;
         title: Text;
+        lastUpdated: Text;
         description: Text;
         typeOfObject: Text;
         additionalProperties: Bool;
@@ -60,6 +61,11 @@ module Types{
         topic: Text;
         difficulty: Enums.Difficulty; 
         learningObjectives: [Text];
+        expectations: [Text];
+        image: Text;
+        description: Text;
+        icon: Text;
+        block: Text;
         duration: Text; // e.g. "30 minutes", "1 hour", "2 hours"
         prerequisites: [Text]; // List of Knowledge Unit IDs
         sources: [Source];
@@ -67,6 +73,8 @@ module Types{
         assessments: [Assessment];
         tokenReward: Nat;
         summary: SummarySection;
+        audience: Text;
+        level: Text;
     };
 
     public type Source = {
@@ -82,6 +90,9 @@ module Types{
         difficulty: Enums.Difficulty;
         keywords: [Text];
         content: Content;
+        ktMax: Nat; // Knowledge Token max score for this teaching
+        duration: Nat; // Duration in minutes
+        sequenceNo: Nat;
     };
 
     public type Content = {
@@ -93,6 +104,7 @@ module Types{
 
     public type SummarySection = {
         id: Nat;
+        sequenceNo: Nat;
         inforgraphic: ?Content;
         slideDeck: ?Content;
         podcast: ?Content;
@@ -105,6 +117,10 @@ module Types{
         pointScore: Nat;
         quiz: ?Quiz;
         flashcard: ?Flashcard;
+        ktMax: Nat; // Knowledge Token max score for this assessment
+        duration: Nat; // Duration in minutes
+        difficulty: Enums.Difficulty;
+        sequenceNo: Nat;
     };
 
     public type Quiz = {

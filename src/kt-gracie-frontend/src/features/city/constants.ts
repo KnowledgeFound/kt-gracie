@@ -15,6 +15,7 @@ import community_img from '/assets/city/community.jpeg';
 import policy_img from '/assets/city/policy.jpeg';
 import youth_led_img from '/assets/city/youth-led.jpeg';
 import digital_innovation_img from '/assets/city/digital-innovation.jpeg';
+import { AssessmentType } from '@/ENUMS/enums';
 
 // ─── Progress builder (same logic as old mockProgress.ts) ────────────────────
 
@@ -59,6 +60,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			ktMax: 200,
 			ktEarned: 115,
 			status: 'completed',
+			cards: [],
+			questions: [],
+			type: AssessmentType.QUIZ,
+			keywords: [],
+			sequenceNo: 1
 		},
 		{
 			id: 2,
@@ -71,6 +77,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			ktMax: 350,
 			ktEarned: 125,
 			status: 'in_progress',
+			cards: [],
+			questions: [],
+			type: AssessmentType.FLASHCARD,
+			keywords: [],
+			sequenceNo: 2
 		},
 		{
 			id: 3,
@@ -81,6 +92,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			durationLabel: '2m',
 			ktMax: 350,
 			status: 'available',
+			cards: [],
+			questions: [],
+			type: AssessmentType.QUIZ,
+			keywords: [],
+			sequenceNo: 3
 		},
 		{
 			id: 4,
@@ -91,6 +107,11 @@ function makeAssessments(base: string): ModuleAssessment[] {
 			durationLabel: '2m',
 			ktMax: 525,
 			status: 'locked',
+			cards: [],
+			questions: [],
+			type: AssessmentType.QUIZ,
+			keywords: [],
+			sequenceNo: 4
 		},
 	];
 }
@@ -235,6 +256,10 @@ export const modules: Module[] = [
 		name: 'Anti-Corruption',
 		audience: 'Private Sector & Civil Society',
 		image: anti_corruption_img,
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		icon: BookOpen,
 		block: 'leftUp',
 		description:
@@ -271,6 +296,10 @@ export const modules: Module[] = [
 		image: policy_img,
 		icon: Target,
 		block: 'leftDown',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Explore the world of policy-making, including how policies are developed, implemented, and evaluated.',
 		objectives: [
@@ -303,6 +332,10 @@ export const modules: Module[] = [
 		icon: Users,
 		image: youth_led_img,
 		block: 'central',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Discover the power of youth-led initiatives and how young people are driving change in their communities.',
 		objectives: [
@@ -328,6 +361,10 @@ export const modules: Module[] = [
 		audience: 'Tech & Civil Society',
 		icon: Lightbulb,
 		block: 'rightUp',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Delve into digital innovation and learn about the latest technologies and trends shaping our future.',
 		objectives: [
@@ -361,6 +398,10 @@ export const modules: Module[] = [
 		image: community_img,
 		icon: Globe,
 		block: 'rightDown',
+		lessons: 8,
+		ktReward:400,
+		level: 'Beginner',
+		duration: '2 hours',
 		description:
 			'Connect with others and learn about the importance of community engagement and development.',
 		objectives: [

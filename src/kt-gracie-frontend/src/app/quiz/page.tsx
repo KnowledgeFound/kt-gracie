@@ -29,6 +29,21 @@ export default function QuizPage() {
 		);
 	}
 
+	if (quiz.module === null) {
+		return (
+			<div className="flex h-full min-h-screen w-full items-center justify-center p-4">
+				<div className="rounded-2xl border border-red-200/50 bg-white/80 p-6 text-center shadow-xl backdrop-blur-md">
+					<p className="text-base font-semibold text-gray-800">
+						Something went wrong
+					</p>
+					<p className="mt-1 text-sm text-gray-500">
+						Failed to fetch Module Data
+					</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="min-h-screen bg-surface-page relative overflow-hidden">
 			{/* Decorative blobs */}
@@ -72,6 +87,7 @@ export default function QuizPage() {
 							totalQuestions={quiz.quizQuestions.length}
 							questions={quiz.quizQuestions}
 							userAnswers={quiz.userAnswers}
+							tokensEarned={quiz.tokensEarned}
 							onRetake={quiz.retakeQuiz}
 							timeTaken={quiz.timeTaken}
 							module={quiz.module}

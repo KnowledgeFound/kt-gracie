@@ -7,6 +7,12 @@ import {
 } from 'react';
 import * as userServices from '../../services/userServices';
 import * as cityServices from '../../services/cityService';
+import {
+	createAccountForUser,
+	syncTokenBalance as syncTokenBalanceWithBackend,
+	creditTokens as creditTokensWithBackend,
+	debitTokens as debitTokensWithBackend,
+} from '../../services/knowledgeTokenService';
 import type { 
 	User,
 	CreateUserInput,
@@ -24,6 +30,13 @@ interface UserContextValue {
 	updateUser: (updates: UpdateUserInput) => User;
 	deleteUser: () => void;
 	updateGracie: (gracie: Partial<GracieConfig>) => User;
+	updateTokenBalance: (tokenBalance: number) => User;
+	/** Fire-and-forget: pull the authoritative balance from the backend into localStorage + UI. */
+	syncTokenBalance: () => void;
+	/** Fire-and-forget optimistic credit (backend reconciles in the background). */
+	creditTokens: (amount: bigint, txType: string, reference?: string) => void;
+	/** Fire-and-forget optimistic debit (backend reconciles in the background). */
+	debitTokens: (amount: bigint, txType: string, reference?: string) => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -47,6 +60,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
 		cityServices.saveCityToLocalStorage(newCity);
 		setCity(newCity);
 
+		// Create the user's token account in the backend ledger. Fire-and-forget
+		// so registration stays instant — the backend method is idempotent and
+		// getBalance already returns 0 for an unknown user.
+		void createAccountForUser(created.anonymousId).catch((err) => {
+			console.error('Failed to create backend token account:', err);
+		});
+
 		return created;
 	}, []);
 
@@ -69,6 +89,53 @@ export function UserProvider({ children }: { children: ReactNode }) {
 		return updated;
 	}, []);
 
+	const updateTokenBalance = useCallback((tokenBalance: number): User => {
+		const updated = userServices.updateTokenBalance(tokenBalance);
+		setUser(updated);
+		return updated;
+	}, []);
+
+	// The knowledgeTokenService helpers already persist to localStorage; this
+	// callback only mirrors the value into React state so the UI updates live
+	// without a second localStorage write.
+	const applyBalanceToState = useCallback((value: number): void => {
+		const current = userServices.getUser();
+		if (current) setUser({ ...current, tokenBalance: value });
+	}, []);
+
+	const syncTokenBalance = useCallback((): void => {
+		if (!user) return;
+		syncTokenBalanceWithBackend(user.anonymousId, applyBalanceToState);
+	}, [user, applyBalanceToState]);
+
+	const creditTokens = useCallback(
+		(amount: bigint, txType: string, reference?: string): void => {
+			if (!user) return;
+			void creditTokensWithBackend(
+				user.anonymousId,
+				amount,
+				txType,
+				reference,
+				applyBalanceToState,
+			).catch(() => {});
+		},
+		[user, applyBalanceToState],
+	);
+
+	const debitTokens = useCallback(
+		(amount: bigint, txType: string, reference?: string): void => {
+			if (!user) return;
+			void debitTokensWithBackend(
+				user.anonymousId,
+				amount,
+				txType,
+				reference,
+				applyBalanceToState,
+			).catch(() => {});
+		},
+		[user, applyBalanceToState],
+	);
+
 	return (
 		<UserContext.Provider
 			value={{
@@ -78,6 +145,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
 				updateUser,
 				deleteUser,
 				updateGracie,
+				updateTokenBalance,
+				syncTokenBalance,
+				creditTokens,
+				debitTokens,
 			}}
 		>
 			{children}

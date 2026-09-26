@@ -5,6 +5,7 @@ export type Corpus = {
   id: string;
   title: string;
   description: string;
+  lastUpdated: Date;
   typeOfObject: string;
   additionalProperties: boolean;
   knowledgeUnits: KnowledgeUnit[];
@@ -17,11 +18,20 @@ export type KnowledgeUnit = {
   topic: string;
   difficulty: Difficulty;
   prerequisites: string[];
+  expectations: string[];
+  learningObjectives: string[];
+  image: string;
+  description: string;
+  icon: string;
+  block: string; // returned as string from backend, but will be mapped to CityBlockId in frontend
+  duration: string;
   sources: Source[];
   teachings: Teaching[];
   assessments: Assessment[];
   tokenReward: number;
   summary: SummarySection;
+  audience: string;
+  level: string;
 };
 
 
@@ -31,6 +41,10 @@ export type Assessment = {
   pointScore: number;
   quiz: Quiz | null;
   flashcard: Flashcard | null; // Placeholder for future implementation
+  ktMax: number; // Knowledge Token max score for this assessment
+  duration: number; // Duration in minutes
+  difficulty: Difficulty;
+  sequenceNo: number;
 };
 
 export type Source = {
@@ -46,6 +60,9 @@ export type Teaching = {
   difficulty: Difficulty;
   keywords: string[];
   content: Content;
+  ktMax: number; // Knowledge Token max score for this teaching
+  duration: number; // Duration in minutes
+  sequenceNo: number;
 };
 
 export type Content = {
@@ -57,11 +74,12 @@ export type Content = {
 
 export type SummarySection = {
   id: number;
+  sequenceNo: number;
   inforgraphic: Content | null;
   slideDeck: Content | null;
   podcast: Content | null;
 };
-
+ 
 export type Quiz = {
   id: number;
   assessmentType: AssessmentType.QUIZ;

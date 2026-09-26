@@ -1,3 +1,5 @@
+import { AssessmentType } from '@/ENUMS/enums';
+import { Content, Flashcard, FlashcardQuestion, Quiz, QuizQuestion, SummarySection, Teaching } from '@/types/types';
 import { ComponentType } from 'react';
 
 // ─── Lesson & Progress ────────────────────────────────────────────────────────
@@ -40,6 +42,19 @@ export interface ModuleAssessment {
 	/** KT earned in best run, undefined = never attempted */
 	ktEarned?: number;
 	status: AssessmentStatus;
+	cards: FlashcardQuestion[];
+	questions: QuizQuestion[];
+	type: AssessmentType;
+	keywords: string [];
+	content?: Content;
+	sequenceNo: number;
+	summarySection?: SummarySection
+}
+
+export interface Activity {
+	quiz: Quiz | null;
+	flashcard: Flashcard | null;
+	teaching: Teaching | null;
 }
 
 // ─── City blocks (the floating districts on the map) ──────────────────────────
@@ -111,4 +126,9 @@ export interface Module {
 	assessments: ModuleAssessment[];
 	/** Live progress, null if never started */
 	progress: ModuleProgress | null;
+	lessons: number;
+	ktReward:number;
+	level: string;
+	duration: string;
+	
 }

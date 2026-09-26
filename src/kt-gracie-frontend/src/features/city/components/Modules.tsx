@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { cityBlocks, getModuleProgress, modules } from '../constants';
 import { CityBlockId, Module } from '../types';
+import { getAllModules } from '@/services/corpusService';
 
 interface Props {
 	onClickModule?: (id: number) => void;
@@ -33,6 +35,55 @@ export default function Modules({
 	activeModuleId = null,
 	floating = true,
 }: Props) {
+
+	const [modules, setModules] = useState<Module[] | null>([]);
+
+	useEffect(() => {
+		async function fetchModules(){
+			try{
+				const res = await getAllModules();
+
+				//console.log("fetching modules", res);
+
+				if(res){
+					setModules(res);
+				}
+			}
+			catch(err){
+				console.error("Failed to load Modules: ", err);
+				setModules(null);
+			}
+		};
+
+		fetchModules();
+	}, []);
+
+	if (modules === null) {
+		return (
+			<div className="flex h-full min-h-screen w-full items-center justify-center p-4">
+				<div className="rounded-2xl border border-red-200/50 bg-white/80 p-6 text-center shadow-xl backdrop-blur-md">
+					<p className="text-base font-semibold text-gray-800">
+						Something went wrong
+					</p>
+					<p className="mt-1 text-sm text-gray-500">
+						Failed to fetch city block data
+					</p>
+				</div>
+			</div>
+		);
+	}
+	
+	if (modules.length === 0) {
+		return (
+			<div className="flex h-full min-h-screen w-full items-center justify-center p-4">
+				<div className="flex flex-col items-center gap-3">
+					<div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+					<p className="text-sm font-medium text-gray-600">Loading module data...</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="cityModuleLayer">
 			<div className="cityBlocks">

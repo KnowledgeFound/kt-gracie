@@ -92,7 +92,6 @@ export default function CityScene() {
 				// create Knowledge container
 				createAndPersistProgressContainer();
 
-
 				corpus.knowledgeUnits.forEach((knowledgeUnit) => {
 
 					let arr_subProgress : SubProgress [] = [];
@@ -107,7 +106,9 @@ export default function CityScene() {
 								score: 0,
 								pointScore: assessment.pointScore,
 								maxScore: assessment.maxScore,
-								completed: false
+								completed: false,
+								ktMax: assessment.ktMax,
+								ktEarned: 0
 							});
 						}
 						else if(assessment.flashcard != null)
@@ -118,7 +119,9 @@ export default function CityScene() {
 								score: 0,
 								pointScore: assessment.pointScore,
 								maxScore: assessment.maxScore,
-								completed: false
+								completed: false,
+								ktMax: assessment.ktMax,
+								ktEarned: 0
 							});
 						}
 					});
@@ -130,7 +133,9 @@ export default function CityScene() {
 							teachingID: teaching.id,
 							topic: teaching.topic,
 							difficulty: teaching.difficulty,
-							completed: false
+							completed: false,
+							ktMax: teaching.ktMax,
+							ktEarned: 0
 						});
 					});
 

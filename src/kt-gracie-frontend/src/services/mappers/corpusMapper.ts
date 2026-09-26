@@ -53,6 +53,9 @@ function mapTeaching(teaching: BackendTeaching) {
         difficulty: mapVariant<keyof typeof Difficulty>(teaching.difficulty) as Difficulty,
         keywords: teaching.keywords,
         content: mapContent(teaching.content),
+        ktMax: Number(teaching.ktMax),
+        duration: Number(teaching.duration),
+        sequenceNo: Number(teaching.sequenceNo)
     };
 }
 
@@ -102,24 +105,44 @@ function mapAssessment(assessment: BackendAssessment) {
         maxScore: Number(assessment.maxScore),
         pointScore: Number(assessment.pointScore),
         quiz: quiz === null ? null : mapQuiz(quiz),
+        difficulty: mapVariant<keyof typeof Difficulty>(assessment.difficulty) as Difficulty,
         flashcard: flashcard === null ? null : mapFlashcard(flashcard),
+        ktMax: Number(assessment.ktMax),
+        duration: Number(assessment.duration),
+        sequenceNo: Number(assessment.sequenceNo)
     };
 }
 
-function mapKnowledgeUnit(knowledgeUnit: BackendKnowledgeUnit) {
+function mapKnowledgeUnit(
+    knowledgeUnit: BackendKnowledgeUnit & {
+        expectations?: string[];
+        image?: string;
+        description?: string;
+        icon?: string;
+        block?: string;
+    }
+) {
     return {
         id: knowledgeUnit.id,
         topic: knowledgeUnit.topic,
         difficulty: mapVariant<keyof typeof Difficulty>(knowledgeUnit.difficulty) as Difficulty,
-        prerequisites: knowledgeUnit.prerequisites,
-        learningObjectives: knowledgeUnit.learningObjectives,
+        prerequisites: knowledgeUnit.prerequisites ?? [],
+        learningObjectives: knowledgeUnit.learningObjectives ?? [],
+        expectations: knowledgeUnit.expectations ?? [],
+        image: knowledgeUnit.image ?? "",
+        description: knowledgeUnit.description ?? "",
+        icon: knowledgeUnit.icon ?? "",
+        block: knowledgeUnit.block ?? "",
         duration: knowledgeUnit.duration,
         sources: knowledgeUnit.sources.map(mapSource),
-        teachings: knowledgeUnit.teachings.map(mapTeaching),
-        assessments: knowledgeUnit.assessments.map(mapAssessment),
+        teachings: knowledgeUnit.teachings.map(mapTeaching) ?? [],
+        assessments: knowledgeUnit.assessments.map(mapAssessment) ?? [],
         tokenReward: Number(knowledgeUnit.tokenReward),
+        audience: knowledgeUnit.audience,
+        level: knowledgeUnit.level,
         summary: {
             id: Number(knowledgeUnit.summary.id),
+            sequenceNo: Number(knowledgeUnit.summary.sequenceNo),
             inforgraphic: mapOptionalContent(knowledgeUnit.summary.inforgraphic),
             slideDeck: mapOptionalContent(knowledgeUnit.summary.slideDeck),
             podcast: mapOptionalContent(knowledgeUnit.summary.podcast),
@@ -133,6 +156,7 @@ export function mapFromBackend(corpus: BackendCorpus): Corpus {
         id: corpus.id,
         title: corpus.title,
         description: corpus.description,
+        lastUpdated: new Date(corpus.lastUpdated),
         numberOfModules: Number(corpus.numberOfModules),
         numberOfAssessments: Number(corpus.numberOfAssessments),
         typeOfObject: corpus.typeOfObject,

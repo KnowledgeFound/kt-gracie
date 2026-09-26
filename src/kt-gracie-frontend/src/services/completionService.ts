@@ -1,6 +1,8 @@
 import { getProgressFromContainer, addProgressToContainer } from "./progressContainerService";
 import { Progress } from "@/types/user";
 import { CompletedScore } from "@/ENUMS/enums";
+import { getCityFromLocalStorage, saveCityToLocalStorage } from "./cityService";
+import { getPointScoreForTeachings } from "./progressContainerService";
 
 // Marks a SubProgress as completed for a given knowledge unit and assessment ID
 export function completeAssessment(knowledgeUnitID: string, assessmentID: number): void {
@@ -11,13 +13,35 @@ export function completeAssessment(knowledgeUnitID: string, assessmentID: number
 
         const subProgress = progress.subProgress.find(sp => sp.assessmentID === assessmentID);
 
-        if (subProgress && subProgress.score >= subProgress.maxScore) {
+        if (subProgress && subProgress.completed == false) {
             subProgress.completed = true;
-        }
-        
-        validateProgress(progress);
+            subProgress.ktEarned = subProgress.ktMax;
 
-        addProgressToContainer(progress);
+            validateProgress(progress);
+
+            addProgressToContainer(progress);
+        }
+    
+    }
+}
+
+// I don't think this will be used. To tired to rationalise
+export function addScoreToAssessment(knowledgeUnitID: string, assessmentID: number, score: number): void {
+    const progress = getProgressFromContainer(knowledgeUnitID);
+
+    if (progress) {
+        const subProgress = progress.subProgress.find(sp => sp.assessmentID === assessmentID);
+
+        // always take the highest score for the assessment
+        if (subProgress && subProgress.score < score) {
+            subProgress.score = score;
+
+            validateProgress(progress);
+
+            addProgressToContainer(progress);
+
+            updateCityAssessmentScore(score);
+        }
     }
 }
 
@@ -27,13 +51,16 @@ export function completeTeaching(knowledgeUnitID: string, teachingID: number): v
     if (progress) {
         const subProgressTeaching = progress.subProgressTeachings.find(sp => sp.teachingID === teachingID);
 
-        if (subProgressTeaching) {
+        if (subProgressTeaching && subProgressTeaching.completed == false) {
             subProgressTeaching.completed = true;
+            subProgressTeaching.ktEarned = subProgressTeaching.ktMax;
+
+            validateProgress(progress);
+
+            addProgressToContainer(progress);
+
+            updateCityContentScore(getPointScoreForTeachings());
         }
-
-        validateProgress(progress);
-
-        addProgressToContainer(progress);
     }
 }
 
@@ -59,6 +86,26 @@ function validateProgress(progress: Progress): void {
     {
         progress.completed = true;
         // add achievements logic here if needed
+    }
+}
+
+function updateCityAssessmentScore(score: number): void {
+    const city = getCityFromLocalStorage();
+
+    if (city) {
+        city.setFinalAssessmentScore(score);
+        // Save the updated city back to local storage
+        saveCityToLocalStorage(city);
+    }
+}
+
+function updateCityContentScore(score: number): void {
+    const city = getCityFromLocalStorage();
+
+    if (city) {
+        city.setContentScore(score);
+        // Save the updated city back to local storage
+        saveCityToLocalStorage(city);
     }
 }
 
