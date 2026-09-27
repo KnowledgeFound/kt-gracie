@@ -21,7 +21,7 @@ export default function CityHeader({
 	onClickUser,
 	onClickSettings,
 }: CityHeaderProps) {
-	const pct     = Math.min(100, Math.max(0, health));
+	const pct     = Math.round(Math.min(100, Math.max(0, health)));
 	const initial = username.charAt(0).toUpperCase();
 
 	return (

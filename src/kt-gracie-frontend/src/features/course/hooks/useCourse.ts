@@ -41,7 +41,7 @@ function isDone(kuId: string, a: ModuleAssessment): boolean {
  * step, so leaving and coming back resumes at the same section / question.
  */
 export function useCourse(moduleId?: string) {
-	const { creditTokens, refreshCity } = useUser();
+	const { creditTokens } = useUser();
 
 	const [module, setModule] = useState<Module | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -287,7 +287,7 @@ export function useCourse(moduleId?: string) {
 		}
 		if (!isTeachingCompleted(kuId, activity.id)) {
 			markTeachingCompleted(kuId, activity.id, activity.title, activity.ktMax);
-			refreshCity();
+			//refreshCity();
 			credit(activity.ktMax, activity);
 		}
 		nextActivity();
@@ -326,7 +326,7 @@ export function useCourse(moduleId?: string) {
 		)?.ktEarned ?? 0;
 
 		markAssessmentCompleted(kuId, activity.id, AssessmentType.QUIZ, score, total, earned, activity.ktMax);
-		refreshCity();
+		//refreshCity();
 		// Only pay out the improvement over the learner's best earlier run.
 		credit(Math.max(0, earned - prior), activity);
 
@@ -357,7 +357,7 @@ export function useCourse(moduleId?: string) {
 		if (!isAssessmentCompleted(kuId, activity.id, AssessmentType.FLASHCARD)) {
 			markAssessmentCompleted(kuId, activity.id, AssessmentType.FLASHCARD, total, total, activity.ktMax, activity.ktMax);
 			credit(activity.ktMax, activity);
-			refreshCity();
+			//refreshCity();
 		}
 		nextActivity();
 	};

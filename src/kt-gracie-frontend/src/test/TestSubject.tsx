@@ -3,6 +3,7 @@ import { useCreateSubjectHook } from "../hooks/subjectHooks";
 import { CreateSubjectInput } from "../types/types";
 import { completeAssessment } from "@/services/completionService";
 import * as CorpusService from "../services/corpusService";
+import {updateCityAssessmentScore} from "@/services/completionService";
 
 export default function TestSubject() {
 
@@ -27,6 +28,8 @@ export default function TestSubject() {
         // console.log(await CorpusService.getPersistedCorpus());
 
         completeAssessment("KU-001", 1);
+
+        updateCityAssessmentScore();
 
         console.log("done!");
 

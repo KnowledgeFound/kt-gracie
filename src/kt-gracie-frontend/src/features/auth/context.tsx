@@ -85,6 +85,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 		setCity(null);
 	}, []);
 
+	// Please do not use. We are updating the city through a different system
 	const refreshCity = useCallback((): void => {
 		const updated = cityServices.syncCityHealth();
 		if (updated) setCity(updated);

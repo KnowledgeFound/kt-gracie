@@ -120,7 +120,7 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	
 	const user   = useOptionalUser();
 	const { t }  = useReadingLevel();
-	const pct    = Math.min(100, Math.max(0, health));
+	const pct    = Math.round(Math.min(100, Math.max(0, health)));
 	const tier   = getTierInfo(pct);
 
 	const { city } = useUser();

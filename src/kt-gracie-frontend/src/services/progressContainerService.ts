@@ -269,6 +269,40 @@ export function getMaxScore(): number {
     return 0;
 }
 
+/**
+ * Returns the max scores across all assessments:
+ * - Quiz
+ * - Flashcards
+ */
+export function getTotalPossibleAssessmentScore() : number {
+    
+    const progressContainer = getProgressContainer();
+    if (progressContainer) {
+        return progressContainer.arr_progress.reduce((max, p) => {
+            return max + (p.subProgress.reduce((subMax, sp) => subMax + sp.maxScore, 0));
+        }, 0);
+    }
+
+    return 0;
+}
+
+/*
+* Returns what the user scored (total) on all assessments:
+* - Quiz
+* - Flashcards
+*/
+export function getTotalAssessmentScore() : number {
+    
+    const progressContainer = getProgressContainer();
+    if (progressContainer) {
+        return progressContainer.arr_progress.reduce((max, p) => {
+            return max + (p.subProgress.reduce((subMax, sp) => subMax + sp.score, 0));
+        }, 0);
+    }
+
+    return 0;
+}
+
 
 export function getTheBestAssessmentScore(): {score: number, maxScore: number} {
     const progressContainer = getProgressContainer();
@@ -379,6 +413,7 @@ export function markAssessmentCompleted(
             completed: true, ktMax, ktEarned,
         });
     }
+
     saveProgress(refreshTotals(progress));
 }
 
