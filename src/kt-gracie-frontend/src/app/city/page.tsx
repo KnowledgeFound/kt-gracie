@@ -110,11 +110,11 @@ export default function CityScene() {
 				//console.log(corpus);
 
 				if (getProgressContainer() != null) {
-					refreshCity();
 					return;
 				}
 
-				// create Knowledge container
+				// Map the ProgressContainer object
+				
 				createAndPersistProgressContainer();
 
 				corpus.knowledgeUnits.forEach((knowledgeUnit) => {
@@ -127,7 +127,7 @@ export default function CityScene() {
 								assessmentType: AssessmentType.QUIZ,
 								score: 0,
 								pointScore: assessment.pointScore,
-								maxScore: assessment.maxScore,
+								maxScore: assessment.quiz.questions.length,
 								completed: false,
 								ktMax: assessment.ktMax,
 								ktEarned: 0,
@@ -138,7 +138,7 @@ export default function CityScene() {
 								assessmentType: AssessmentType.FLASHCARD,
 								score: 0,
 								pointScore: assessment.pointScore,
-								maxScore: assessment.maxScore,
+								maxScore: assessment.flashcard.cards.length,
 								completed: false,
 								ktMax: assessment.ktMax,
 								ktEarned: 0,
@@ -169,7 +169,7 @@ export default function CityScene() {
 					addProgressToContainer(progress);
 				});
 
-				refreshCity();
+				//refreshCity();
 			} catch (err) {
 				console.error('Failed to load Corpus: ', err);
 			}

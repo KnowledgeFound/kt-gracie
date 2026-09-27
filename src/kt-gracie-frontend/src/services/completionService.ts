@@ -1,8 +1,9 @@
-import { getProgressFromContainer, addProgressToContainer } from "./progressContainerService";
+import { getProgressFromContainer, addProgressToContainer, getNumberOfTeachingsCompleted, getTotalNumberOfTeachings, getTotalAssessmentScore, getTotalPossibleAssessmentScore } from "./progressContainerService";
 import { Progress } from "@/types/user";
 import { CompletedScore } from "@/ENUMS/enums";
 import { getCityFromLocalStorage, saveCityToLocalStorage } from "./cityService";
 import { getPointScoreForTeachings } from "./progressContainerService";
+import { getAssessmentProgressTotal } from "./progressService";
 
 // Marks a SubProgress as completed for a given knowledge unit and assessment ID
 export function completeAssessment(knowledgeUnitID: string, assessmentID: number): void {
@@ -40,7 +41,7 @@ export function addScoreToAssessment(knowledgeUnitID: string, assessmentID: numb
 
             addProgressToContainer(progress);
 
-            updateCityAssessmentScore(score);
+            updateCityAssessmentScore();
         }
     }
 }
@@ -59,7 +60,7 @@ export function completeTeaching(knowledgeUnitID: string, teachingID: number): v
 
             addProgressToContainer(progress);
 
-            updateCityContentScore(getPointScoreForTeachings());
+            updateCityContentScore();
         }
     }
 }
@@ -89,22 +90,32 @@ function validateProgress(progress: Progress): void {
     }
 }
 
-function updateCityAssessmentScore(score: number): void {
+export function updateCityAssessmentScore(): void {
     const city = getCityFromLocalStorage();
 
     if (city) {
+        const score = getTotalAssessmentScore() / getTotalPossibleAssessmentScore() * 50;
+
+        console.log("blah..",score);
+
         city.setFinalAssessmentScore(score);
         // Save the updated city back to local storage
+
+        console.log(city);
+        
         saveCityToLocalStorage(city);
     }
 }
 
-function updateCityContentScore(score: number): void {
+function updateCityContentScore(): void {
     const city = getCityFromLocalStorage();
+    
 
     if (city) {
+        const score = getNumberOfTeachingsCompleted() / getTotalNumberOfTeachings() * 50;
+        
         city.setContentScore(score);
-        // Save the updated city back to local storage
+
         saveCityToLocalStorage(city);
     }
 }

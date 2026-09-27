@@ -25,7 +25,7 @@ export class City {
     }
 
     getFinalAssessmentScore(): number {
-        return this.finalAssessmentScore;
+        return Math.round(this.finalAssessmentScore);
     }
 
     setFinalAssessmentScore(score: number): void {
