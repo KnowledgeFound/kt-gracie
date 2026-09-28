@@ -7,7 +7,7 @@ import { Corpus, QuizQuestion, FlashcardQuestion } from "@/types/types";
  * Returns a new array to avoid mutating the original.
  */
 
-function shuffleArray<T>(array: T[], numQuestions: number, rng: () => number = Math.random): T[] {
+export function shuffleArray<T>(array: T[], numQuestions: number, rng: () => number = Math.random): T[] {
   const result = [...array];
   const n = Math.min(numQuestions, result.length);
 

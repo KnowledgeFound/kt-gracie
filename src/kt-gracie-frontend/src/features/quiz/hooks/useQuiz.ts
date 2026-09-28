@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Question, UserAnswer, QuizScreen } from '../types';
-import { shuffleArray } from '../utils';
-import { QUIZ_QUESTION_COUNT } from '../constants';
+import { shuffleArray } from '@/services/gameEngine';
 import { useUser } from '@/features/auth';
 import { useSubjectById } from '@/features/subject';
 import type { Module } from '@/features/city/types';
@@ -112,7 +111,7 @@ export function useQuiz(moduleId?: string) {
 
 	const startQuiz = () => {
 		if (questions.length === 0) return;
-		const selected = shuffleArray(questions).slice(0, QUIZ_QUESTION_COUNT);
+		const selected = shuffleArray(questions,5);
 		setQuizQuestions(selected);
 		setUserAnswers(new Array(selected.length).fill(null));
 		setCurrentIndex(0);

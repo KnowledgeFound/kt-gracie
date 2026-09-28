@@ -81,6 +81,7 @@ const QuizScreen = ({
 	elapsed = 0,
 	module,
 }: QuizScreenProps) => {
+	
 	const navigate = useNavigate();
 	const quit = () => (onQuit ? onQuit() : navigate(`/course/${module?.id}`));
 

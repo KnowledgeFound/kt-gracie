@@ -20,8 +20,10 @@ export async function getCorpus(): Promise<Corpus> {
 
     const normalizedCorpus = mapFromBackend(corpus);
 
-    if(persistedCorpus && (persistedCorpus.lastUpdated >= normalizedCorpus.lastUpdated))
+    if(persistedCorpus && (new Date(persistedCorpus.lastUpdated).getTime() >= new Date(normalizedCorpus.lastUpdated).getTime()))
         return persistedCorpus;
+
+    console.log("New Corpus mapped");
 
     numberOfAssessments = normalizedCorpus.numberOfAssessments;
     numberOfModules = normalizedCorpus.numberOfModules;

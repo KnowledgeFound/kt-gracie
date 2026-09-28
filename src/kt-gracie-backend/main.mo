@@ -95,14 +95,14 @@ persistent actor Main {
 
   ///////////////////////// CORPUS FUNCTIONS /////////////////////////////////
 
-  let defaultCorpus : Types.Corpus = {
+  transient let defaultCorpus : Types.Corpus = {
     schema = "https://json-schema.org/draft/2020-12/schema";
     id = "https://knowledgefound.org/gracie/schemas/knowledge_unit.schema.json";
     title = "GRACIE 1.0 Knowledge Unit Corpus";
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-09-24T00:00:00Z";
+    lastUpdated = "2026-09-29T00:30:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -151,13 +151,14 @@ persistent actor Main {
               contentType = #VIDEO;
               url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
               description = "An article by the United Nations Office on Drugs and Crime (UNODC) that provides a comprehensive overview of corruption, its forms, and its impact on society.";
+              detailedDesciption = "";
             };
           }
         ];
         assessments = [
           {
             id = 1;
-            maxScore = 7;
+            maxScore = 5;
             pointScore = 1; // how much each answer to a question is worth
             ktMax = 10;
             duration = 30; // Duration in minutes
@@ -264,18 +265,21 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
             url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            detailedDesciption = "";
           };  
         };
       },
@@ -323,25 +327,28 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
             url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            detailedDesciption = "";
           };  
         };
       },
       {
         id = "KU-003";
         topic = "Youth Led";
-        difficulty = #EASY;
+        difficulty = #NORMAL;
         prerequisites = [];
         audience = "Young People & Communities";
         level = BEGINNER;
@@ -367,33 +374,311 @@ persistent actor Main {
           {
             id = 1;
             sourceType = #ARTICLE;
-            detail = "What is Corruption?";
-            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+            detail = "UNODC'S INTEGRITY YOUTH ADVISORY BOARD";
+            url = ?("https://grace.unodc.org/grace/en/youth-empowerment/YouthLED.html");
           }
         ];
-        teachings = [];
-        assessments = [];
+        teachings = [
+          {
+            id = 1;
+            topic = "The Architect's blue print";
+            difficulty = #EASY;
+            keywords = [
+              "Culture of Integrity",
+              "Three Elements of Corruption",
+              "UNCAC",
+              "GRACE Initiative",
+              "Offence Classifications"
+            ];
+            content = {
+              name = "The Architect's blue print";
+              contentType = #VIDEO;
+              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              detailedDesciption = "The core message of The Architect's Blueprint is that tackling corruption 
+              requires a structured, strategic, and informed methodology rather than isolated efforts, positioning young people as key 
+              architects of transparent, ethical, and accountable institutions. Through this content, students are expected to gain a 
+              thorough understanding of international legal frameworks like the United Nations Convention against Corruption, while 
+              learning to analyze specific manifestations of corrupt behavior such as bribery, embezzlement, and nepotism. The material 
+              equips learners with practical skills to conduct stakeholder mapping and political economy analyses, enabling them to identify 
+              local institutional vulnerabilities and power dynamics. Furthermore, students learn to integrate human rights, gender equality, 
+              and inclusive design principles into civic initiatives, culminating in actionable strategies for planning, executing, and monitoring safe, 
+              measurable community-level anti-corruption projects.";
+              description = "Short introduction into YouthLed Anti-Corruption initiatives";
+            };
+            ktMax = 10;
+            duration = 10;
+            sequenceNo = 1;
+          },
+          {
+            id = 2;
+            topic = "Youth Led Toolkit II - Steps 1 through 5";
+            difficulty = #NORMAL;
+            keywords = [
+              "Culture of Integrity",
+              "Three Elements of Corruption",
+              "UNCAC",
+              "GRACE Initiative",
+              "Offence Classifications"
+            ];
+            content = {
+              name = "Youth Led Toolkit II - Steps 1 through 5";
+              contentType = #VIDEO;
+              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              detailedDesciption = "The core message of Building a Youth-Led Anti-Corruption Initiative is that laying a solid, well-researched foundation 
+              is essential for young advocates before launching civic integrity projects. The content focuses on the foundational five steps of the 
+              UNODC YouthLED Toolkit, teaching students how to first educate themselves on global legal frameworks like the United Nations Convention 
+              against Corruption and recognize distinct acts such as bribery, embezzlement, and abuse of functions. Learners are expected to analyze 
+              how corrupt practices intersect with key societal issues—including human rights, gender equality, education, and climate change—and to 
+              conduct local political economy analyses and community interviews. Furthermore, students learn to utilize human-centered design thinking 
+              to frame community problems, anticipate operational risks, and apply creative offline and digital communication methods to effectively 
+              engage their peers.";
+              description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
+            };
+            ktMax = 10;
+            duration = 10;
+            sequenceNo = 2;
+          },
+          {
+            id = 3;
+            topic = "Youth Led Toolkit III - Steps 6 through 10";
+            difficulty = #NORMAL;
+            keywords = [
+              "Culture of Integrity",
+              "Three Elements of Corruption",
+              "UNCAC",
+              "GRACE Initiative",
+              "Offence Classifications"
+            ];
+            content = {
+              name = "Youth Led Toolkit III - Steps 6 through 10";
+              contentType = #VIDEO;
+              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              detailedDesciption = "This video will take you into more detail on the YouthLed steps 6 through 10";
+              description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
+            };
+            ktMax = 10;
+            duration = 10;
+            sequenceNo = 4;
+          }
+        ];
+        assessments = [
+          {
+            id = 1;
+            maxScore = 5;
+            pointScore = 1;
+            flashcard = null;
+            ktMax = 10;
+            duration = 15;
+            difficulty = #EASY;
+            sequenceNo = 3;
+            quiz = ?{
+              id = 1;
+              assessmentType = #QUIZ;
+              questions = [
+                {
+                  questionText = "What is the only global legally binding framework to prevent and counter corruption?";
+                  options = [
+                    "Inter-American Convention against Corruption",
+                    "United Nations Convention against Corruption (UNCAC)",
+                    "African Union Convention",
+                    "OECD Anti-Bribery Convention"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Adopted in 2003 with almost universal application across 190 States parties.";
+                },
+                {
+                  questionText = "Which three core elements are present in a corrupt act according to Step 01?";
+                  options = [
+                    "Authority, Abuse, and Benefit",
+                    "Money, Secrecy, and Power",
+                    "Fraud, Politics, and Extortion",
+                    "Greed, Impunity, and Neglect"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Someone holds power, abuses that power, and obtains an undue advantage.";
+                },
+                {
+                  questionText = "According to the 2022 \"Be Seen Be Heard\" campaign survey, what percentage of young people believe in a better future?";
+                  options = [
+                    "45 per cent",
+                    "52 per cent",
+                    "67 per cent",
+                    "80 per cent"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"15-to-17-year-olds were found to be the most optimistic group.";
+                },
+                {
+                  questionText = "Which Sustainable Development Goal (SDG) focuses on ensuring inclusive and equitable quality education?";
+                  options = [
+                    "SDG 3",
+                    "SDG 4",
+                    "SDG 8",
+                    "SDG 16"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Highlighted in Step 02 as a sector vulnerable to corruption's \"breeding ground\" effect.";
+                },
+                {
+                  questionText = "Which 2022 scandal in Malaysia involved the misappropriation of national development funds, including funds designated for climate change mitigation?";
+                  options = [
+                    "Petrobras Scandal",
+                    "1MDB Scandal",
+                    "Watergate Scandal",
+                    "Siemens Procurement Case"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Discussed in Step 02 under the climate change focus area.";
+                },
+                {
+                  questionText = "In Step 03, what does a Political Economy Analysis (PEA) examine in a society?";
+                  options = [
+                    "Stock market fluctuations",
+                    "How political and economic processes distribute power and wealth",
+                    "Foreign trade tariffs",
+                    "Election voter turnout"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Provides a \"close-up lens\" to contextualize local corruption dynamics.";
+                },
+                {
+                  questionText = "In a human-rights-based approach (Step 02), who holds the primary moral and legal obligation as \"duty bearers\"?";
+                  options = [
+                    "Individual citizens",
+                    "Governments and public authorities",
+                    "Non-profit organizations",
+                    "International donors"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Rights holders are individuals, while duty bearers must respect, protect, and fulfill rights.";
+                },
+                {
+                  questionText = "What slogan was displayed on the Banksy-style street stencil highlighted as an innovative artistic example in Step 05?";
+                  options = [
+                    "\"Silence is Compliance\"",
+                    "\"Keep your coins, I want change\"",
+                    "\"Power to the People\"",
+                    "\"Stop Corruption Now\""
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Demonstrates street art as a creative medium for youth outreach in Step 05.";
+                },
+                {
+                  questionText = "Which artificial intelligence capability helps financial investigators detect potential fraud schemes in Step 02?";
+                  options = [
+                    "Anomaly detection in large datasets",
+                    "Facial recognition in public spaces",
+                    "Automated speech translation",
+                    "Graphic design generation"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Mentioned under AI applications in anti-corruption in Step 02.";
+                },
+                {
+                  questionText = "How does corruption in education act as a \"breeding ground\" for corruption across broader society?";
+                  options = [
+                    "It increases the cost of textbooks",
+                    "It normalizes fraudulent practices early and replaces meritocracy with the \"ability to pay\"",
+                    "It reduces school operating hours",
+                    "It forces schools to close early"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Highlighted in Step 02 under the education thematic focus.";
+                }
+              ];
+            };
+          },
+          {
+            id = 2;
+            maxScore = 5;
+            pointScore = 1;
+            quiz = null;
+            ktMax = 10;
+            duration = 15;
+            difficulty = #EASY;
+            sequenceNo = 5;
+            flashcard = ?{
+              id = 1;
+              assessmentType = #FLASHCARD;
+              questions = [
+                {
+                  front = "What is UNODC?";
+                  back = "The United Nations Office on Drugs and Crime, which established the YouthLED Integrity Advisory Board to empower young people in global anti-corruption efforts.";
+                  hint = ?("Think of the main UN body responsible for crime prevention and drug control.");
+                },
+                {
+                  front = "What are the three core elements present in a corrupt act?";
+                  back = "1. Authority (someone holds power), 2. Abuse (misuse of that power), and 3. Benefit (obtaining undue advantage).";
+                  hint = ?("Focus on power, misuse, and gain.");
+                },
+                {
+                  front = "What is the definition of Integrity?";
+                  back = "Behaving ethically and choosing to do what is right according to moral principles, even when no one is watching.";
+                  hint = ?("Think about doing the right thing independently of rules.");
+                },
+                {
+                  front = "What is Trading in Influence?";
+                  back = "The corrupt act where an intermediary exchanges their personal or position-based influence for an undue advantage.";
+                  hint = ?("Consider someone using connections to secure a favor.");
+                },
+                {
+                  front = "Which Sustainable Development Goal (SDG) focuses on Quality Education?";
+                  back = "SDG 4, which aims to ensure inclusive and equitable quality education and promote lifelong learning opportunities.";
+                  hint = ?("Think about the number assigned to education goals in the 2030 Agenda.");
+                },
+                {
+                  front = "What is the core slogan of the disability rights movement?";
+                  back = "\"Nothing about us without us,\" emphasizing that persons with disabilities must be involved in decisions affecting them.";
+                  hint = ?("Focus on self-representation and participation.");
+                },
+                {
+                  front = "What is Step 1 of the 10-Step Anti-Corruption Initiative Roadmap?";
+                  back = "Educate Yourself: Learn core concepts, national frameworks, international laws (UNCAC), and intersectional topics.";
+                  hint = ?("Think about the foundational step before launching any project.");
+                },
+                {
+                  front = "What is a Power-Influence Grid?";
+                  back = "A 2x2 matrix categorizing stakeholders by power and influence into 4 quadrants: Manage Closely, Keep Satisfied, Keep Informed, Monitor.";
+                  hint = ?("Think about mapping stakeholders based on their impact.");
+                },
+                {
+                  front = "Why is Collective Action safer than acting alone?";
+                  back = "Operating as a group raises the political and social cost for corrupt actors attempting to retaliate or punish advocates.";
+                  hint = ?("Consider safety in numbers.");
+                },
+                {
+                  front = "What is the difference between Quantitative and Qualitative impact data?";
+                  back = "Quantitative data tracks numerical counts (how many participants/reports), while Qualitative data explains how and why changes occurred.";
+                  hint = ?("Think of numbers versus stories/experiences.");
+                }
+              ];
+            };
+          }
+        ];
         tokenReward = 10;
         summary = {
           id = 1;
-          sequenceNo = 1;
+          sequenceNo = 6;
           inforgraphic = ?{
-            name = "Corruption Overview";
+            name = "Youth-Led Anti-Corruption Action Guide Inforgraphic";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
-            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            url = "https://notebooklm.link.google/A0J8if9BCDbL";
+            description = "Youth-Led Anti-Corruption Action Guide Inforgraphic";
+            detailedDesciption = "";
           };
           slideDeck = ?{
-            name = "Understanding Corruption";
+            name = "Youth-Led Anti-Corruption Action Guide Slide Deck";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
-            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            url = "https://notebooklm.link.google/5Qy09Xg0a4nb";
+            description = "Youth-Led Anti-Corruption Action Guide Slide Deck";
+            detailedDesciption = "";
           };
           podcast = ?{
-            name = "The Corruption Podcast";
+            name = "Youth-Led Anti-Corruption Action Guide Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
-            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            url = "https://notebooklm.link.google/sUf9D347Cf6q";
+            description = "Youth-Led Anti-Corruption Action Guide Podcast";
+            detailedDesciption = "";
           };  
         };
       },
@@ -441,18 +726,21 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
             url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            detailedDesciption = "";
           };  
         };
       },
@@ -500,18 +788,21 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            detailedDesciption = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
             url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            detailedDesciption = "";
           };  
         };
       }
