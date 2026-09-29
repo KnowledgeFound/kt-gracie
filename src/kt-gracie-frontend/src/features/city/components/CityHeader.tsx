@@ -1,4 +1,5 @@
 import { Settings, TrendingUp } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface CityHeaderProps {
 	health: number;

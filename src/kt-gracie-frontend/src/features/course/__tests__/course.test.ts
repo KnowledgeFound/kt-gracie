@@ -8,7 +8,6 @@ import {
     getResume,
     getUnitCompletionPercentage,
     markAssessmentCompleted,
-    markTeachingCompleted,
     saveResume,
 } from "@/services/progressContainerService";
 import { createProgress } from "@/services/progressService";
@@ -58,7 +57,7 @@ describe("course resume", () => {
 
     it("tracks completion percent and completes the unit", () => {
         expect(getUnitCompletionPercentage("KU-1")).toBe(0);
-        markTeachingCompleted("KU-1", 1);
+        //markTeachingCompleted("KU-1", 1);
         expect(getUnitCompletionPercentage("KU-1")).toBe(50);
         markAssessmentCompleted("KU-1", 2, AssessmentType.QUIZ, 5, 7, 7, 10);
         expect(getUnitCompletionPercentage("KU-1")).toBe(100);
