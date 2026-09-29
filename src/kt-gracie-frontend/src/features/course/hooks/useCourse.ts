@@ -125,6 +125,7 @@ export function useCourse(moduleId?: string) {
 				),
 			);
 		}
+		
 		const resume = getResume(module.kuId);
 
 		let idx = resume

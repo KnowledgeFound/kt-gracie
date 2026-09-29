@@ -38,6 +38,7 @@ function mapContent(content: BackendContent) {
         contentType: mapVariant<keyof typeof ContentType>(content.contentType) as ContentType,
         url: content.url,
         description: content.description,
+        detailedDesciption: content.detailedDesciption,
     };
 }
 

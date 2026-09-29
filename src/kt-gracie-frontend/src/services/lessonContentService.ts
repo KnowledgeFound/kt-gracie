@@ -38,7 +38,7 @@ export function getLessonSections(module: Module, teaching: ModuleAssessment): L
 	const lines = [
 		`# ${teaching.title}`,
 		'',
-		String(teaching.description || module.description),
+		String(teaching.content?.detailedDesciption || module.description),
 		...(objectives.length ? ['', '**In this lesson you will:**', '', ...objectives.map((o) => `- ${o}`)] : []),
 		...(sourceUrl && !isVideo ? ['', `Read more: [${teaching.content?.name}](${sourceUrl})`] : []),
 	];
@@ -50,7 +50,7 @@ function videoSection(teaching: ModuleAssessment): LessonSection {
 	return {
 		id: 'video',
 		title: teaching.content?.name || 'Watch',
-		markdown: `# ${teaching.title}\n\nWatch the video to the end to continue.\n\n${teaching.content?.description ?? ''}`,
+		markdown: `# ${teaching.title}\n\nWatch the video to the end to continue.\n\n${teaching.content?.detailedDesciption ?? ''}`,
 		video: { url: teaching.content!.url, required: true },
 	};
 }
