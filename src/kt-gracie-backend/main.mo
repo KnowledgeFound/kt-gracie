@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-09-29T00:30:00Z";
+    lastUpdated = "2026-09-30T00:30:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -153,6 +153,7 @@ persistent actor Main {
               description = "An article by the United Nations Office on Drugs and Crime (UNODC) that provides a comprehensive overview of corruption, its forms, and its impact on society.";
               detailedDesciption = "";
             };
+            knowledgeUnitId = "KU-001";
           }
         ];
         assessments = [
@@ -164,6 +165,7 @@ persistent actor Main {
             duration = 30; // Duration in minutes
             difficulty = #EASY;
             sequenceNo = 2;
+            knowledgeUnitId = "KU-001";
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;
@@ -223,6 +225,7 @@ persistent actor Main {
             duration = 30;
             difficulty = #EASY;
             sequenceNo = 3;
+            knowledgeUnitId = "KU-001";
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;
@@ -383,6 +386,7 @@ persistent actor Main {
             id = 1;
             topic = "The Architect's blue print";
             difficulty = #EASY;
+            knowledgeUnitId = "KU-003";
             keywords = [
               "Culture of Integrity",
               "Three Elements of Corruption",
@@ -413,6 +417,7 @@ persistent actor Main {
             id = 2;
             topic = "Youth Led Toolkit II - Steps 1 through 5";
             difficulty = #NORMAL;
+            knowledgeUnitId = "KU-003";
             keywords = [
               "Culture of Integrity",
               "Three Elements of Corruption",
@@ -442,6 +447,7 @@ persistent actor Main {
             id = 3;
             topic = "Youth Led Toolkit III - Steps 6 through 10";
             difficulty = #NORMAL;
+            knowledgeUnitId = "KU-003";
             keywords = [
               "Culture of Integrity",
               "Three Elements of Corruption",
@@ -471,6 +477,7 @@ persistent actor Main {
             duration = 15;
             difficulty = #EASY;
             sequenceNo = 3;
+            knowledgeUnitId = "KU-003";
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;
@@ -597,6 +604,7 @@ persistent actor Main {
             duration = 15;
             difficulty = #EASY;
             sequenceNo = 5;
+            knowledgeUnitId = "KU-003";
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;

@@ -37,6 +37,7 @@ export type KnowledgeUnit = {
 
 export type Assessment = {
   id: number;
+  knowledgeUnitId: string;
   maxScore: number;
   pointScore: number;
   quiz: Quiz | null;
@@ -56,6 +57,7 @@ export type Source = {
 
 export type Teaching = {
   id: number;
+  knowledgeUnitId: string;
   topic: string;
   difficulty: Difficulty;
   keywords: string[];

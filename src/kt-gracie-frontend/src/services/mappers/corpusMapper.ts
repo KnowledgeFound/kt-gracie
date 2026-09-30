@@ -15,6 +15,8 @@ import { AssessmentType, ContentType, Difficulty, SourceType } from "../../ENUMS
 
 import type { Corpus } from "../../types/types";
 
+let currentKnowledgeUnitId : string;
+
 function unwrapOptional<T>(value: [] | [T]): T | null {
     return value.length === 0 ? null : value[0];
 }
@@ -56,7 +58,8 @@ function mapTeaching(teaching: BackendTeaching) {
         content: mapContent(teaching.content),
         ktMax: Number(teaching.ktMax),
         duration: Number(teaching.duration),
-        sequenceNo: Number(teaching.sequenceNo)
+        sequenceNo: Number(teaching.sequenceNo),
+        knowledgeUnitId: teaching.knowledgeUnitId
     };
 }
 
@@ -110,7 +113,8 @@ function mapAssessment(assessment: BackendAssessment) {
         flashcard: flashcard === null ? null : mapFlashcard(flashcard),
         ktMax: Number(assessment.ktMax),
         duration: Number(assessment.duration),
-        sequenceNo: Number(assessment.sequenceNo)
+        sequenceNo: Number(assessment.sequenceNo),
+        knowledgeUnitId: assessment.knowledgeUnitId
     };
 }
 

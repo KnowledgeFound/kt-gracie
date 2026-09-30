@@ -487,3 +487,16 @@ export function getContinueTarget(): { knowledgeUnitID: string; updatedAt: strin
         ? { knowledgeUnitID: candidates[0].knowledgeUnitID, updatedAt: candidates[0].resume!.updatedAt }
         : null;
 }
+
+
+export function getSubProgress(knowledgeUnitID: string, assessmentID: number): SubProgress | null{
+    const subProgress = getProgressContainer()
+        ?.arr_progress.find(p => p.knowledgeUnitID == knowledgeUnitID)
+        ?.subProgress.find(sub => sub.assessmentID == assessmentID);
+        
+    if(subProgress)
+        return subProgress
+
+    return null;
+}
+

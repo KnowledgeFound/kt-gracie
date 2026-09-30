@@ -147,3 +147,4 @@ export function IsCompleted(): boolean {
     const progress = getProgress();
     return progress.completed;
 }
+
