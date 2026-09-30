@@ -31,6 +31,7 @@ import { getAllModules } from '@/services/corpusService';
 import { createProgress } from '@/services/progressService';
 import { SubProgress, SubProgressTeaching } from '@/types/user';
 import { AssessmentType, CityState } from '@/ENUMS/enums';
+import { createCity, getCityFromLocalStorage, saveCityToLocalStorage } from '@/services/cityService';
 
 /**
  * Top-level city page.
@@ -52,10 +53,6 @@ export default function CityScene() {
 	// Gracie's centre-stage intro runs on arrival; the city is inert behind its
 	// veil until she docks to the lower-left.
 	const [introDone, setIntroDone] = useState(false);
-
-	// Single source of truth: the city held in auth context (loaded from
-	// local storage on mount, updated on account creation).
-	const cityHealth = city?.getHealth() ?? 0;
 
 	// "Continue learning": the unfinished module the learner touched last.
 	const [continueModule, setContinueModule] = useState<{
@@ -106,6 +103,15 @@ export default function CityScene() {
 			try {
 				// corpus will be persisted in local storage
 				const corpus = await getCorpus();
+
+				console.log("City", getCityFromLocalStorage());
+
+				if(getCityFromLocalStorage() == null) {
+					saveCityToLocalStorage(createCity("Integrity City"));
+				}
+				else{
+					refreshCity();
+				}
 
 				//console.log(corpus);
 
@@ -261,7 +267,7 @@ export default function CityScene() {
 
 			{/* Header badges */}
 			<CityHeader
-				health={cityHealth}
+				health={city?.health ?? 0}
 				tokens={user?.tokenBalance ?? 0}
 				username={user?.firstName ?? '—'}
 				onClickHealth={() => setHealthOpen(true)}
@@ -285,7 +291,7 @@ export default function CityScene() {
 			<HealthModal
 				open={healthOpen}
 				onClose={() => setHealthOpen(false)}
-				health={cityHealth}
+				health={city?.getHealth() ?? 0}
 			/>
 
 			{/* KT Wallet modal */}

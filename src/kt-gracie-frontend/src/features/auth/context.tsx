@@ -58,7 +58,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
 		// Create and persist the city, and reflect it in context state so
 		// consumers (e.g. the auth redirect gate) see it without a page reload.
-		const newCity = cityServices.createCity('UN City');
+		const newCity = cityServices.createCity('Integrity City');
 		cityServices.saveCityToLocalStorage(newCity);
 		setCity(newCity);
 
@@ -87,7 +87,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
 	// Please do not use. We are updating the city through a different system
 	const refreshCity = useCallback((): void => {
-		const updated = cityServices.syncCityHealth();
+		const updated = cityServices.getCityFromLocalStorage();
 		if (updated) setCity(updated);
 	}, []);
 

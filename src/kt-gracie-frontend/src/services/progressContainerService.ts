@@ -4,13 +4,14 @@ import { getUser } from "./userServices";
 import { AssessmentType } from "@/ENUMS/enums";
 import { KnowledgeUnit } from "@/types/types";
 import { createProgress } from "./progressService";
+import { getCityFromLocalStorage, saveCityToLocalStorage } from "./cityService";
  
 export const PROGRESS_STORAGE_KEY = "progress_container";
 
 function getProgressContainerStorageKey(): string {
     const user = getUser();
     const userId = user?.anonymousId ?? "anonymous";
-    return `${PROGRESS_STORAGE_KEY}_${userId}`;
+    return `${PROGRESS_STORAGE_KEY}`;
 }
 
 
@@ -375,6 +376,7 @@ export function isAssessmentCompleted(knowledgeUnitID: string, assessmentID: num
 }
 
 export function markTeachingCompleted(knowledgeUnitID: string, teachingID: number, topic = "", ktMax = 0): void {
+
     const progress = getProgressFromContainer(knowledgeUnitID) ?? createProgress(knowledgeUnitID, [], []);
     const existing = progress.subProgressTeachings.find(t => t.teachingID === teachingID);
 
@@ -386,7 +388,22 @@ export function markTeachingCompleted(knowledgeUnitID: string, teachingID: numbe
             teachingID, topic, difficulty: "", completed: true, ktMax, ktEarned: ktMax,
         });
     }
+
     saveProgress(refreshTotals(progress));
+    updateCityContentScore();
+}
+
+export function updateCityContentScore(): void {
+
+    const city = getCityFromLocalStorage();
+    
+    if (city) {
+        const score = getNumberOfTeachingsCompleted() / getTotalNumberOfTeachings() * 50;
+        
+        city.setContentScore(score);
+
+        saveCityToLocalStorage(city);
+    }
 }
 
 /** Record a finished quiz / flashcard run. Keeps the best score. */
@@ -415,6 +432,19 @@ export function markAssessmentCompleted(
     }
 
     saveProgress(refreshTotals(progress));
+    updateCityAssessmentScore();
+}
+
+export function updateCityAssessmentScore(): void {
+    const city = getCityFromLocalStorage();
+
+    if (city) {
+        const score = getTotalAssessmentScore() / getTotalPossibleAssessmentScore() * 50;
+
+        city.setFinalAssessmentScore(score);
+        
+        saveCityToLocalStorage(city);
+    }
 }
 
 /** Recompute the unit's teaching/assessment percentages and `completed` flag. */

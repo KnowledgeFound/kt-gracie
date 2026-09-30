@@ -2,7 +2,7 @@ import { CityState } from "../ENUMS/enums";
 
 export class City {
     private name: string;
-    private health: number = 0;
+    public health: number = 0;
     private decay: number = 5;
     private contentScore: number = 0;
     private finalAssessmentScore: number = 0;
@@ -49,7 +49,7 @@ export class City {
     }
 
     private recalculateHealth(): void {
-        this.health = (0.5 * this.contentScore) + (0.5 * this.finalAssessmentScore) - this.decay;
+        this.health = (0.5 * this.contentScore) + (0.5 * this.finalAssessmentScore);
     }
 
     public getCityState(): CityState {
