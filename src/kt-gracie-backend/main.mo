@@ -746,7 +746,7 @@ persistent actor Main {
       },
       {
         id = "KU-005";
-        topic = "Community";
+        topic = "Community"; 
         difficulty = #EASY;
         prerequisites = [];
         audience = "Local Leaders & NGOs";
