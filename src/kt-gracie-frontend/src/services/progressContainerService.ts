@@ -423,7 +423,7 @@ export function markAssessmentCompleted(
         existing.completed = true;
         existing.score = Math.max(existing.score, score);
         existing.maxScore = maxScore || existing.maxScore;
-        existing.ktEarned = Math.max(existing.ktMax, ktEarned);
+        existing.ktEarned = Math.max(existing.ktEarned, ktEarned);
     } else {
         progress.subProgress.push({
             assessmentID, assessmentType: type, score, maxScore, pointScore: 1,
