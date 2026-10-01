@@ -72,7 +72,7 @@ export type Content = {
   contentType: ContentType;
   url: string;
   description: string;
-  detailedDesciption: string;
+  detailedDescription: string;
 };
 
 export type SummarySection = {

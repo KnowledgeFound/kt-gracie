@@ -101,7 +101,7 @@ module Types{
         contentType: Enums.ContentType;
         url: Text;
         description: Text;
-        detailedDesciption: Text;
+        detailedDescription: Text;
     };
 
     public type SummarySection = {
