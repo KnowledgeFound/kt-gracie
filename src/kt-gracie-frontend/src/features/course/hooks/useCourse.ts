@@ -30,9 +30,22 @@ const PLAYABLE = new Set<AssessmentType>([
 ]);
 
 function isDone(kuId: string, a: ModuleAssessment): boolean {
-	if (a.type === AssessmentType.TEACHING) return isTeachingCompleted(kuId, a.id);
+	if (a.type === AssessmentType.TEACHING)
+		return isTeachingCompleted(kuId, a.id);
+	// The summary is handled by isSummaryDone, which needs the whole unit to
+	// judge. Treated as unfinished here so "first thing still to do" skips it.
 	if (a.type === AssessmentType.SUMMARY) return false;
 	return isAssessmentCompleted(kuId, a.id, a.type);
+}
+
+/**
+ * The summary is reference material — there is no score to earn and nothing
+ * to submit, so it has no completion of its own to record. It reads as done
+ * once the unit has nothing left to do.
+ */
+export function isSummaryDone(kuId: string, activities: ModuleAssessment[]): boolean {
+	const rest = activities.filter((a) => a.type !== AssessmentType.SUMMARY);
+	return rest.length > 0 && rest.every((a) => isDone(kuId, a));
 }
 
 /**
@@ -55,6 +68,7 @@ export function useCourse(moduleId?: string) {
 	const [elapsed, setElapsed] = useState(0);
 	const [percent, setPercent] = useState(0);
 	const [watched, setWatched] = useState<string[]>([]);
+	const [completedSections, setCompletedSections] = useState<string[]>([]);
 	const [showWelcome, setShowWelcome] = useState(false);
 	const [ready, setReady] = useState(false);
 
@@ -101,12 +115,19 @@ export function useCourse(moduleId?: string) {
 				createProgress(
 					module.kuId,
 					list
-						.filter((a) => a.type === AssessmentType.QUIZ || a.type === AssessmentType.FLASHCARD)
+						.filter(
+							(a) =>
+								a.type === AssessmentType.QUIZ ||
+								a.type === AssessmentType.FLASHCARD,
+						)
 						.map((a) => ({
 							assessmentID: a.id,
 							assessmentType: a.type,
 							score: 0,
-							maxScore: a.type === AssessmentType.QUIZ ? a.questions.length : a.cards.length,
+							maxScore:
+								a.type === AssessmentType.QUIZ
+									? a.questions.length
+									: a.cards.length,
 							pointScore: 1,
 							completed: false,
 							ktMax: a.ktMax,
@@ -125,11 +146,13 @@ export function useCourse(moduleId?: string) {
 				),
 			);
 		}
-		
+
 		const resume = getResume(module.kuId);
 
 		let idx = resume
-			? list.findIndex((a) => a.id === resume.activityId && a.type === resume.activityType)
+			? list.findIndex(
+					(a) => a.id === resume.activityId && a.type === resume.activityType,
+				)
 			: -1;
 		if (idx < 0) idx = list.findIndex((a) => !isDone(module.kuId, a));
 		if (idx < 0) idx = 0;
@@ -148,10 +171,13 @@ export function useCourse(moduleId?: string) {
 			setQuestionIndex(resume.questionIndex);
 			setAnswers(resume.answers as UserAnswer[]);
 			setWatched(resume.watched ?? []);
+			setCompletedSections(resume.completedSections ?? []);
 			// A quiz saved at its last question with every answer in was already submitted.
 			const total = list[idx].questions.length;
 			setShowResults(
-				list[idx].type === AssessmentType.QUIZ && total > 0 && resume.questionIndex >= total,
+				list[idx].type === AssessmentType.QUIZ &&
+					total > 0 &&
+					resume.questionIndex >= total,
 			);
 		}
 		setReady(true);
@@ -161,16 +187,16 @@ export function useCourse(moduleId?: string) {
 	const screen: CourseScreen = showWelcome
 		? 'welcome'
 		: !activity
-		? 'summary'
-		: activity.type === AssessmentType.TEACHING
-			? 'lesson'
-			: activity.type === AssessmentType.QUIZ
-				? showResults
-					? 'results'
-					: 'quiz'
-				: activity.type === AssessmentType.FLASHCARD
-					? 'flashcards'
-					: 'summary';
+			? 'summary'
+			: activity.type === AssessmentType.TEACHING
+				? 'lesson'
+				: activity.type === AssessmentType.QUIZ
+					? showResults
+						? 'results'
+						: 'quiz'
+					: activity.type === AssessmentType.FLASHCARD
+						? 'flashcards'
+						: 'summary';
 
 	useEffect(() => {
 		if (screen !== 'quiz') return;
@@ -187,12 +213,42 @@ export function useCourse(moduleId?: string) {
 		[module, activity],
 	);
 
+	// A lesson finished on an earlier visit shows every section already ticked;
+	// the resume record only remembers the activity the learner last left.
+	useEffect(() => {
+		if (
+			!activity ||
+			activity.type !== AssessmentType.TEACHING ||
+			sections.length === 0
+		)
+			return;
+		if (!isTeachingCompleted(kuId, activity.id)) return;
+		setCompletedSections((prev) =>
+			sections.every((s) => prev.includes(s.id))
+				? prev
+				: sections.map((s) => s.id),
+		);
+	}, [activity, sections, kuId]);
+
 	const quizQuestions: MCQQuestion[] = useMemo(
-		() => (activity?.type === AssessmentType.QUIZ ? activity.questions.map(toQuizQuestion) : []),
+		() =>
+			activity?.type === AssessmentType.QUIZ
+				? activity.questions.map(toQuizQuestion)
+				: [],
 		[activity],
 	);
 
-	const score = quizQuestions.reduce((n, q, i) => (answers[i] === q.correctAnswer ? n + 1 : n), 0);
+	// Extra material for the unit. Taken from the summary activity rather than
+	// the current one, since the summary screen also stands in for "no activity
+	// left", where `activity` is null.
+	const summarySection =
+		activities.find((a) => a.type === AssessmentType.SUMMARY)?.summarySection ??
+		null;
+
+	const score = quizQuestions.reduce(
+		(n, q, i) => (answers[i] === q.correctAnswer ? n + 1 : n),
+		0,
+	);
 	// KT this run is worth — derived from the score, so it survives a reload.
 	const tokensEarned =
 		activity?.type === AssessmentType.QUIZ && quizQuestions.length
@@ -201,7 +257,16 @@ export function useCourse(moduleId?: string) {
 
 	// ── Persistence helpers ─────────────────────────────────────────
 	const persist = useCallback(
-		(patch: { sectionIndex?: number; questionIndex?: number; answers?: UserAnswer[]; watched?: string[] }, a = activity) => {
+		(
+			patch: {
+				sectionIndex?: number;
+				questionIndex?: number;
+				answers?: UserAnswer[];
+				watched?: string[];
+				completedSections?: string[];
+			},
+			a = activity,
+		) => {
 			if (!a || !kuId) return;
 			saveResume(kuId, { activityId: a.id, activityType: a.type, ...patch });
 		},
@@ -209,7 +274,12 @@ export function useCourse(moduleId?: string) {
 	);
 
 	const credit = (amount: number, a: ModuleAssessment) => {
-		if (amount > 0) creditTokens(BigInt(amount), 'reward', `course-${kuId}-${a.type}-${a.id}`);
+		if (amount > 0)
+			creditTokens(
+				BigInt(amount),
+				'reward',
+				`course-${kuId}-${a.type}-${a.id}`,
+			);
 	};
 
 	/** Move to another activity, resetting per-activity position. */
@@ -225,15 +295,21 @@ export function useCourse(moduleId?: string) {
 			// Coming back to the activity that was left half-done (e.g. quit a quiz
 			// to the chooser) picks up where it stopped; anything else starts fresh.
 			const saved = getResume(kuId);
-			const same = saved?.activityId === next.id && saved?.activityType === next.type;
+			const same =
+				saved?.activityId === next.id && saved?.activityType === next.type;
 			setSectionIndex(same ? saved!.sectionIndex : 0);
 			setQuestionIndex(same ? saved!.questionIndex : 0);
 			setAnswers(same ? (saved!.answers as UserAnswer[]) : []);
 			setWatched(same ? (saved!.watched ?? []) : []);
+			setCompletedSections(same ? (saved!.completedSections ?? []) : []);
 			setShowResults(
-				same && next.type === AssessmentType.QUIZ && next.questions.length > 0 && saved!.questionIndex >= next.questions.length,
+				same &&
+					next.type === AssessmentType.QUIZ &&
+					next.questions.length > 0 &&
+					saved!.questionIndex >= next.questions.length,
 			);
-			if (kuId && !same) saveResume(kuId, { activityId: next.id, activityType: next.type });
+			if (kuId && !same)
+				saveResume(kuId, { activityId: next.id, activityType: next.type });
 			setPercent(getUnitCompletionPercentage(kuId));
 		},
 		[activities, kuId],
@@ -270,6 +346,42 @@ export function useCourse(moduleId?: string) {
 		[watched, persist],
 	);
 
+	/** Mark the teaching done and pay its KT — once, however the learner got there. */
+	const finishTeaching = (a: ModuleAssessment) => {
+		if (isTeachingCompleted(kuId, a.id)) return;
+		markTeachingCompleted(kuId, a.id, a.title, a.ktMax);
+		//refreshCity();
+		credit(a.ktMax, a);
+		setPercent(getUnitCompletionPercentage(kuId));
+	};
+
+	const saveCompletedSections = (next: string[]) => {
+		setCompletedSections(next);
+		persist({ completedSections: next });
+		// Ticking off the last section is a way of finishing the lesson in its
+		// own right — the learner should not also have to press Continue.
+		if (
+			activity &&
+			sections.length > 0 &&
+			sections.every((s) => next.includes(s.id))
+		) {
+			finishTeaching(activity);
+		}
+	};
+
+	/**
+	 * The per-section toggle. Unticking a section on a lesson that is already
+	 * finished does not take the lesson (or its KT) back — it only changes
+	 * what the learner sees as still worth revisiting.
+	 */
+	const toggleSectionComplete = (sectionId: string) => {
+		saveCompletedSections(
+			completedSections.includes(sectionId)
+				? completedSections.filter((s) => s !== sectionId)
+				: [...completedSections, sectionId],
+		);
+	};
+
 	/** Continue: next section, or finish the teaching and move on. */
 	const continueLesson = () => {
 		if (!activity) return;
@@ -282,15 +394,19 @@ export function useCourse(moduleId?: string) {
 		) {
 			return; // compulsory video not finished yet
 		}
+		// Moving on counts as having done the section you are moving on from.
+		if (current) {
+			saveCompletedSections(
+				completedSections.includes(current.id)
+					? completedSections
+					: [...completedSections, current.id],
+			);
+		}
 		if (sectionIndex < sections.length - 1) {
 			goToSection(sectionIndex + 1);
 			return;
 		}
-		if (!isTeachingCompleted(kuId, activity.id)) {
-			markTeachingCompleted(kuId, activity.id, activity.title, activity.ktMax);
-			//refreshCity();
-			credit(activity.ktMax, activity);
-		}
+		finishTeaching(activity);
 		nextActivity();
 	};
 
@@ -322,11 +438,22 @@ export function useCourse(moduleId?: string) {
 		if (!activity) return;
 		const total = quizQuestions.length;
 		const earned = total ? Math.round((activity.ktMax * score) / total) : 0;
-		const prior = getProgressFromContainer(kuId)?.subProgress.find(
-			(s) => s.assessmentID === activity.id && s.assessmentType === AssessmentType.QUIZ,
-		)?.ktEarned ?? 0;
+		const prior =
+			getProgressFromContainer(kuId)?.subProgress.find(
+				(s) =>
+					s.assessmentID === activity.id &&
+					s.assessmentType === AssessmentType.QUIZ,
+			)?.ktEarned ?? 0;
 
-		markAssessmentCompleted(kuId, activity.id, AssessmentType.QUIZ, score, total, earned, activity.ktMax);
+		markAssessmentCompleted(
+			kuId,
+			activity.id,
+			AssessmentType.QUIZ,
+			score,
+			total,
+			earned,
+			activity.ktMax,
+		);
 		//refreshCity();
 		// Only pay out the improvement over the learner's best earlier run.
 		credit(Math.max(0, earned - prior), activity);
@@ -356,7 +483,15 @@ export function useCourse(moduleId?: string) {
 		if (!activity) return;
 		const total = activity.cards.length;
 		if (!isAssessmentCompleted(kuId, activity.id, AssessmentType.FLASHCARD)) {
-			markAssessmentCompleted(kuId, activity.id, AssessmentType.FLASHCARD, total, total, activity.ktMax, activity.ktMax);
+			markAssessmentCompleted(
+				kuId,
+				activity.id,
+				AssessmentType.FLASHCARD,
+				total,
+				total,
+				activity.ktMax,
+				activity.ktMax,
+			);
 			credit(activity.ktMax, activity);
 			//refreshCity();
 		}
@@ -375,12 +510,18 @@ export function useCourse(moduleId?: string) {
 		activityIndex,
 		screen,
 		percent,
-		isDone: (a: ModuleAssessment) => isDone(kuId, a),
+		summarySection,
+		isDone: (a: ModuleAssessment) =>
+			a.type === AssessmentType.SUMMARY
+				? isSummaryDone(kuId, activities)
+				: isDone(kuId, a),
 		// lesson
 		sections,
 		sectionIndex,
 		goToSection,
 		continueLesson,
+		completedSections,
+		toggleSectionComplete,
 		// quiz
 		quizQuestions,
 		questionIndex,

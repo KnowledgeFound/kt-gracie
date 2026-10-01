@@ -20,6 +20,33 @@ export function toQuizQuestion(q: QuizQuestion, index: number): MCQQuestion {
 	};
 }
 
+/**
+ * An absolute `https://` link for a corpus URL, or null when there is nothing
+ * usable. Corpus entries are authored by hand, so a link can arrive bare
+ * ("www.unodc.org/…") or protocol-relative ("//unodc.org/…") — rendered as-is
+ * those resolve against the app's own origin and 404. Anything that is not a
+ * web address (a `javascript:` payload, say) is dropped rather than linked.
+ */
+export function absoluteUrl(url: string | undefined | null): string | null {
+	const raw = url?.trim();
+	if (!raw) return null;
+
+	const candidate = raw.startsWith('//')
+		? `https:${raw}`
+		: /^[a-z][a-z0-9+.-]*:/i.test(raw)
+			? raw
+			: `https://${raw}`;
+
+	try {
+		const parsed = new URL(candidate);
+		return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+			? parsed.toString()
+			: null;
+	} catch {
+		return null;
+	}
+}
+
 /** Flatten lesson markdown to plain text a speech synthesiser can read. */
 export function markdownToSpeech(md: string): string {
 	return md

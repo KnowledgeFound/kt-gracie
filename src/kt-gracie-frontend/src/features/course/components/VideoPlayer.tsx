@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, Lock } from 'lucide-react';
-import { isEndedMessage, youtubeEmbedUrl, youtubeId } from '../youtube';
+import { CheckCircle2, ExternalLink, Lock } from 'lucide-react';
+import {
+	isWatchedMessage,
+	parsePlayerMessage,
+	playerHandshake,
+	youtubeEmbedUrl,
+	youtubeId,
+	youtubeWatchUrl,
+} from '../youtube';
 
 /** Seconds before the manual "I've watched it" fallback appears (embeds can be blocked). */
 const FALLBACK_AFTER_S = 20;
+/** How often to re-offer the handshake until the player answers. */
+const HANDSHAKE_EVERY_MS = 500;
+/** Give up handshaking after this long — the player is not going to talk. */
+const HANDSHAKE_FOR_MS = 15_000;
 
 interface VideoPlayerProps {
 	url: string;
@@ -13,36 +24,58 @@ interface VideoPlayerProps {
 }
 
 /**
- * YouTube embed. A compulsory video reports back when playback ends (via the
- * embed's postMessage channel, no external script), which unlocks Continue.
- * If the embed is blocked or offline, a fallback button appears after a delay
- * so the learner is never stuck.
+ * YouTube embed. A compulsory video reports back when playback reaches the
+ * end (over the embed's postMessage channel, no external script), which
+ * unlocks Continue. If the embed is blocked or the player never answers, a
+ * fallback button and a link out to YouTube keep the learner moving.
  */
 export default function VideoPlayer({ url, required, watched, onWatched }: VideoPlayerProps) {
 	const id = youtubeId(url);
 	const frame = useRef<HTMLIFrameElement>(null);
 	const [waited, setWaited] = useState(false);
 
+	// Latest callback without re-running the listener effect on every render.
+	const watchedRef = useRef(onWatched);
+	watchedRef.current = onWatched;
+
 	useEffect(() => {
-		if (!required || watched) return;
-		const onMessage = (e: MessageEvent) => {
-			if (e.source === frame.current?.contentWindow && isEndedMessage(e.data)) onWatched();
+		if (!id) return;
+
+		const post = (message: string) =>
+			frame.current?.contentWindow?.postMessage(message, '*');
+
+		// The player only starts reporting once it has been asked to, and it
+		// ignores anything sent before it is ready — so keep asking until it
+		// replies rather than firing once on load and hoping.
+		let handshake: ReturnType<typeof setInterval> | null = setInterval(() => {
+			playerHandshake().forEach(post);
+		}, HANDSHAKE_EVERY_MS);
+
+		const stopHandshake = () => {
+			if (handshake) clearInterval(handshake);
+			handshake = null;
 		};
+
+		const onMessage = (e: MessageEvent) => {
+			if (e.source !== frame.current?.contentWindow) return;
+			// Any reply means the channel is open; no need to keep pinging.
+			if (parsePlayerMessage(e.data)) stopHandshake();
+			if (isWatchedMessage(e.data)) watchedRef.current();
+		};
+
 		window.addEventListener('message', onMessage);
-		const t = setTimeout(() => setWaited(true), FALLBACK_AFTER_S * 1000);
+		playerHandshake().forEach(post);
+
+		const giveUp = setTimeout(stopHandshake, HANDSHAKE_FOR_MS);
+		const fallback = setTimeout(() => setWaited(true), FALLBACK_AFTER_S * 1000);
+
 		return () => {
 			window.removeEventListener('message', onMessage);
-			clearTimeout(t);
+			stopHandshake();
+			clearTimeout(giveUp);
+			clearTimeout(fallback);
 		};
-	}, [required, watched, onWatched]);
-
-	// Ask the embed to start posting state changes.
-	const subscribe = () => {
-		const w = frame.current?.contentWindow;
-		if (!w) return;
-		w.postMessage(JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }), '*');
-		w.postMessage(JSON.stringify({ event: 'command', func: 'addEventListener', args: ['onStateChange'] }), '*');
-	};
+	}, [id]);
 
 	if (!id) return null;
 
@@ -54,15 +87,14 @@ export default function VideoPlayer({ url, required, watched, onWatched }: Video
 					src={youtubeEmbedUrl(id)}
 					title="Lesson video"
 					className="absolute inset-0 w-full h-full"
-					allow="accelerometer; encrypted-media; picture-in-picture; fullscreen"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
 					allowFullScreen
-					onLoad={subscribe}
 				/>
 			</div>
 
-			{required && (
-				<div className="mt-2 flex items-center justify-between gap-3 text-sm">
-					{watched ? (
+			<div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
+				{required ? (
+					watched ? (
 						<span className="flex items-center gap-1.5 text-emerald-600 font-medium">
 							<CheckCircle2 className="size-4" /> Video watched
 						</span>
@@ -70,14 +102,27 @@ export default function VideoPlayer({ url, required, watched, onWatched }: Video
 						<span className="flex items-center gap-1.5 text-ink-muted">
 							<Lock className="size-4" /> Watch to the end to continue
 						</span>
-					)}
-					{!watched && waited && (
+					)
+				) : (
+					<span />
+				)}
+
+				<span className="flex items-center gap-4">
+					{required && !watched && waited && (
 						<button onClick={onWatched} className="text-brand-600 hover:underline">
 							I’ve watched it
 						</button>
 					)}
-				</div>
-			)}
+					<a
+						href={youtubeWatchUrl(id)}
+						target="_blank"
+						rel="noreferrer"
+						className="inline-flex items-center gap-1.5 text-ink-muted hover:text-brand-600 hover:underline"
+					>
+						<ExternalLink className="size-4" /> Watch on YouTube
+					</a>
+				</span>
+			</div>
 		</div>
 	);
 }
