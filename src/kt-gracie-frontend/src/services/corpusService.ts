@@ -79,7 +79,7 @@ export async function getAllModules(): Promise<Module[]> {
                 duration: knowledgeUnit.duration,
                 ktReward: getMaxNumberOfKtTokens(knowledgeUnit),
                 assessments: knowledgeUnit.assessments.map((assessment) => ({
-                    id: assessment.sequenceNo, // id is sequenceNo
+                    id: assessment.id,
                     kuId: knowledgeUnit.id,
                     type: assessment.quiz ? AssessmentType.QUIZ : (assessment.flashcard ? AssessmentType.FLASHCARD : AssessmentType.CHAT_QA),
                     title: assessment.quiz ? knowledgeUnit.topic + " Quiz #" + assessment.sequenceNo : (assessment.flashcard ? knowledgeUnit.topic + " Flashcard #" + assessment.sequenceNo : "Assessment"),
@@ -102,7 +102,7 @@ export async function getAllModules(): Promise<Module[]> {
             knowledgeUnit.teachings.forEach(teaching => {
                 module.assessments.push(
                     {
-                        id: teaching.sequenceNo, // id is sequenceNo
+                        id: teaching.id,
                         kuId: knowledgeUnit.id,
                         type: AssessmentType.TEACHING,
                         title: teaching.topic,

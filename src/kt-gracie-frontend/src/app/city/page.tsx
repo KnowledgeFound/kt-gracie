@@ -129,7 +129,7 @@ export default function CityScene() {
 					knowledgeUnit.assessments.forEach((assessment) => {
 						if (assessment.quiz != null) {
 							arr_subProgress.push({
-								assessmentID: assessment.sequenceNo,
+								assessmentID: assessment.id,
 								assessmentType: AssessmentType.QUIZ,
 								score: 0,
 								pointScore: assessment.pointScore,
@@ -140,7 +140,7 @@ export default function CityScene() {
 							});
 						} else if (assessment.flashcard != null) {
 							arr_subProgress.push({
-								assessmentID: assessment.sequenceNo,
+								assessmentID: assessment.id,
 								assessmentType: AssessmentType.FLASHCARD,
 								score: 0,
 								pointScore: assessment.pointScore,
