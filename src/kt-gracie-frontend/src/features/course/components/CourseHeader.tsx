@@ -8,7 +8,6 @@ import {
 	Layers,
 } from 'lucide-react';
 import classnames from 'classnames';
-import { useNavigate } from 'react-router-dom';
 import { AssessmentType } from '@/ENUMS/enums';
 import type { ModuleAssessment } from '@/features/city/types';
 
@@ -18,6 +17,8 @@ interface CourseHeaderProps {
 	activities: ModuleAssessment[];
 	onLesson: () => void;
 	onPractice: (type: AssessmentType) => void;
+	/** Step out of the current activity, back to the module's activity list. */
+	onBack: () => void;
 }
 
 /** Title bar with the Lesson / Practice switch. */
@@ -27,8 +28,8 @@ export default function CourseHeader({
 	activities,
 	onLesson,
 	onPractice,
+	onBack,
 }: CourseHeaderProps) {
-	const navigate = useNavigate();
 	const [open, setOpen] = useState(false);
 
 	const has = (t: AssessmentType) => activities.some((a) => a.type === t);
@@ -51,8 +52,9 @@ export default function CourseHeader({
 		<header className="relative z-20">
 			<div className="flex items-center gap-3 px-4 h-14 bg-white/90 backdrop-blur border-b border-gray-100">
 				<button
-					onClick={() => navigate('/city')}
-					aria-label="Back to city"
+					onClick={onBack}
+					aria-label="Back to activities"
+					title="Back to activities"
 					className="p-2 -ml-2 rounded-full text-ink-mid hover:bg-gray-100"
 				>
 					<ArrowLeft className="size-5" />

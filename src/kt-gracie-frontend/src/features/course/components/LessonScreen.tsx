@@ -36,6 +36,9 @@ interface LessonScreenProps {
 	/** Section ids whose compulsory video is already finished. */
 	watched: string[];
 	onWatched: (sectionId: string) => void;
+	/** Section ids the learner has marked complete. */
+	completedSections: string[];
+	onToggleComplete: (sectionId: string) => void;
 }
 
 type Sheet = 'lessons' | 'outline' | null;
@@ -55,6 +58,8 @@ export default function LessonScreen({
 	isLastSection,
 	watched,
 	onWatched,
+	completedSections,
+	onToggleComplete,
 }: LessonScreenProps) {
 	const [sheet, setSheet] = useState<Sheet>(null);
 	const section = sections[Math.min(sectionIndex, sections.length - 1)];
@@ -70,14 +75,21 @@ export default function LessonScreen({
 	const firstGate = sections.findIndex(gated);
 	const reachable = firstGate < 0 ? sections.length - 1 : firstGate;
 	const blocked = section ? gated(section) : false;
+	const sectionComplete = section
+		? completedSections.includes(section.id)
+		: false;
 	const showSource =
 		!!teaching.content?.url && !youtubeId(teaching.content.url);
+	// A video or an embed shows the toggle beside itself; anything else has
+	// nothing to sit next to, so it falls back to the foot of the card.
+	const hasEmbed = !!section?.embed && !!driveFileId(section.embed.url);
+	const togglesWithMedia = !!section?.video || hasEmbed;
 	const toggle = (s: Sheet) => setSheet((cur) => (cur === s ? null : s));
 
 	if (!section) return null;
 
 	return (
-		<div className="relative mx-auto w-full max-w-3xl px-4 pb-40">
+		<div className="relative mx-auto w-full max-w-3xl px-4 pb-40 mt-2">
 			{/* Progress rail */}
 			<div
 				aria-hidden="true"
@@ -102,13 +114,27 @@ export default function LessonScreen({
 						Section {sectionIndex + 1} of {sections.length}
 					</p>
 					{section.video && (
-						<VideoPlayer
-							key={section.id}
-							url={section.video.url}
-							required={section.video.required !== false && !isDone(teaching)}
-							watched={watched.includes(section.id) || isDone(teaching)}
-							onWatched={() => onWatched(section.id)}
-						/>
+						<>
+							<VideoPlayer
+								key={section.id}
+								url={section.video.url}
+								required={section.video.required !== false && !isDone(teaching)}
+								watched={watched.includes(section.id) || isDone(teaching)}
+								onWatched={() => onWatched(section.id)}
+							/>
+							{/* Sits with the video rather than under the text below it:
+							    the thing being marked done here is the watching. */}
+							<div className="mb-6 flex items-center justify-end gap-3">
+								<span className="text-sm font-medium text-ink-deep">
+									Video completed
+								</span>
+								<CompleteToggle
+									checked={sectionComplete}
+									label={`Mark "${section.title}" as completed`}
+									onChange={() => onToggleComplete(section.id)}
+								/>
+							</div>
+						</>
 					)}
 					{section.embed && driveFileId(section.embed.url) && (
 						<div className="mb-6">
@@ -122,14 +148,29 @@ export default function LessonScreen({
 									loading="lazy"
 								/>
 							</div>
-							<a
-								href={section.embed.url}
-								target="_blank"
-								rel="noreferrer"
-								className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
-							>
-								<FileText className="size-4" /> Open in Drive
-							</a>
+							<div className="flex justify-between gap-2 items-center mt-2">
+								<a
+									href={section.embed.url}
+									target="_blank"
+									rel="noreferrer"
+									className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
+								>
+									<FileText className="size-4" /> Open in Drive
+								</a>
+								{/* A video section carries its own toggle, up beside the player. */}
+								{!section.video && (
+									<div className="flex items-center justify-between gap-4">
+										<span className="font-medium text-ink-deep">
+											Section completed
+										</span>
+										<CompleteToggle
+											checked={sectionComplete}
+											label={`Mark "${section.title}" as completed`}
+											onChange={() => onToggleComplete(section.id)}
+										/>
+									</div>
+								)}
+							</div>
 						</div>
 					)}
 					<Markdown source={section.markdown} />
@@ -137,7 +178,7 @@ export default function LessonScreen({
 					{(!section.video || showSource) && (
 						<>
 							<hr className="my-4 border-gray-200" />
-							<div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+							<div className="mb-4 flex flex-wrap justify-between items-center gap-x-6 gap-y-2">
 								{!section.video && (
 									<ReadAloudPill text={markdownToSpeech(section.markdown)} />
 								)}
@@ -154,6 +195,18 @@ export default function LessonScreen({
 								)}
 							</div>
 						</>
+					)}
+
+					{/* Plain text: no player or viewer to sit beside, so it goes here. */}
+					{!togglesWithMedia && (
+						<div className="flex items-center justify-between gap-4">
+							<span className="font-medium text-ink-deep">Section completed</span>
+							<CompleteToggle
+								checked={sectionComplete}
+								label={`Mark "${section.title}" as completed`}
+								onChange={() => onToggleComplete(section.id)}
+							/>
+						</div>
 					)}
 				</motion.article>
 			</AnimatePresence>
@@ -178,13 +231,20 @@ export default function LessonScreen({
 											setSheet(null);
 										}}
 										className={classnames(
-											'w-full text-left px-3 py-2 rounded-xl text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed',
+											'w-full flex items-center gap-2 text-left px-3 py-2 rounded-xl text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed',
 											i === sectionIndex
 												? 'font-semibold text-brand-700 bg-brand-50'
 												: 'text-ink-mid',
 										)}
 									>
-										{i + 1}. {s.title}
+										{completedSections.includes(s.id) ? (
+											<CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+										) : (
+											<Circle className="size-4 text-gray-300 shrink-0" />
+										)}
+										<span className="truncate">
+											{i + 1}. {s.title}
+										</span>
 									</button>
 								))}
 							{sheet === 'lessons' &&
@@ -255,6 +315,39 @@ export default function LessonScreen({
 				</div>
 			</div>
 		</div>
+	);
+}
+
+/** Switch the learner flips to say they are done with a section. */
+function CompleteToggle({
+	checked,
+	label,
+	onChange,
+}: {
+	checked: boolean;
+	label: string;
+	onChange: () => void;
+}) {
+	return (
+		<button
+			type="button"
+			role="switch"
+			aria-checked={checked}
+			aria-label={label}
+			onClick={onChange}
+			className={classnames(
+				'relative inline-flex h-6 w-12 shrink-0 items-center rounded-full transition-colors',
+				'focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200',
+				checked ? 'bg-emerald-600' : 'bg-gray-300 hover:bg-gray-400',
+			)}
+		>
+			<span
+				className={classnames(
+					'inline-block size-6 rounded-full bg-white shadow transition-transform',
+					checked ? 'translate-x-7' : 'translate-x-1',
+				)}
+			/>
+		</button>
 	);
 }
 
