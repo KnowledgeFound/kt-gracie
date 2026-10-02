@@ -30,6 +30,7 @@ function teachingFixture(url: string, contentType = ContentType.VIDEO): ModuleAs
     return {
         id: 1,
         title: "The Architect's blue print",
+        kuId: "KU-001",
         description: "",
         difficulty: "easy",
         questionCount: 0,
@@ -46,7 +47,7 @@ function teachingFixture(url: string, contentType = ContentType.VIDEO): ModuleAs
             contentType,
             url,
             description: "A short film.",
-            detailedDesciption: "A short film about how corruption is designed out of a system.",
+            detailedDescription: "A short film about how corruption is designed out of a system.",
         },
     };
 }

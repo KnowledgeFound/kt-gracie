@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-02T00:30:00Z";
+    lastUpdated = "2026-10-03T00:40:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -472,7 +472,7 @@ persistent actor Main {
         image = "policy_img";
         description = "This knowledge unit provides an overview of the United Nations Convention Against Corruption (UNCAC), its key principles, and the obligations of state parties. It introduces learners to the international legal framework for combating corruption and the mechanisms for monitoring and evaluating anti-corruption measures.";
         icon = "Target";
-        block = "leftDown";
+        block = "central";
         duration = "2 hours";
         sources = [
           {
@@ -489,23 +489,23 @@ persistent actor Main {
           id = 1;
           sequenceNo = 1;
           inforgraphic = ?{
-            name = "Corruption Overview";
+            name = "Anti-Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            url = "https://notebooklm.link.google/R6qOYpHYklDc";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           slideDeck = ?{
-            name = "Understanding Corruption";
+            name = "Understanding Anti-Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           podcast = ?{
-            name = "The Corruption Podcast";
+            name = "The Anti-Corruption Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            url = "https://notebooklm.link.google/zhV7aYkWAWW6";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
             detailedDescription = "";
           };  
@@ -534,7 +534,7 @@ persistent actor Main {
         image = "youth_led_img";
         description = "Discover the power of youth-led initiatives and how young people are driving change in their communities.";
         icon = "Users";
-        block = "central";
+        block = "leftDown";
         duration = "2 hours";
         sources = [
           {

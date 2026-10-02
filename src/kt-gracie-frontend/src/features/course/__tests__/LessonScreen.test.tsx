@@ -21,6 +21,7 @@ function teachingFixture(): ModuleAssessment {
         type: AssessmentType.TEACHING,
         keywords: [],
         sequenceNo: 1,
+        kuId : "kU_001",
     };
 }
 

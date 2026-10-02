@@ -24,6 +24,7 @@ function activity(id: number, type: AssessmentType): ModuleAssessment {
         type,
         keywords: [],
         sequenceNo: id,
+        kuId: "KU-001",
     };
 }
 
