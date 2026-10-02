@@ -112,6 +112,7 @@ export type CourseResume = {
     questionIndex: number; // quiz question or flashcard reached
     answers: (string | boolean | null)[]; // quiz answers so far
     watched?: string[]; // lesson section ids whose compulsory video was finished
+    completedSections?: string[]; // lesson section ids the learner marked complete
     startedAt: string;
     updatedAt: string;
 };

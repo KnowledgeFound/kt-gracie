@@ -88,6 +88,7 @@ export default function CoursePage() {
 						activities={course.activities}
 						onLesson={() => course.goToType(AssessmentType.TEACHING)}
 						onPractice={course.goToType}
+						onBack={course.openWelcome}
 					/>
 				)}
 
@@ -131,6 +132,8 @@ export default function CoursePage() {
 							isLastSection={course.sectionIndex >= course.sections.length - 1}
 							watched={course.watched}
 							onWatched={course.markWatched}
+							completedSections={course.completedSections}
+							onToggleComplete={course.toggleSectionComplete}
 						/>
 					)}
 
@@ -190,6 +193,7 @@ export default function CoursePage() {
 							nextModule={nextModule}
 							onOpen={course.goToActivity}
 							onChoose={course.openWelcome}
+							summarySection={course.summarySection}
 						/>
 					)}
 				</AnimatePresence>
