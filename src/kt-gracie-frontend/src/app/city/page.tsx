@@ -261,7 +261,7 @@ export default function CityScene() {
 									block={block}
 									look={look}
 									floating={settings.city.floatingDistricts}
-									fires={settings.city.stormEffects}
+									effects={settings.city.stormEffects}
 								/>
 							</button>
 						);

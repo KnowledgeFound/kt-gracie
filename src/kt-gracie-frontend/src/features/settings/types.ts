@@ -97,7 +97,7 @@ export interface CitySettings {
 	balloonCursor: boolean;
 	/** Idle bobbing of the district islands. */
 	floatingDistricts: boolean;
-	/** Rain, lightning and fires over a destroyed city. */
+	/** Smoke over a corrupt city; rain, lightning and fires over a destroyed one. */
 	stormEffects: boolean;
 }
 

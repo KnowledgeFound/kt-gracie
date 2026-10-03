@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { CityBlock, CityLook } from '../types';
 import CityFire from './CityFire';
+import CitySmoke from './CitySmoke';
 
 interface DistrictArtProps {
 	block: CityBlock;
@@ -8,14 +9,15 @@ interface DistrictArtProps {
 	look: CityLook;
 	/** Idle bobbing (Settings → City → Floating districts). */
 	floating: boolean;
-	/** Draw the fires on a destroyed city (Settings → City → Storm and fire). */
-	fires: boolean;
+	/** Draw the smoke on a corrupt city and the fires on a destroyed one
+	 *  (Settings → City → Storm, fire and smoke). */
+	effects: boolean;
 }
 
 /**
  * A district's artwork. Healthy cities get `block.src`, corrupt ones the
- * abandoned `block.corruptSrc`, and destroyed ones the burnt-out
- * `block.destroyedSrc` with fires on top.
+ * abandoned `block.corruptSrc` with a little smoke rising off it, and
+ * destroyed ones the burnt-out `block.destroyedSrc` with fires on top.
  *
  * If the destroyed image is missing, the healthy one is shown burnt-out through
  * a CSS filter instead (`.cityBlock--ruinFallback`), so the destroyed city
@@ -25,7 +27,7 @@ export default function DistrictArt({
 	block,
 	look,
 	floating,
-	fires,
+	effects,
 }: DistrictArtProps) {
 	const [ruinMissing, setRuinMissing] = useState(false);
 	const destroyed = look === 'destroyed';
@@ -49,8 +51,13 @@ export default function DistrictArt({
 				}`}
 				onError={showRuin ? () => setRuinMissing(true) : undefined}
 			/>
+			{look === 'corrupt' &&
+				effects &&
+				block.smoke.map((smoke, i) => (
+					<CitySmoke key={i} smoke={smoke} index={i} />
+				))}
 			{destroyed &&
-				fires &&
+				effects &&
 				block.fires.map((fire, i) => (
 					<CityFire key={i} fire={fire} index={i} />
 				))}

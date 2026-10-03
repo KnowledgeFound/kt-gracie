@@ -87,6 +87,17 @@ export interface CityBlockFire {
 }
 
 /**
+ * A smoke plume on an abandoned (corrupt) district. `x`/`y` mark where the
+ * smoke leaves the building, as a fraction of the district's box; `size` is
+ * the plume's width as a fraction of the box width.
+ */
+export interface CityBlockSmoke {
+	x: number;
+	y: number;
+	size: number;
+}
+
+/**
  * A district's geometry, in percentages of the `.cityBlocks` stage — the
  * fixed-ratio box the whole map is laid out in. Both the district image and
  * its module button are positioned from these numbers, so they can never
@@ -110,6 +121,8 @@ export interface CityBlock {
 	alt: string;
 	/** Fires burning on the district while the city is destroyed. */
 	fires: CityBlockFire[];
+	/** Smoke rising off the district while the city is corrupt. */
+	smoke: CityBlockSmoke[];
 	/** Image box within the stage. */
 	box: { left: number; top: number; width: number; height: number };
 	/** Where the module button clips onto the district. */

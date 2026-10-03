@@ -218,6 +218,94 @@
   background: linear-gradient(90deg, #f59e0b, #fb923c);
 }
 
+/* ═══ Corrupt city: smoke ════════════════════════════════════════════════════
+   The abandoned districts smoulder. Each `.citySmoke` (CitySmoke.tsx) is one
+   plume: four small puffs, evenly staggered so there is always a thin column
+   in flight, that rise a short way, lean with the wind, swell and fade.
+   Cool grey and low-opacity so it sits inside the artwork's daylight rather
+   than on top of it; no blur filters, the edges come from the gradient. */
+
+.citySmoke {
+  position: absolute;
+  aspect-ratio: 1 / 2;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.citySmoke i {
+  position: absolute;
+  display: block;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(150, 156, 166, 0.7) 0%,
+    rgba(136, 142, 152, 0.4) 35%,
+    rgba(120, 126, 136, 0.12) 58%,
+    rgba(120, 126, 136, 0) 70%
+  );
+  opacity: 0;
+  --smoke-dx: 22%;
+  --smoke-dy: -105%;
+  --smoke-grow: 1.35;
+  animation: smoke-rise 7.5s linear infinite;
+  animation-delay: var(--smoke-delay, 0s);
+}
+
+.citySmoke i:nth-child(2) {
+  --smoke-dx: 48%;
+  --smoke-dy: -125%;
+  --smoke-grow: 1.5;
+  animation-delay: calc(var(--smoke-delay, 0s) - 1.9s);
+}
+
+.citySmoke i:nth-child(3) {
+  --smoke-dx: 30%;
+  --smoke-dy: -112%;
+  --smoke-grow: 1.25;
+  animation-delay: calc(var(--smoke-delay, 0s) - 3.8s);
+}
+
+.citySmoke i:nth-child(4) {
+  --smoke-dx: 56%;
+  --smoke-dy: -132%;
+  --smoke-grow: 1.45;
+  animation-delay: calc(var(--smoke-delay, 0s) - 5.6s);
+}
+
+/* Fade in as the puff leaves the roof, drift up and a little to the right
+   (the clouds blow that way too), swell as it thins out, and vanish. */
+@keyframes smoke-rise {
+  0% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  55% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(var(--smoke-dx), var(--smoke-dy))
+      scale(var(--smoke-grow));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .citySmoke {
+    display: none;
+  }
+}
+
+[data-motion='reduced'] .citySmoke {
+  display: none;
+}
+
 /* ═══ Destroyed city ═════════════════════════════════════════════════════════
    The extra-destructive look. A corrupt city only swaps its district and
    balloon artwork and needs no styles; the destroyed tier flips
