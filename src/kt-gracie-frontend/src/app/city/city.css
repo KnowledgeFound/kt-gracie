@@ -185,8 +185,10 @@
 }
 
 .cityScene--hovering .cityCloudLayer {
+  /* Fade only. A blur here is a full-viewport filter re-run every frame,
+     because the clouds inside the layer are always drifting — it halved the
+     frame rate of the whole scene while a district was hovered. */
   opacity: 0.7;
-  filter: blur(1px);
 }
 
 /* --- Header glass (CityHeader) --- */

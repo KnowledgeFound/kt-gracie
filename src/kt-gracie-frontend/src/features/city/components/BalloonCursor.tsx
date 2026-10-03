@@ -1,98 +1,107 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 const BALLOON_SRC = '/assets/balloon.png';
 
-// How many spiral rings to render
-const RING_COUNT = 3;
+/**
+ * Spring that pulls the balloon toward the cursor (mass 1). The damping ratio
+ * c / (2√k) ≈ 0.9 sits just under critical: it eases in with no visible
+ * bounce, and trails a cursor moving at 600 px/s by about 100 px.
+ */
+const STIFFNESS = 120;
+const DAMPING = 20;
+
+/** Integrate in small fixed steps so the spring is stable at any frame rate. */
+const SUBSTEP_S = 1 / 240;
+/** Longest frame we integrate across; a hitch moves the balloon, never teleports it. */
+const MAX_FRAME_S = 0.05;
+
+/** The balloon leans into its motion, like a basket swinging under its envelope. */
+const LEAN_DEG_PER_PX_S = 0.01;
+const MAX_LEAN_DEG = 7;
 
 /**
  * A hot-air balloon that smoothly follows the mouse across the screen.
  *
- * - Spring physics give it a satisfying lag behind the cursor.
- * - After 1.5 s of no mouse movement, concentric spiral rings expand outward
- *   from the balloon to draw the user's attention.
- * - The balloon gently bobs up/down at all times.
+ * - A spring (integrated in our own frame loop, with its velocity carried
+ *   from frame to frame) gives it a satisfying lag behind the cursor. Driving
+ *   the position straight into the wrapper's transform keeps React out of
+ *   the per-frame path and makes a dropped frame a slightly longer step
+ *   instead of a stall-and-restart.
+ * - The balloon gently bobs up/down at all times (CSS keyframes, so the
+ *   compositor handles it).
  */
 export default function BalloonCursor() {
-	// Raw mouse position
-	const rawX = useMotionValue(window.innerWidth / 2);
-	const rawY = useMotionValue(window.innerHeight / 2);
+	const wrapRef = useRef<HTMLDivElement>(null);
 
-	// Springy balloon position (lags behind the cursor)
-	const x = useSpring(rawX, { stiffness: 80, damping: 18, mass: 1.2 });
-	const y = useSpring(rawY, { stiffness: 80, damping: 18, mass: 1.2 });
-
-	// Show idle rings when mouse hasn't moved for IDLE_MS
-	const IDLE_MS = 1500;
-	const [idle, setIdle] = useState(false);
-	const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	// Where the cursor is, and where the balloon is (with its velocity).
+	const target = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+	const state = useRef({ ...target.current, vx: 0, vy: 0 });
 
 	useEffect(() => {
 		function onMouseMove(e: MouseEvent) {
-			rawX.set(e.clientX);
-			rawY.set(e.clientY);
-
-			setIdle(false);
-			if (idleTimer.current) clearTimeout(idleTimer.current);
-			idleTimer.current = setTimeout(() => setIdle(true), IDLE_MS);
+			target.current.x = e.clientX;
+			target.current.y = e.clientY;
 		}
+		window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-		window.addEventListener('mousemove', onMouseMove);
+		// ── Frame loop ──
+		let raf = 0;
+		let last = performance.now();
+		function tick(now: number) {
+			let dt = Math.min((now - last) / 1000, MAX_FRAME_S);
+			last = now;
 
-		// Kick off the idle ring after initial mount
-		idleTimer.current = setTimeout(() => setIdle(true), IDLE_MS);
+			const s = state.current;
+			const t = target.current;
+			while (dt > 0) {
+				const h = Math.min(SUBSTEP_S, dt);
+				dt -= h;
+				// Semi-implicit Euler: update velocity, then position with it.
+				s.vx += (STIFFNESS * (t.x - s.x) - DAMPING * s.vx) * h;
+				s.vy += (STIFFNESS * (t.y - s.y) - DAMPING * s.vy) * h;
+				s.x += s.vx * h;
+				s.y += s.vy * h;
+			}
+
+			const lean = Math.max(
+				-MAX_LEAN_DEG,
+				Math.min(MAX_LEAN_DEG, s.vx * LEAN_DEG_PER_PX_S),
+			);
+			const el = wrapRef.current;
+			if (el) {
+				// Move to the balloon's position, centre the artwork on that point,
+				// then lean about its own centre.
+				el.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) translate(-50%, -50%) rotate(${lean}deg)`;
+			}
+			raf = requestAnimationFrame(tick);
+		}
+		raf = requestAnimationFrame(tick);
 
 		return () => {
 			window.removeEventListener('mousemove', onMouseMove);
-			if (idleTimer.current) clearTimeout(idleTimer.current);
+			cancelAnimationFrame(raf);
 		};
-	}, [rawX, rawY]);
+	}, []);
 
 	return (
 		// Container tracks the springy balloon position.
 		// pointer-events-none so it never blocks clicks on the map buttons.
-		<motion.div
-			className="fixed z-30 pointer-events-none"
+		<div
+			ref={wrapRef}
+			className="fixed top-0 left-0 z-30 pointer-events-none will-change-transform"
 			style={{
-				x,
-				y,
-				// Centre the balloon on the cursor point
-				translateX: '-50%',
-				translateY: '-50%',
+				transform: `translate3d(${state.current.x}px, ${state.current.y}px, 0) translate(-50%, -50%)`,
 			}}
 		>
-			{/* ── Spiral rings (idle hint) ── */}
-			{idle &&
-				Array.from({ length: RING_COUNT }).map((_, i) => (
-					<span
-						key={i}
-						className="absolute rounded-full border-2 border-blue-600/60 z-10 animate-spiralRing"
-						style={{
-							// Centre each ring on the balloon
-							width: 56,
-							height: 56,
-							top: '50%',
-							left: '50%',
-							transform: 'translate(-50%, -50%)',
-							animationDelay: `${i * 0.45}s`,
-						}}
-					/>
-				))}
-
-			{/* ── Balloon image — bobs up/down continuously ── */}
-			<motion.img
+			{/* ── Balloon image — bobs up/down continuously ──
+			    No CSS filter here: a drop-shadow is a blur pass that would be
+			    recomputed every frame while the balloon moves. */}
+			<img
 				src={BALLOON_SRC}
 				alt="balloon"
-				className="w-40 h-auto drop-shadow-lg select-none rounded "
-				animate={{ y: [0, -10, 0] }}
-				transition={{
-					duration: 3,
-					repeat: Infinity,
-					ease: 'easeInOut',
-				}}
+				className="w-40 h-auto select-none rounded animate-balloonBob"
 				draggable={false}
 			/>
-		</motion.div>
+		</div>
 	);
 }
