@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, cleanup, act } from "@testing-library/react";
+import { render, screen, cleanup, act, fireEvent } from "@testing-library/react";
 import VideoPlayer from "../components/VideoPlayer";
 
 const URL_UNDER_TEST = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
@@ -65,17 +65,67 @@ describe("VideoPlayer", () => {
         try {
             const onWatched = vi.fn();
             render(<VideoPlayer url={URL_UNDER_TEST} required watched={false} onWatched={onWatched} />);
-            expect(screen.queryByText(/I’ve watched it/)).toBeNull();
+            expect(screen.queryByText(/I have watched it/)).toBeNull();
 
             act(() => void vi.advanceTimersByTime(21_000));
-            screen.getByText(/I’ve watched it/).click();
+            screen.getByText(/I have watched it/).click();
             expect(onWatched).toHaveBeenCalled();
         } finally {
             vi.useRealTimers();
         }
     });
 
-    it("renders nothing for a link that is not a YouTube video", () => {
+    describe("hosted media file", () => {
+        const FILE_URL = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Introduction__The_Scale_of_Decay.mp4";
+
+        /** Fire a media event on the <video> with the given playback position. */
+        function playTo(currentTime: number, duration: number, event: "timeupdate" | "ended") {
+            const video = screen.getByTitle("Lesson video") as HTMLVideoElement;
+            Object.defineProperty(video, "currentTime", { value: currentTime, configurable: true });
+            Object.defineProperty(video, "duration", { value: duration, configurable: true });
+            act(() => void fireEvent(video, new Event(event)));
+        }
+
+        it("plays an MP4 link in the browser's own player", () => {
+            render(<VideoPlayer url={FILE_URL} required watched={false} onWatched={() => {}} />);
+
+            const video = screen.getByTitle("Lesson video");
+            expect(video.tagName).toBe("VIDEO");
+            expect(video.getAttribute("src")).toBe(FILE_URL);
+            expect(video.hasAttribute("controls")).toBe(true);
+            expect(document.querySelector("iframe")).toBeNull();
+        });
+
+        it("unlocks the lesson when the file finishes playing", () => {
+            const onWatched = vi.fn();
+            render(<VideoPlayer url={FILE_URL} required watched={false} onWatched={onWatched} />);
+
+            playTo(10, 213, "timeupdate");
+            expect(onWatched).not.toHaveBeenCalled();
+
+            playTo(213, 213, "ended");
+            expect(onWatched).toHaveBeenCalledTimes(1);
+        });
+
+        it("counts a file scrubbed to within the last 5% as watched", () => {
+            const onWatched = vi.fn();
+            render(<VideoPlayer url={FILE_URL} required watched={false} onWatched={onWatched} />);
+
+            playTo(96, 100, "timeupdate");
+            expect(onWatched).toHaveBeenCalledTimes(1);
+        });
+
+        it("does not report again once the section is already watched", () => {
+            const onWatched = vi.fn();
+            render(<VideoPlayer url={FILE_URL} required watched onWatched={onWatched} />);
+
+            playTo(100, 100, "ended");
+            expect(onWatched).not.toHaveBeenCalled();
+            expect(screen.getByText(/Video watched/)).toBeTruthy();
+        });
+    });
+
+    it("renders nothing for a link that is not a video", () => {
         const { container } = render(
             <VideoPlayer
                 url="https://www.unodc.org/corruption/en/learn/what-is-corruption.html"

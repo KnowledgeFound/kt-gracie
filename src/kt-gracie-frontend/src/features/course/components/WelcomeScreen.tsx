@@ -24,6 +24,8 @@ import type {
 	AssessmentDifficulty,
 } from '@/features/city/types';
 import { useNavigate } from 'react-router-dom';
+import { SubProgress } from '@/types/user';
+import { getSubProgress } from '@/services/progressContainerService';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -112,6 +114,7 @@ interface AssessmentCardProps {
 	index: number;
 	selected: boolean;
 	onSelect: () => void;
+	subProgressObject: SubProgress | null;
 }
 
 function AssessmentCard({
@@ -119,6 +122,7 @@ function AssessmentCard({
 	index,
 	selected,
 	onSelect,
+	subProgressObject
 }: AssessmentCardProps) {
 	const { t } = useReadingLevel();
 	const isLocked = assessment.status === 'locked';
@@ -214,6 +218,17 @@ function AssessmentCard({
 							<Zap className="size-3" />
 							{assessment.ktMax} KT
 						</span>
+						{subProgressObject ? (
+							<span className="flex items-center gap-1">
+								<Zap className="size-3" />
+								score: {subProgressObject.score} / {subProgressObject.maxScore}
+							</span>
+						) : 
+							<span className="flex items-center gap-1">
+								<Zap className="size-3" />
+								score: Unavailable
+							</span>
+						}
 						{assessment.ktEarned !== undefined && assessment.ktEarned > 0 && (
 							<span className="ml-auto text-amber-600 font-bold">
 								Earned: {assessment.ktEarned} KT
@@ -271,6 +286,7 @@ const WelcomeScreen = ({
 
 	const selectedAssessment =
 		assessments[Math.min(selectedIndex, assessments.length - 1)];
+		
 	const start = () =>
 		selectedAssessment && onStart(selectedAssessment.courseIndex);
 
@@ -487,12 +503,26 @@ const WelcomeScreen = ({
 									key={`${assessment.type}-${assessment.id}`}
 									variants={itemVariants}
 								>
-									<AssessmentCard
-										assessment={assessment}
-										index={index}
-										selected={index === selectedIndex}
-										onSelect={() => setSelectedIndex(index)}
-									/>
+									{ assessment.type == AssessmentType.QUIZ || assessment.type == AssessmentType.FLASHCARD ? 
+										(
+											<AssessmentCard
+												assessment={assessment}
+												index={index}
+												selected={index === selectedIndex}
+												onSelect={() => setSelectedIndex(index)}
+												subProgressObject={getSubProgress(assessment.kuId,assessment.id)}
+											/>
+										) : (
+											<AssessmentCard
+												assessment={assessment}
+												index={index}
+												selected={index === selectedIndex}
+												onSelect={() => setSelectedIndex(index)}
+												subProgressObject={null}
+											/>
+										)
+
+									}
 								</motion.div>
 							))}
 						</div>
@@ -577,12 +607,25 @@ const WelcomeScreen = ({
 								key={`${assessment.type}-${assessment.id}`}
 								variants={itemVariants}
 							>
-								<AssessmentCard
-									assessment={assessment}
-									index={index}
-									selected={index === selectedIndex}
-									onSelect={() => setSelectedIndex(index)}
-								/>
+								{ assessment.type == AssessmentType.QUIZ || assessment.type == AssessmentType.FLASHCARD ? 
+									(
+										<AssessmentCard
+											assessment={assessment}
+											index={index}
+											selected={index === selectedIndex}
+											onSelect={() => setSelectedIndex(index)}
+											subProgressObject={getSubProgress(assessment.kuId,assessment.id)}
+										/>
+									) : (
+										<AssessmentCard
+											assessment={assessment}
+											index={index}
+											selected={index === selectedIndex}
+											onSelect={() => setSelectedIndex(index)}
+											subProgressObject={null}
+										/>
+									)
+								}
 							</motion.div>
 						))}
 					</div>

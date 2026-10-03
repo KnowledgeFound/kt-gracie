@@ -60,3 +60,35 @@ export function markdownToSpeech(md: string): string {
 		.replace(/\.\s*\./g, '.')
 		.trim();
 }
+
+/**
+ * Where Continue goes from section `index`, once that section counts as done
+ * (`completed` must already include it). Reading runs front to back, so the
+ * next section comes first; from the last section anything skipped along the
+ * way (via the outline) is still owed, so the learner is sent back to the first
+ * such section. `null` means nothing is left: the lesson is finished.
+ */
+export function nextLessonStep(
+	sections: { id: string }[],
+	completed: string[],
+	index: number,
+): number | null {
+	if (index < sections.length - 1) return index + 1;
+	const skipped = sections.findIndex((s) => !completed.includes(s.id));
+	return skipped >= 0 ? skipped : null;
+}
+
+/**
+ * Whether pressing Continue on section `index` would finish the lesson — i.e.
+ * it is the last section and every other one is already done. The button reads
+ * "Finish lesson" only then; otherwise it reads "Continue" and moves on.
+ */
+export function isFinalLessonStep(
+	sections: { id: string }[],
+	completed: string[],
+	index: number,
+): boolean {
+	const current = sections[index];
+	if (!current) return false;
+	return nextLessonStep(sections, [...completed, current.id], index) === null;
+}

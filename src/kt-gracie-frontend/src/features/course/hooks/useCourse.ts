@@ -19,7 +19,7 @@ import {
 } from '@/services/progressContainerService';
 import { createProgress } from '@/services/progressService';
 import type { CourseScreen, LessonSection } from '../types';
-import { toQuizQuestion } from '../utils';
+import { nextLessonStep, toQuizQuestion } from '../utils';
 
 /** Activity kinds the course can run, in the order the corpus sequences them. */
 const PLAYABLE = new Set<AssessmentType>([
@@ -69,6 +69,7 @@ export function useCourse(moduleId?: string) {
 	const [percent, setPercent] = useState(0);
 	const [watched, setWatched] = useState<string[]>([]);
 	const [completedSections, setCompletedSections] = useState<string[]>([]);
+	const [sections, setSections] = useState<LessonSection[]>([]);
 	const [showWelcome, setShowWelcome] = useState(false);
 	const [ready, setReady] = useState(false);
 
@@ -76,10 +77,12 @@ export function useCourse(moduleId?: string) {
 	const hydrated = useRef(false);
 
 	const kuId = module?.kuId ?? '';
+	
 	const activities = useMemo(
 		() => (module?.assessments ?? []).filter((a) => PLAYABLE.has(a.type)),
 		[module],
 	);
+
 	const activity: ModuleAssessment | null = activities[activityIndex] ?? null;
 
 	// ── Load + hydrate ──────────────────────────────────────────────
@@ -205,13 +208,18 @@ export function useCourse(moduleId?: string) {
 	}, [screen]);
 
 	// ── Derived content ─────────────────────────────────────────────
-	const sections: LessonSection[] = useMemo(
-		() =>
-			module && activity?.type === AssessmentType.TEACHING
-				? getLessonSections(module, activity)
-				: [],
-		[module, activity],
-	);
+	useEffect(() => {
+		let cancelled = false;
+		setSections([]);
+		if (!module || activity?.type !== AssessmentType.TEACHING) return;
+
+		getLessonSections(module, activity).then((lessonSections) => {
+			if (!cancelled) setSections(lessonSections);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [module, activity]);
 
 	// A lesson finished on an earlier visit shows every section already ticked;
 	// the resume record only remembers the activity the learner last left.
@@ -395,15 +403,18 @@ export function useCourse(moduleId?: string) {
 			return; // compulsory video not finished yet
 		}
 		// Moving on counts as having done the section you are moving on from.
-		if (current) {
-			saveCompletedSections(
-				completedSections.includes(current.id)
-					? completedSections
-					: [...completedSections, current.id],
-			);
-		}
-		if (sectionIndex < sections.length - 1) {
-			goToSection(sectionIndex + 1);
+		const done =
+			current && !completedSections.includes(current.id)
+				? [...completedSections, current.id]
+				: completedSections;
+		if (current) saveCompletedSections(done);
+
+		// Next section; from the last one, back to anything skipped via the
+		// outline. Only when every section is done does the lesson finish —
+		// the button only reads "Finish lesson" then (see isFinalLessonStep).
+		const next = nextLessonStep(sections, done, sectionIndex);
+		if (next !== null) {
+			goToSection(next);
 			return;
 		}
 		finishTeaching(activity);
