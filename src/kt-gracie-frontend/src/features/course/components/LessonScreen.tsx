@@ -182,7 +182,7 @@ export default function LessonScreen({
 								{!section.video && (
 									<ReadAloudPill text={markdownToSpeech(section.markdown)} />
 								)}
-								{showSource && (
+								{/*{showSource && (
 									<a
 										href={teaching.content!.url}
 										target="_blank"
@@ -192,7 +192,7 @@ export default function LessonScreen({
 										<ExternalLink className="size-4" /> Source:{' '}
 										{teaching.content!.name}
 									</a>
-								)}
+								)} */}
 							</div>
 						</>
 					)}

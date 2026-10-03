@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-03T00:40:00Z";
+    lastUpdated = "2026-10-03T12:51:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -155,7 +155,7 @@ persistent actor Main {
             content = {
               name = "What is Corruption?";
               contentType = #VIDEO;
-              url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Introduction__The_Scale_of_Decay.mp4";
               detailedDescription = "In this introductory video, students will gain a foundational understanding of corruption as one of 
               the central global challenges of the 21st century. The lesson begins by examining baseline meanings of corruption 
               rooted in decay, debasement, and departure from integrity, then explores how international legal frameworks like 
@@ -181,7 +181,7 @@ persistent actor Main {
             content = {
               name = "The Root Causes: How Philosophy, Economics and Politics Explain Corruption";
               contentType = #VIDEO;
-              url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_1__Root_Causes_of_Corruption.mp4";
               description = "This video explores the root causes of corruption through the lenses of philosophy, economics, and politics, providing students with a multidisciplinary understanding of why corruption occurs and how it can be addressed.";
               detailedDescription = "In this sub-module, students examine how different academic disciplines analyze the root 
               causes and motivations behind corruption. They begin with moral and philosophical views, studying classical 
@@ -209,7 +209,7 @@ persistent actor Main {
             content = {
               name = "Corruption in Real Life: Global Consequences and Measuring the Damage";
               contentType = #VIDEO;
-              url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_2__System_Corrupted.mp4";
               description = "This video explores the root causes of corruption through the lenses of philosophy, economics, and politics, providing students with a multidisciplinary understanding of why corruption occurs and how it can be addressed.";
               detailedDescription = "In Part 3, students explore the tangible consequences of corruption and the tools researchers use 
               to measure its prevalence across society. The lesson begins by assessing corruption's 
@@ -430,21 +430,21 @@ persistent actor Main {
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            url = "https://notebooklm.link.google/JURYwGa3MRuA";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            url = "https://notebooklm.link.google/RrwXc07Fff2E";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            url = "https://notebooklm.link.google/QbRkpAmQsYCp";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
             detailedDescription = "";
           };  
@@ -491,21 +491,21 @@ persistent actor Main {
           inforgraphic = ?{
             name = "Anti-Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "https://notebooklm.link.google/R6qOYpHYklDc";
+            url = "#";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Anti-Corruption";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            url = "#";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           podcast = ?{
             name = "The Anti-Corruption Podcast";
             contentType = #PODCAST;
-            url = "https://notebooklm.link.google/zhV7aYkWAWW6";
+            url = "#";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
             detailedDescription = "";
           };  
@@ -560,7 +560,7 @@ persistent actor Main {
             content = {
               name = "The Architect's blue print";
               contentType = #VIDEO;
-              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Introduction__The_Architect_s_Blueprint.mp4";
               detailedDescription = "The core message of The Architect's Blueprint is that tackling corruption 
               requires a structured, strategic, and informed methodology rather than isolated efforts, positioning young people as key 
               architects of transparent, ethical, and accountable institutions. Through this content, students are expected to gain a 
@@ -591,7 +591,7 @@ persistent actor Main {
             content = {
               name = "Youth Led Toolkit II - Steps 1 through 5";
               contentType = #VIDEO;
-              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_1__Building_a_Youth-Led_Anti-Corruption_Initiative.mp4";
               detailedDescription = "The core message of Building a Youth-Led Anti-Corruption Initiative is that laying a solid, well-researched foundation 
               is essential for young advocates before launching civic integrity projects. The content focuses on the foundational five steps of the 
               UNODC YouthLED Toolkit, teaching students how to first educate themselves on global legal frameworks like the United Nations Convention 
@@ -621,7 +621,7 @@ persistent actor Main {
             content = {
               name = "Youth Led Toolkit III - Steps 6 through 10";
               contentType = #VIDEO;
-              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_2_The_Implementation_Pipeline__Building_an_Anti-Corruption_Ecosys.mp4";
               detailedDescription = "This video will take you into more detail on the YouthLed steps 6 through 10";
               description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
             };

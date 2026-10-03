@@ -1,7 +1,7 @@
-import corpusJson from '@/lib/gracie-ku-corpus.json';
 import type { Module, ModuleAssessment } from '@/features/city/types';
 import type { LessonSection } from '@/features/course/types';
 import { youtubeId } from '@/features/course/youtube';
+import { getCorpus } from './corpusService';
 
 type RawTeaching = { id: number; sections?: LessonSection[] };
 type RawKU = { id: string; teachings: RawTeaching[] };
@@ -11,7 +11,9 @@ type RawKU = { id: string; teachings: RawTeaching[] };
  * canister only serves the link + description, so the sections are read from
  * the bundled corpus and matched by knowledge-unit id and teaching id.
  */
-function authoredSections(kuId: string, teachingId: number): LessonSection[] {
+async function authoredSections(kuId: string, teachingId: number): Promise<LessonSection[]> {
+	const corpusJson = await getCorpus();
+
 	const ku = (corpusJson.knowledgeUnits as unknown as RawKU[]).find((k) => k.id === kuId);
 	return ku?.teachings.find((t) => t.id === teachingId)?.sections ?? [];
 }
@@ -21,8 +23,8 @@ function authoredSections(kuId: string, teachingId: number): LessonSection[] {
  * single readable section built from what the corpus does carry, so a module
  * is never a dead end.
  */
-export function getLessonSections(module: Module, teaching: ModuleAssessment): LessonSection[] {
-	const authored = authoredSections(module.kuId, teaching.id);
+export async function getLessonSections(module: Module, teaching: ModuleAssessment): Promise<LessonSection[]> {
+	const authored = await authoredSections(module.kuId, teaching.id);
 	const sourceUrl = teaching.content?.url;
 	const isVideo = youtubeId(sourceUrl) !== null;
 
@@ -40,7 +42,7 @@ export function getLessonSections(module: Module, teaching: ModuleAssessment): L
 		'',
 		String(teaching.content?.detailedDescription || module.description),
 		...(objectives.length ? ['', '**In this lesson you will:**', '', ...objectives.map((o) => `- ${o}`)] : []),
-		...(sourceUrl && !isVideo ? ['', `Read more: [${teaching.content?.name}](${sourceUrl})`] : []),
+		//...(sourceUrl && !isVideo ? ['', `Read more: [${teaching.content?.name}](${sourceUrl})`] : []),
 	];
 	const overview: LessonSection = { id: 'overview', title: teaching.title, markdown: lines.join('\n') };
 	return isVideo ? [videoSection(teaching), overview] : [overview];

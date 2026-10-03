@@ -69,6 +69,7 @@ export function useCourse(moduleId?: string) {
 	const [percent, setPercent] = useState(0);
 	const [watched, setWatched] = useState<string[]>([]);
 	const [completedSections, setCompletedSections] = useState<string[]>([]);
+	const [sections, setSections] = useState<LessonSection[]>([]);
 	const [showWelcome, setShowWelcome] = useState(false);
 	const [ready, setReady] = useState(false);
 
@@ -76,10 +77,12 @@ export function useCourse(moduleId?: string) {
 	const hydrated = useRef(false);
 
 	const kuId = module?.kuId ?? '';
+	
 	const activities = useMemo(
 		() => (module?.assessments ?? []).filter((a) => PLAYABLE.has(a.type)),
 		[module],
 	);
+
 	const activity: ModuleAssessment | null = activities[activityIndex] ?? null;
 
 	// ── Load + hydrate ──────────────────────────────────────────────
@@ -205,13 +208,18 @@ export function useCourse(moduleId?: string) {
 	}, [screen]);
 
 	// ── Derived content ─────────────────────────────────────────────
-	const sections: LessonSection[] = useMemo(
-		() =>
-			module && activity?.type === AssessmentType.TEACHING
-				? getLessonSections(module, activity)
-				: [],
-		[module, activity],
-	);
+	useEffect(() => {
+		let cancelled = false;
+		setSections([]);
+		if (!module || activity?.type !== AssessmentType.TEACHING) return;
+
+		getLessonSections(module, activity).then((lessonSections) => {
+			if (!cancelled) setSections(lessonSections);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [module, activity]);
 
 	// A lesson finished on an earlier visit shows every section already ticked;
 	// the resume record only remembers the activity the learner last left.

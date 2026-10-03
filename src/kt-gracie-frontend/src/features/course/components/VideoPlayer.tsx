@@ -110,17 +110,17 @@ export default function VideoPlayer({ url, required, watched, onWatched }: Video
 				<span className="flex items-center gap-4">
 					{required && !watched && waited && (
 						<button onClick={onWatched} className="text-brand-600 hover:underline">
-							I’ve watched it
+							I have watched it
 						</button>
 					)}
-					<a
+					{/* <a
 						href={youtubeWatchUrl(id)}
 						target="_blank"
 						rel="noreferrer"
 						className="inline-flex items-center gap-1.5 text-ink-muted hover:text-brand-600 hover:underline"
 					>
 						<ExternalLink className="size-4" /> Watch on YouTube
-					</a>
+					</a> */}
 				</span>
 			</div>
 		</div>

@@ -286,6 +286,7 @@ const WelcomeScreen = ({
 
 	const selectedAssessment =
 		assessments[Math.min(selectedIndex, assessments.length - 1)];
+		
 	const start = () =>
 		selectedAssessment && onStart(selectedAssessment.courseIndex);
 

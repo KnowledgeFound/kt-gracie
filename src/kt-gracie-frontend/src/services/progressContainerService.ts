@@ -398,7 +398,7 @@ export function updateCityContentScore(): void {
     const city = getCityFromLocalStorage();
     
     if (city) {
-        const score = getNumberOfTeachingsCompleted() / getTotalNumberOfTeachings() * 50;
+        const score = (getNumberOfTeachingsCompleted() / getTotalNumberOfTeachings()) * 50;
         
         city.setContentScore(score);
 
@@ -439,7 +439,7 @@ export function updateCityAssessmentScore(): void {
     const city = getCityFromLocalStorage();
 
     if (city) {
-        const score = getTotalAssessmentScore() / getTotalPossibleAssessmentScore() * 50;
+        const score = (getTotalAssessmentScore() / getTotalPossibleAssessmentScore()) * 50;
 
         city.setFinalAssessmentScore(score);
         
