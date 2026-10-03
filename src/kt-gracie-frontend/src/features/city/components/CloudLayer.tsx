@@ -11,8 +11,8 @@ const CLOUD1_SRC = '/assets/city/cloud1.svg';
 const CLOUD2_SRC = '/assets/city/cloud2.svg';
 
 interface CloudLayerProps {
-	/** Corrupt city: more cloud cover. The thundercloud look itself is a CSS
-	 *  filter on `.cityScene--corrupt .cityCloud`, so the artwork is shared. */
+	/** Destroyed city: more cloud cover. The thundercloud look itself is a CSS
+	 *  filter on `.cityScene--destroyed .cityCloud`, so the artwork is shared. */
 	stormy?: boolean;
 }
 

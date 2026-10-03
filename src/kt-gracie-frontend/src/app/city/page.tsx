@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './city.css';
 import {
 	CloudLayer,
 	StormLayer,
 	DistrictArt,
 	CityHeader,
+	CityHero,
 	DrawerMenu,
 	CityMenu,
 	ModuleDrawer,
@@ -20,6 +21,7 @@ import { useUser } from '@/features/auth';
 import { useSettings } from '@/features/settings';
 import { cityBlocks, getCityBlock } from '@/features/city/constants';
 import type { CityBlockId } from '@/features/city/types';
+import { useCityLook } from '@/features/city/hooks/useCityLook';
 import { getCorpus } from '@/services/corpusService';
 import {
 	addProgressToContainer,
@@ -30,7 +32,7 @@ import {
 import { getAllModules } from '@/services/corpusService';
 import { createProgress } from '@/services/progressService';
 import { SubProgress, SubProgressTeaching } from '@/types/user';
-import { AssessmentType, CityState } from '@/ENUMS/enums';
+import { AssessmentType } from '@/ENUMS/enums';
 import { createCity, getCityFromLocalStorage, saveCityToLocalStorage } from '@/services/cityService';
 
 /**
@@ -69,16 +71,14 @@ export default function CityScene() {
 			})
 			.catch(() => setContinueModule(null));
 	}, []);
-	// Low health corrupts the city: ruined districts, fires, a storm overhead.
-	// In development `?cityState=corrupt` (or `=vibrant`) forces a look, so the
-	// artwork can be checked without editing the stored health.
-	const [searchParams] = useSearchParams();
-	const forcedState = import.meta.env.DEV
-		? searchParams.get('cityState')
-		: null;
-	const isCorrupt = forcedState
-		? forcedState === 'corrupt'
-		: city?.getCityState() === CityState.CORRUPT;
+	// Low health corrupts the city: the districts, balloon and backdrop swap to
+	// their abandoned artwork and a little smoke rises; nothing else changes.
+	// The destroyed look (ember sky, fires, storm) is kept for a harsher tier
+	// the backend may add later. See useCityLook for the dev override.
+	const look = useCityLook(city);
+	const isVibrant = look === 'normal';
+	const isCorrupt = look === 'corrupt';
+	const isDestroyed = look === 'destroyed';
 	const reduceMotion =
 		settings.appearance.reduceMotion ||
 		window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -189,7 +189,9 @@ export default function CityScene() {
 			className={[
 				'cityScene',
 				hoveredBlock ? 'cityScene--hovering' : '',
+				isVibrant ? 'cityScene--vibrant' : '',
 				isCorrupt ? 'cityScene--corrupt' : '',
+				isDestroyed ? 'cityScene--destroyed' : '',
 			]
 				.filter(Boolean)
 				.join(' ')}
@@ -197,15 +199,17 @@ export default function CityScene() {
 			{/* City background */}
 			<div aria-hidden="true" className="cityBackground" />
 
-			{/* Cloud layer — ambience, opt-out in Settings */}
-			{settings.city.clouds && (
+			{/* Thunderclouds over a destroyed city — opt-out in Settings. The
+			    vibrant and corrupt looks paint their own skies, so the drifting
+			    cloud layer stays off there. */}
+			{isDestroyed && settings.city.clouds && (
 				<div className="cityCloudLayer">
-					<CloudLayer stormy={isCorrupt} />
+					<CloudLayer stormy />
 				</div>
 			)}
 
-			{/* Rain and lightning over a corrupt city — opt-out in Settings */}
-			{isCorrupt && settings.city.stormEffects && (
+			{/* Rain and lightning over a destroyed city — opt-out in Settings */}
+			{isDestroyed && settings.city.stormEffects && (
 				<StormLayer reduceMotion={reduceMotion} />
 			)}
 
@@ -245,9 +249,9 @@ export default function CityScene() {
 							>
 								<DistrictArt
 									block={block}
-									corrupt={isCorrupt}
+									look={look}
 									floating={settings.city.floatingDistricts}
-									fires={settings.city.stormEffects}
+									effects={settings.city.stormEffects}
 								/>
 							</button>
 						);
@@ -274,7 +278,15 @@ export default function CityScene() {
 				onClickToken={() => setTokenOpen(true)}
 				onClickTrend={() => setProgressOpen(true)}
 				onClickUser={() => setDrawerOpen(true)}
-				onClickSettings={() => navigate('/settings')}
+			/>
+
+			{/* Headline and progress card down the left; the map is pushed right
+			    to make room on large screens (see `.cityHero` in city.css). */}
+			<CityHero
+				restore={!isVibrant}
+				tokens={user?.tokenBalance ?? 0}
+				health={city?.health ?? 0}
+				onOpenProgress={() => setProgressOpen(true)}
 			/>
 
 			{/* User profile drawer — right side */}
@@ -316,6 +328,8 @@ export default function CityScene() {
 			{settings.guide.visible && (
 				<GracieGuide
 					moduleId={moduleId}
+					userName={user?.firstName}
+					restore={!isVibrant}
 					onIntroDone={() => setIntroDone(true)}
 				/>
 			)}
@@ -324,7 +338,7 @@ export default function CityScene() {
 			    Gracie while she has the screen, so it waits for her to dock. With
 			    no guide on screen there is nothing to wait for. */}
 			{(introDone || !settings.guide.visible) &&
-				settings.city.balloonCursor && <BalloonCursor />}
+				settings.city.balloonCursor && <BalloonCursor corrupt={isCorrupt} />}
 		</div>
 	);
 }

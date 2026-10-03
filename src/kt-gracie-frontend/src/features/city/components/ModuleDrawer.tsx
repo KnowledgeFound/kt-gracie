@@ -6,6 +6,7 @@ import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
 import { useReadingLevel } from '@/features/settings';
 import { getResume, getUnitCompletionPercentage } from '@/services/progressContainerService';
+import { useModuleImage } from '../hooks/useModuleImage';
 
 // const CITY_SRC = '/assets/city/city.png';
 
@@ -115,6 +116,7 @@ interface ModuleHeaderProps {
 }
 
 function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
+	const art = useModuleImage(module);
 	const Icon = module.icon;
 	const [loading, setLoading] = useState(false);
 	const { t } = useReadingLevel();
@@ -159,7 +161,7 @@ function ModuleHeader({ module, onClose }: ModuleHeaderProps) {
 				)}
 
 				<img
-					src={module.image}
+					src={art}
 					alt="Module"
 					loading="lazy"
 					decoding="async"

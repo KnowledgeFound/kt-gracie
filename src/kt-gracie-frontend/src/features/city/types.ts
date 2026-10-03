@@ -88,21 +88,42 @@ export interface CityBlockFire {
 }
 
 /**
+ * A smoke plume on an abandoned (corrupt) district. `x`/`y` mark where the
+ * smoke leaves the building, as a fraction of the district's box; `size` is
+ * the plume's width as a fraction of the box width.
+ */
+export interface CityBlockSmoke {
+	x: number;
+	y: number;
+	size: number;
+}
+
+/**
  * A district's geometry, in percentages of the `.cityBlocks` stage — the
  * fixed-ratio box the whole map is laid out in. Both the district image and
  * its module button are positioned from these numbers, so they can never
  * drift apart.
  */
+/**
+ * How the map is drawn. `corrupt` only swaps the district (and balloon)
+ * artwork; `destroyed` is the full ember-sky, fire and storm treatment.
+ */
+export type CityLook = 'normal' | 'corrupt' | 'destroyed';
+
 export interface CityBlock {
 	id: CityBlockId;
 	/** Module this district represents. */
 	moduleId: number;
 	src: string;
-	/** Ruined artwork shown while the city is corrupt — same canvas as `src`. */
+	/** Abandoned artwork shown while the city is corrupt — same canvas as `src`. */
 	corruptSrc: string;
+	/** Burnt-out artwork for the destroyed look — same canvas as `src`. */
+	destroyedSrc: string;
 	alt: string;
-	/** Fires burning on the district while the city is corrupt. */
+	/** Fires burning on the district while the city is destroyed. */
 	fires: CityBlockFire[];
+	/** Smoke rising off the district while the city is corrupt. */
+	smoke: CityBlockSmoke[];
 	/** Image box within the stage. */
 	box: { left: number; top: number; width: number; height: number };
 	/** Where the module button clips onto the district. */
@@ -128,6 +149,8 @@ export interface Module {
 	audience: string;
 	icon: ComponentType<{ className?: string }>;
 	image: string;
+	/** Ruined version of `image`, shown while the city is corrupt. */
+	corruptImage?: string;
 	/** Which floating district on the city map this module lives on */
 	block: CityBlockId;
 	/** Learning objectives shown on WelcomeScreen left panel (see `description`) */

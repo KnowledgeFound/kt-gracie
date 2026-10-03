@@ -9,6 +9,7 @@ import type {
 	CityBlockId,
 	CityBlockFire,
 	CityBlockFloat,
+	CityBlockSmoke,
 } from './types';
 import city_img from '/assets/city/city.png';
 import anti_corruption_img from '/assets/city/anti-corruption.jpeg';
@@ -182,12 +183,16 @@ function makeAssessments(base: string): ModuleAssessment[] {
  * picture. Swapping in art with a very different shape would letterbox it
  * inside the box and shift every button on that district.
  *
- * `corruptSrc` is the ruined version of the district, shown when the city's
+ * `corruptSrc` is the abandoned version of the district, shown when the city's
  * health drops it into the corrupt state. It must share `src`'s canvas size
- * and island footprint so the swap doesn't move anything. `fires` are the
+ * and island footprint so the swap doesn't move anything. `destroyedSrc` is
+ * the burnt-out version for the extra-destructive look, and `fires` are the
  * flames drawn on top of it — `x`/`y` use the same box fractions as
  * `labelBias` and mark the base of each flame, so put them on rooftops and
  * window lines; `size` is the flame width as a fraction of the box width.
+ * `smoke` works the same way for the corrupt look: one or two thin plumes
+ * per district, placed on collapsed roofs so the ruins read as still
+ * smouldering rather than burning.
  */
 const DEFAULT_LABEL_BIAS = { x: 0.5, y: 0.7 };
 
@@ -196,56 +201,75 @@ const BLOCK_LAYOUT: Record<
 	{
 		src: string;
 		corruptSrc: string;
+		destroyedSrc: string;
 		box: { left: number; top: number; width: number; height: number };
 		float: CityBlockFloat;
 		labelBias?: { x?: number; y?: number };
 		z?: number;
 		fires: CityBlockFire[];
+		smoke: CityBlockSmoke[];
 	}
 > = {
 	leftUp: {
-		src: '/assets/city/block-left-up.png',
-		corruptSrc: '/assets/city/corrupt/block-left-up.png',
+		src: '/assets/Vibrant-city/block-left-up.png',
+		corruptSrc: '/assets/corrupted-city/block-left-up.png',
+		destroyedSrc: '/assets/city/corrupt/block-left-up.png',
 		fires: [
 			{ x: 0.35, y: 0.17, size: 0.13 },
 			{ x: 0.74, y: 0.21, size: 0.1 },
 			{ x: 0.42, y: 0.47, size: 0.08 },
+		],
+		smoke: [
+			{ x: 0.37, y: 0.13, size: 0.1 },
+			{ x: 0.75, y: 0.2, size: 0.07 },
 		],
 		box: { left: -4, top: 10, width: 50, height: 50 },
 		float: 'float',
 		labelBias: { x: 0.42, y: 0.6 },
 	},
 	rightUp: {
-		src: '/assets/city/block-right-up.png',
-		corruptSrc: '/assets/city/corrupt/block-right-up.png',
+		src: '/assets/Vibrant-city/block-right-up.png',
+		corruptSrc: '/assets/corrupted-city/block-right-up.png',
+		destroyedSrc: '/assets/city/corrupt/block-right-up.png',
 		fires: [
 			{ x: 0.54, y: 0.22, size: 0.13 },
 			{ x: 0.2, y: 0.2, size: 0.09 },
 			{ x: 0.83, y: 0.36, size: 0.08 },
 			{ x: 0.66, y: 0.55, size: 0.08 },
 		],
+		smoke: [
+			{ x: 0.52, y: 0.07, size: 0.09 },
+			{ x: 0.84, y: 0.32, size: 0.06 },
+		],
 		box: { left: 54, top: 5, width: 50, height: 50 },
 		float: 'floatReverse',
 		labelBias: { x: 0.64, y: 0.4 },
 	},
 	central: {
-		src: '/assets/city/block-central.png',
-		corruptSrc: '/assets/city/corrupt/block-central.png',
+		src: '/assets/Vibrant-city/block-central.png',
+		corruptSrc: '/assets/corrupted-city/block-central.png',
+		destroyedSrc: '/assets/city/corrupt/block-central.png',
 		fires: [
 			{ x: 0.47, y: 0.1, size: 0.16 },
 			{ x: 0.34, y: 0.37, size: 0.1 },
 		],
+		smoke: [{ x: 0.47, y: 0.06, size: 0.1 }],
 		box: { left: 30, top: 30, width: 40, height: 40 },
 		float: 'floatSlow',
 		z: 2,
 	},
 	leftDown: {
-		src: '/assets/city/block-left-down.png',
-		corruptSrc: '/assets/city/corrupt/block-left-down.png',
+		src: '/assets/Vibrant-city/block-left-down.png',
+		corruptSrc: '/assets/corrupted-city/block-left-down.png',
+		destroyedSrc: '/assets/city/corrupt/block-left-down.png',
 		fires: [
 			{ x: 0.31, y: 0.16, size: 0.13 },
 			{ x: 0.76, y: 0.22, size: 0.08 },
 			{ x: 0.54, y: 0.43, size: 0.09 },
+		],
+		smoke: [
+			{ x: 0.3, y: 0.1, size: 0.1 },
+			{ x: 0.76, y: 0.21, size: 0.06 },
 		],
 		box: { left: -10, top: 50, width: 50, height: 50 },
 		float: 'floatReverse',
@@ -254,14 +278,16 @@ const BLOCK_LAYOUT: Record<
 		labelBias: { x: 0.75, y: 0.3 },
 	},
 	rightDown: {
-		src: '/assets/city/block-right-down.png',
-		corruptSrc: '/assets/city/corrupt/block-right-down.png',
+		src: '/assets/Vibrant-city/block-right-down.png',
+		corruptSrc: '/assets/corrupted-city/block-right-down.png',
+		destroyedSrc: '/assets/city/corrupt/block-right-down.png',
 		fires: [
 			{ x: 0.7, y: 0.2, size: 0.14 },
 			{ x: 0.38, y: 0.12, size: 0.08 },
 			{ x: 0.22, y: 0.33, size: 0.09 },
 			{ x: 0.44, y: 0.46, size: 0.09 },
 		],
+		smoke: [{ x: 0.66, y: 0.16, size: 0.09 }],
 		box: { left: 60, top: 50, width: 50, height: 50 },
 		float: 'float',
 		labelBias: { x: 0.75, y: 0.4 },
@@ -626,7 +652,9 @@ export const cityBlocks: CityBlock[] = modules.map((m) => {
 		moduleId: m.id,
 		src: layout.src,
 		corruptSrc: layout.corruptSrc,
+		destroyedSrc: layout.destroyedSrc,
 		fires: layout.fires,
+		smoke: layout.smoke,
 		alt: `${m.name} district`,
 		box: layout.box,
 		anchor: {

@@ -22,6 +22,9 @@ export default function TestUser() {
         const fd = new FormData(e.currentTarget);
         try {
             const created = createUser({
+                username: fd.get("firstName") as string,
+                passwordHash: "test",
+                passwordSalt: "test",
                 firstName: fd.get("firstName") as string,
                 ageBucket: fd.get("ageBucket") as AgeBucket,
                 gender: fd.get("gender") as Gender,

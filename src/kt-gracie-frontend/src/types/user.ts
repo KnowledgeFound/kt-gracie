@@ -60,6 +60,13 @@ export interface City {
 
 export interface User {
     anonymousId: string;
+    /** Sign-in name, unique on this device. Local only. */
+    username: string;
+    /** PBKDF2 hash of the password and its salt (hex). Local only. Absent on
+     *  profiles created before accounts had passwords. */
+    passwordHash?: string;
+    passwordSalt?: string;
+    /** Display name — the username unless the user picks something else. */
     firstName: string;
     ageBucket: AgeBucket;
     gender: Gender;
@@ -76,11 +83,17 @@ export interface User {
 // --- Input types for CRUD operations ---
 
 export interface CreateUserInput {
-    firstName: string;
+    username: string;
+    passwordHash: string;
+    passwordSalt: string;
     ageBucket: AgeBucket;
-    gender: Gender;
-    region?: Region;
     country?: string;
+    /** Defaults to the username. */
+    firstName?: string;
+    /** Defaults to undisclosed — no longer asked at sign-up. */
+    gender?: Gender;
+    /** Derived from `country` when omitted. */
+    region?: Region;
 }
 
 export type UpdateUserInput = Partial<

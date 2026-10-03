@@ -168,10 +168,9 @@ export default {
           '0%, 100%': { transform: 'scale(1)' },
           '50%':      { transform: 'scale(1.05)' },
         },
-        spiralRing: {
-          '0%':   { transform: 'scale(0.6)', opacity: '0.8' },
-          '80%':  { transform: 'scale(2.6)', opacity: '0.15' },
-          '100%': { transform: 'scale(2.8)', opacity: '0' },
+        balloonBob: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%':      { transform: 'translateY(-10px)' },
         },
       },
       animation: {
@@ -181,7 +180,7 @@ export default {
         fadeSlideDown:  'fadeSlideDown 0.6s ease-out both',
         cityReveal:     'cityReveal 0.8s ease-out both',
         pulseScale:     'pulseScale 2s ease-in-out infinite',
-        spiralRing:     'spiralRing 1.8s ease-out infinite',
+        balloonBob:     'balloonBob 3s ease-in-out infinite',
       },
     },
   },

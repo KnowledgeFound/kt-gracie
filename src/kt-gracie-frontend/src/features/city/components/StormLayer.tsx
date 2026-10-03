@@ -58,7 +58,7 @@ function makeStrike(id: number): Strike {
 }
 
 /**
- * Weather over the corrupt city: canvas rain across the whole scene, plus
+ * Weather over the destroyed city: canvas rain across the whole scene, plus
  * lightning — a forked bolt behind the districts and a flash over everything —
  * every few seconds. Purely decorative and never takes pointer events.
  *

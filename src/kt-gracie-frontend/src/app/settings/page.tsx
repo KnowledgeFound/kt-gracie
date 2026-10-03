@@ -8,7 +8,6 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-	ArrowLeft,
 	Check,
 	Cloud,
 	Cpu,
@@ -28,6 +27,7 @@ import {
 	LearningPanel,
 	useSettings,
 } from '@/features/settings';
+import { CityShell, PageTitle } from '@/features/city';
 import '@/features/settings/settings.css';
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
@@ -131,32 +131,14 @@ export default function SettingsPage() {
 	const ActivePanel = active.Panel;
 
 	return (
-		<div className="settingsPage pb-16 text-ink-deep">
-			{/* ── Header ──────────────────────────────────────────────────────── */}
-			<header className="sticky top-0 z-20 border-b border-line-soft bg-surface-page/85 backdrop-blur-md">
-				<div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3.5 sm:px-6">
-					<button
-						type="button"
-						onClick={() => navigate(-1)}
-						aria-label="Go back"
-						className="flex size-9 flex-shrink-0 items-center justify-center rounded-xl border border-line-soft bg-surface-card text-ink-mid transition-colors hover:bg-surface-raised hover:text-ink-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
-					>
-						<ArrowLeft className="size-4" />
-					</button>
-
-					<div className="min-w-0 flex-1">
-						<div className="flex items-center gap-2">
-							<SlidersHorizontal className="size-4 flex-shrink-0 text-brand-600 dark:text-brand-300" />
-							<h1 className="truncate text-lg font-black tracking-tight">
-								Settings
-							</h1>
-						</div>
-						<p className="truncate text-xs text-ink-muted">
-							Saved on this device — nothing leaves your browser.
-						</p>
-					</div>
-
-					{/* Autosave confirmation */}
+		<CityShell width="lg">
+			<PageTitle
+				icon={SlidersHorizontal}
+				kicker="Preferences"
+				title="Settings"
+				sub="Saved on this device — nothing leaves your browser."
+				action={
+					/* Autosave confirmation */
 					<AnimatePresence>
 						{isDirty && (
 							<motion.span
@@ -164,7 +146,7 @@ export default function SettingsPage() {
 								initial={{ opacity: 0, scale: 0.9, y: -4 }}
 								animate={{ opacity: 1, scale: 1, y: 0 }}
 								exit={{ opacity: 0, scale: 0.9 }}
-								className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400"
+								className="cityGlass flex flex-shrink-0 items-center gap-1.5 !rounded-full px-3 py-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400"
 								role="status"
 							>
 								<Check className="size-3" strokeWidth={3} />
@@ -172,17 +154,17 @@ export default function SettingsPage() {
 							</motion.span>
 						)}
 					</AnimatePresence>
-				</div>
-			</header>
+				}
+			/>
 
 			{/* ── Body ────────────────────────────────────────────────────────── */}
-			<div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 pt-5 sm:px-6 md:flex-row md:gap-8">
+			<div className="flex flex-col gap-5 text-ink-deep md:flex-row md:gap-8">
 				{/* Section rail — chips on mobile, list on desktop */}
 				<nav
 					role="tablist"
 					aria-orientation="vertical"
 					aria-label="Settings sections"
-					className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:w-56 md:flex-shrink-0 md:flex-col md:overflow-visible md:px-0 md:pb-0"
+					className="cityGlass flex gap-2 overflow-x-auto p-2 md:w-60 md:flex-shrink-0 md:flex-col md:self-start md:overflow-visible"
 				>
 					{TABS.map(({ id, label, blurb, icon: Icon }, i) => {
 						const selected = id === tab;
@@ -246,11 +228,14 @@ export default function SettingsPage() {
 						</motion.div>
 					</AnimatePresence>
 
-					<p className="mt-6 text-center text-[11px] text-ink-subtle">
+					<p
+						className="mt-6 text-center text-[11px]"
+						style={{ color: 'var(--hero-sub)' }}
+					>
 						Changes apply immediately and are saved automatically.
 					</p>
 				</main>
 			</div>
-		</div>
+		</CityShell>
 	);
 }

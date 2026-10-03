@@ -74,6 +74,10 @@ interface Props {
 	/** The currently open module (its district drawer). When set, Gracie gives
 	 *  an overview of it instead of the intro script. */
 	moduleId?: number | null;
+	/** Learner's first name — greets them in the idle bubble. */
+	userName?: string;
+	/** Corrupt or destroyed city: the idle prompt talks about restoring. */
+	restore?: boolean;
 	/** Fired once the intro script is finished and Gracie starts docking. */
 	onIntroDone?: () => void;
 }
@@ -88,7 +92,12 @@ interface Props {
  * quick overview of that module. For each message Gracie's talking clip plays
  * exactly {@link LOOPS_PER_STEP} times, then freezes.
  */
-export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
+export default function GracieGuide({
+	moduleId = null,
+	userName,
+	restore = false,
+	onIntroDone,
+}: Props) {
 	const { settings, update } = useSettings();
 	const { t } = useReadingLevel();
 	const guide = settings.guide;
@@ -165,18 +174,26 @@ export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 	// The open district wins; during the intro she reads the script; once docked
 	// with nothing open she holds on the "click a district" prompt rather than
 	// whichever line the user skipped out of.
+	const idle = !activeModule && !introRunning;
+	const idlePrompt = restore
+		? 'Click a district to restore it.'
+		: 'Click a district to begin.';
+	const greeting = userName ? `Hi ${userName}!` : 'Hi there!';
 	const message = activeModule
 		? moduleBriefing(activeModule, t(activeModule.description))
 		: introRunning
 		? t(SCRIPT[step])
-		: t(SCRIPT[SCRIPT.length - 1]);
+		: idlePrompt;
+	// What she reads aloud: the idle bubble shows the greeting on its own line,
+	// so it is folded back into the spoken text here.
+	const spoken = idle ? `${greeting} ${message}` : message;
 
 	// Replay the talking clip whenever the shown message changes.
 	const messageKey = activeModule
 		? `module-${activeModule.id}`
 		: introRunning
 		? `step-${step}`
-		: 'idle';
+		: `idle-${restore ? 'restore' : 'protect'}`;
 	useEffect(() => {
 		const v = videoRef.current;
 		if (!v) return;
@@ -193,13 +210,13 @@ export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 	// talks over another screen.
 	useEffect(() => {
 		if (!guide.audio || !speechSupported) return;
-		return speak(message, {
+		return speak(spoken, {
 			voiceURI: guide.voiceURI,
 			pace: guide.pace,
 			volume: guide.volume,
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [messageKey, message, guide.audio, guide.voiceURI, guide.pace, guide.volume]);
+	}, [messageKey, spoken, guide.audio, guide.voiceURI, guide.pace, guide.volume]);
 
 	const handleEnded = () => {
 		const v = videoRef.current;
@@ -289,7 +306,13 @@ export default function GracieGuide({ moduleId = null, onIntroDone }: Props) {
 								</button>
 							)}
 
-							{message}
+							<span className="gracieGuide__bubbleTitle">Gracie says</span>
+							{idle && (
+								<strong className="gracieGuide__greeting">
+									{greeting} <span aria-hidden="true">👋</span>
+								</strong>
+							)}
+							<span className="gracieGuide__text">{message}</span>
 							{introRunning && (
 								<span className="gracieGuide__dots" aria-hidden="true">
 									{SCRIPT.map((_, i) => (

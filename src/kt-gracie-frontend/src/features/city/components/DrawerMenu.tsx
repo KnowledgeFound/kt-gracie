@@ -51,7 +51,7 @@ interface DrawerMenuProps {
 
 export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 	const navigate = useNavigate();
-	const { user, deleteUser } = useUser();
+	const { user, logout } = useUser();
 
 	const accuracy = 10; // Consult Leo about this
 
@@ -62,7 +62,7 @@ export default function DrawerMenu({ open, onClose }: DrawerMenuProps) {
 
 	function handleLogOut() {
 		onClose();
-		deleteUser();
+		logout();
 		navigate('/');
 	}
 

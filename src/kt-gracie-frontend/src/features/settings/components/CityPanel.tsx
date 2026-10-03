@@ -32,7 +32,7 @@ export default function CityPanel() {
 			>
 				<SettingRow
 					title="Drifting clouds"
-					description="The animated cloud layer above the districts."
+					description="The animated thunderclouds above the districts while the city is destroyed."
 				>
 					<Toggle
 						label="Drifting clouds"
@@ -64,11 +64,11 @@ export default function CityPanel() {
 				</SettingRow>
 
 				<SettingRow
-					title="Storm and fire"
-					description="Rain, lightning and fires over the city while its health is low."
+					title="Storm, fire and smoke"
+					description="Smoke over the ruins while the city's health is low, and the storm and fires of a destroyed city."
 				>
 					<Toggle
-						label="Storm and fire"
+						label="Storm, fire and smoke"
 						checked={stormEffects}
 						onChange={(next) => update('city', { stormEffects: next })}
 					/>

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Gender, AgeBucket, Region } from "../../ENUMS/enums";
+import { Gender, AgeBucket } from "../../ENUMS/enums";
 import { USER_STORAGE_KEY } from "../../commons/utilts";
 import {
     createUser,
@@ -17,6 +17,9 @@ beforeEach(() => {
 describe("createUser", () => {
     it("creates a user and stores in localStorage", () => {
         const user = createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -29,7 +32,7 @@ describe("createUser", () => {
         expect(user.firstName).toBe("Alice");
         expect(user.ageBucket).toBe(AgeBucket.AGE_20_22);
         expect(user.gender).toBe(Gender.FEMALE);
-        //expect(user.region).toBe(Region.CARIBBEAN);
+        expect(user.username).toBe("user1");
         expect(user.country).toBe("");
         expect(user.tokenBalance).toBe(0);
         expect(user.createdAt).toBeTruthy();
@@ -44,6 +47,9 @@ describe("createUser", () => {
         // é as combining sequence (e + combining acute) vs precomposed
         const combining = "e\u0301";
         const user = createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: combining,
             ageBucket: AgeBucket.AGE_17_19,
             gender: Gender.MALE,
@@ -53,6 +59,9 @@ describe("createUser", () => {
 
     it("throws if user already exists", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -60,11 +69,14 @@ describe("createUser", () => {
 
         expect(() =>
             createUser({
+                username: "user1",
+                passwordHash: "hash",
+                passwordSalt: "salt",
                 firstName: "Bob",
                 ageBucket: AgeBucket.AGE_17_19,
                 gender: Gender.MALE,
             })
-        ).toThrow("User already exists");
+        ).toThrow("An account already exists");
     });
 });
 
@@ -75,6 +87,9 @@ describe("getUser", () => {
 
     it("returns the user after creation", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -89,6 +104,9 @@ describe("getUser", () => {
 describe("updateUser", () => {
     it("merges updates and preserves identity", () => {
         const original = createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -104,6 +122,9 @@ describe("updateUser", () => {
 
     it("NFC-normalizes updated firstName", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -115,6 +136,9 @@ describe("updateUser", () => {
 
     it("persists to localStorage", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -134,6 +158,9 @@ describe("updateUser", () => {
 describe("deleteUser", () => {
     it("removes user from localStorage", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -152,6 +179,9 @@ describe("deleteUser", () => {
 describe("updateGracie", () => {
     it("merges gracie updates", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -178,6 +208,9 @@ describe("updateGracie", () => {
 describe("updateTokenBalance", () => {
     it("updates the cached token balance and persists it", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,
@@ -192,6 +225,9 @@ describe("updateTokenBalance", () => {
 
     it("supports a negative balance (debt allowed)", () => {
         createUser({
+            username: "user1",
+            passwordHash: "hash",
+            passwordSalt: "salt",
             firstName: "Alice",
             ageBucket: AgeBucket.AGE_20_22,
             gender: Gender.FEMALE,

@@ -60,7 +60,13 @@ export enum ContentType {
 export enum CityState {
     VIBRANT = "Vibrant",
     NORMAL = "Normal",
+    /** Low health: the districts swap to their abandoned, overgrown artwork. */
     CORRUPT = "Corrupt",
+    /**
+     * Extra-destructive look (ember sky, fires, storm). Kept as a tier the
+     * backend can switch on later; nothing maps health to it today.
+     */
+    DESTROYED = "Destroyed",
 }
 
 

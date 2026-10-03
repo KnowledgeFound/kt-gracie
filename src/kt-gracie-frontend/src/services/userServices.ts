@@ -1,5 +1,7 @@
-import { Region } from "../ENUMS/enums";
+import { Gender, Region } from "../ENUMS/enums";
 import { getLocalStorage, setLocalStorage, USER_STORAGE_KEY } from "../commons/utilts";
+import { regionForCountry } from "../features/auth/countries";
+import { verifyPassword } from "../features/auth/password";
 import type {
     User,
     CreateUserInput,
@@ -11,20 +13,28 @@ import {
     createDefaultCity,
 } from "./userDefaults";
 
+export const SESSION_STORAGE_KEY = "gracie_session";
+
 export function createUser(input: CreateUserInput): User {
     const existing = getUser();
-    if (existing) {
-        throw new Error("User already exists. Delete first.");
+    // A profile from before accounts had passwords can be replaced; a real
+    // account cannot — sign in instead.
+    if (existing && existing.passwordHash) {
+        throw new Error("An account already exists on this device. Sign in instead.");
     }
 
     const now = new Date().toISOString();
+    const country = input.country?.trim() || "";
     const user: User = {
         anonymousId: crypto.randomUUID(),
-        firstName: input.firstName.normalize("NFC"),
+        username: input.username.trim(),
+        passwordHash: input.passwordHash,
+        passwordSalt: input.passwordSalt,
+        firstName: (input.firstName || input.username).trim().normalize("NFC"),
         ageBucket: input.ageBucket,
-        gender: input.gender,
-        region: input.region || Region.SOUTHERN_AFRICA,
-        country: input.country || "Global Citizen",
+        gender: input.gender ?? Gender.UNDISCLOSED,
+        region: input.region || regionForCountry(country) || Region.SOUTHERN_AFRICA,
+        country,
         createdAt: now,
         updatedAt: now,
         lastActiveAt: now,
@@ -34,11 +44,50 @@ export function createUser(input: CreateUserInput): User {
     };
 
     setLocalStorage(USER_STORAGE_KEY, user);
+    signIn();
     return user;
 }
 
 export function getUser(): User | null {
     return getLocalStorage(USER_STORAGE_KEY) as User | null;
+}
+
+// ── Session ────────────────────────────────────────────────────────────────
+// The account lives on this device; a session says whether its owner is
+// signed in right now. Signing out keeps the account and its progress.
+
+export function isSignedIn(): boolean {
+    const user = getUser();
+    if (!user) return false;
+    // Profiles created before passwords existed are treated as signed in.
+    if (!user.passwordHash) return true;
+    return getLocalStorage(SESSION_STORAGE_KEY)?.username === user.username;
+}
+
+export function signIn(): void {
+    const user = getUser();
+    if (!user) return;
+    setLocalStorage(SESSION_STORAGE_KEY, { username: user.username, signedInAt: new Date().toISOString() });
+}
+
+export function signOut(): void {
+    localStorage.removeItem(SESSION_STORAGE_KEY);
+}
+
+/**
+ * Check credentials against the account on this device and open a session
+ * when they match. Resolves false (never throws) on a mismatch.
+ */
+export async function login(username: string, password: string): Promise<boolean> {
+    const user = getUser();
+    if (!user || !user.passwordHash || !user.passwordSalt) return false;
+    if (user.username.toLowerCase() !== username.trim().toLowerCase()) return false;
+    const ok = await verifyPassword(password, user.passwordSalt, user.passwordHash);
+    if (ok) {
+        signIn();
+        setLocalStorage(USER_STORAGE_KEY, { ...user, lastActiveAt: new Date().toISOString() });
+    }
+    return ok;
 }
 
 export function updateUser(updates: UpdateUserInput): User {
@@ -54,6 +103,9 @@ export function updateUser(updates: UpdateUserInput): User {
         ...(updates.firstName
             ? { firstName: updates.firstName.normalize("NFC") }
             : {}),
+        ...(updates.country && !updates.region
+            ? { region: regionForCountry(updates.country) ?? user.region }
+            : {}),
         updatedAt: now,
         lastActiveAt: now,
     };
@@ -64,6 +116,7 @@ export function updateUser(updates: UpdateUserInput): User {
 
 export function deleteUser(): void {
     localStorage.removeItem(USER_STORAGE_KEY);
+    signOut();
 }
 
 

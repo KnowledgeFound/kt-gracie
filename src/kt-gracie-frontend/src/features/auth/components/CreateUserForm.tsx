@@ -1,35 +1,66 @@
 import { FormEvent, useState } from 'react';
 import type { CreateUserInput } from '../../../types/user';
-import {AgeBucket, Gender, Region} from '../../../ENUMS/enums';
-import { AGE_BUCKET_LABELS, GENDER_LABELS, REGION_LABELS } from '../constants';
+import { AgeBucket } from '../../../ENUMS/enums';
+import { AGE_BUCKET_LABELS } from '../constants';
+import { COUNTRIES } from '../countries';
+import { hashPassword } from '../password';
 import { Button } from '@/components/ui';
+import { Field, inputCls } from './formBits';
 
 interface CreateUserFormProps {
 	onSubmit: (input: CreateUserInput) => void;
+	onSignIn?: () => void;
 }
 
-export default function CreateUserForm({ onSubmit }: CreateUserFormProps) {
-	
-	const [error, setError] = useState('');
+const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
+const MIN_PASSWORD = 6;
 
-	function handleSubmit(e: FormEvent<HTMLFormElement>) {
+export default function CreateUserForm({ onSubmit, onSignIn }: CreateUserFormProps) {
+	const [error, setError] = useState('');
+	const [busy, setBusy] = useState(false);
+
+	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setError('');
 		const fd = new FormData(e.currentTarget);
 
-		const firstName = (fd.get('firstName') as string).trim();
-		if (!firstName) {
-			setError('First name is required.');
+		const username = (fd.get('username') as string).trim();
+		const password = fd.get('password') as string;
+		const confirm = fd.get('confirmPassword') as string;
+		const country = (fd.get('country') as string) ?? '';
+
+		if (!USERNAME_RE.test(username)) {
+			setError('Username must be 3–24 characters: letters, numbers or underscores.');
+			return;
+		}
+		if (password.length < MIN_PASSWORD) {
+			setError(`Password must be at least ${MIN_PASSWORD} characters.`);
+			return;
+		}
+		if (password !== confirm) {
+			setError('The two passwords do not match.');
+			return;
+		}
+		if (!country) {
+			setError('Choose your country.');
 			return;
 		}
 
-		onSubmit({
-			firstName,
-			ageBucket: fd.get('ageBucket') as AgeBucket,
-			gender: fd.get('gender') as Gender,
-			region: fd.get('region') as Region,
-			country: (fd.get('country') as string).trim(),
-		});
+		setBusy(true);
+		try {
+			const { passwordHash, passwordSalt } = await hashPassword(password);
+			onSubmit({
+				username,
+				passwordHash,
+				passwordSalt,
+				ageBucket: fd.get('ageBucket') as AgeBucket,
+				country,
+			});
+		} catch (err) {
+			setError((err as Error).message);
+		} finally {
+			setBusy(false);
+		}
 	}
 
 	return (
@@ -45,19 +76,44 @@ export default function CreateUserForm({ onSubmit }: CreateUserFormProps) {
 				</p>
 			)}
 
-			{/* First name */}
-			<Field label="First Name" htmlFor="firstName">
+			<Field label="Username" htmlFor="username">
 				<input
-					id="firstName"
-					name="firstName"
+					id="username"
+					name="username"
 					type="text"
+					autoComplete="username"
 					required
-					placeholder="e.g. Amara"
+					minLength={3}
+					maxLength={24}
+					placeholder="e.g. amara_k"
 					className={inputCls}
 				/>
 			</Field>
 
-			{/* Age bucket */}
+			<Field label="Password" htmlFor="password">
+				<input
+					id="password"
+					name="password"
+					type="password"
+					autoComplete="new-password"
+					required
+					minLength={MIN_PASSWORD}
+					className={inputCls}
+				/>
+			</Field>
+
+			<Field label="Re-enter Password" htmlFor="confirmPassword">
+				<input
+					id="confirmPassword"
+					name="confirmPassword"
+					type="password"
+					autoComplete="new-password"
+					required
+					minLength={MIN_PASSWORD}
+					className={inputCls}
+				/>
+			</Field>
+
 			<Field label="Age Range" htmlFor="ageBucket">
 				<select id="ageBucket" name="ageBucket" className={inputCls}>
 					{Object.entries(AGE_BUCKET_LABELS).map(([value, label]) => (
@@ -68,66 +124,35 @@ export default function CreateUserForm({ onSubmit }: CreateUserFormProps) {
 				</select>
 			</Field>
 
-			{/* Gender */}
-			<Field label="Gender" htmlFor="gender">
-				<select id="gender" name="gender" className={inputCls}>
-					{Object.entries(GENDER_LABELS).map(([value, label]) => (
-						<option key={value} value={value}>
-							{label}
+			<Field label="Country" htmlFor="country">
+				<select id="country" name="country" required defaultValue="" className={inputCls}>
+					<option value="" disabled>
+						Select your country
+					</option>
+					{COUNTRIES.map((c) => (
+						<option key={c.name} value={c.name}>
+							{c.name}
 						</option>
 					))}
 				</select>
 			</Field>
 
-			{/* Region */}
-			<Field label="Region" htmlFor="region">
-				<select id="region" name="region" className={inputCls}>
-					{Object.entries(REGION_LABELS).map(([value, label]) => (
-						<option key={value} value={value}>
-							{label}
-						</option>
-					))}
-				</select>
-			</Field>
-
-			{/* Country (local only) */}
-			<Field label="Country (local only — not shared)" htmlFor="country">
-				<input
-					id="country"
-					name="country"
-					type="text"
-					placeholder="e.g. Nigeria"
-					className={inputCls}
-				/>
-			</Field>
-
-			<Button type="submit" size="lg" className="w-full justify-center">
-				Explore City →
+			<Button type="submit" size="lg" className="w-full justify-center" disabled={busy}>
+				{busy ? 'Creating…' : 'Create Account →'}
 			</Button>
+
+			{onSignIn && (
+				<p className="text-sm text-center text-gray-500">
+					Already have an account?{' '}
+					<button
+						type="button"
+						onClick={onSignIn}
+						className="font-semibold text-brand-600 hover:underline"
+					>
+						Sign in
+					</button>
+				</p>
+			)}
 		</form>
-	);
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const inputCls =
-	'w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-400 transition';
-
-function Field({
-	label,
-	htmlFor,
-	children,
-}: {
-	label: string;
-	htmlFor: string;
-	children: React.ReactNode;
-}) {
-	return (
-		<div className="flex flex-col gap-1.5">
-			<label htmlFor={htmlFor} className="text-sm font-semibold text-gray-700">
-				{label}
-			</label>
-			{children}
-		</div>
 	);
 }

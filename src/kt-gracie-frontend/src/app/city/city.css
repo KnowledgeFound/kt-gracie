@@ -1,4 +1,9 @@
 .cityScene {
+  /* Left column geometry — shared with the stage cap below. */
+  --hero-left: clamp(16px, 2.5vw, 36px);
+  --hero-width: clamp(220px, 17vw, 270px);
+  /* How far the map sits right of centre on large screens. */
+  --map-shift: clamp(120px, 11vw, 170px);
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -19,6 +24,37 @@
      (see --city-sky in styles/theme.css). */
   background-color: var(--city-sky, #d7f1ff);
   transition: filter 0.35s ease, background-color 0.35s ease;
+}
+
+/* A painted cloudscape behind the districts: bright for the healthy city,
+   overcast and ruined for the corrupt one. Cover-fit and centred so the
+   horizon stays put at any viewport; the theme sky colour still shows
+   through while the image loads. The destroyed look keeps its ember sky. */
+.cityScene--vibrant .cityBackground,
+.cityScene--corrupt .cityBackground {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cityScene--vibrant .cityBackground {
+  background-image: url('/assets/city/background.png');
+}
+
+.cityScene--corrupt .cityBackground {
+  background-image: url('/assets/corrupted-city/corrupted-background.png');
+}
+
+/* The paintings are daylight; settle them down for the dark theme like the
+   districts and clouds above them. */
+[data-theme='dark'] .cityScene--vibrant .cityBackground,
+[data-theme='dark'] .cityScene--corrupt .cityBackground {
+  filter: brightness(0.55) saturate(0.85);
+}
+
+[data-theme='dark'] .cityScene--vibrant.cityScene--hovering .cityBackground,
+[data-theme='dark'] .cityScene--corrupt.cityScene--hovering .cityBackground {
+  filter: brightness(0.47) saturate(0.85) blur(1px);
 }
 
 /* Night city: the artwork is painted for a bright sky, so settle it down to
@@ -98,6 +134,33 @@
   height: clamp(480px, 52vw, 780px);
 }
 
+/* Large screens: the headline and progress card sit in a slim left column
+   (`.cityHero`). Both stages are nudged right by `--map-shift` (one rule, so
+   the buttons stay on their districts) and the stage is capped so the two
+   left-hand islands, whose art reaches about 7% past the stage's left edge,
+   clear that column. With the nudge, stage left edge = (100vw + shift - w) / 2,
+   so the cap solves (100vw + shift - w) / 2 - 0.07w >= hero right + gap. */
+@media (min-width: 1024px) {
+  .cityBlockGridWrapper,
+  .cityModuleLayer {
+    padding-left: var(--map-shift);
+  }
+
+  .cityBlocks {
+    --hero-right: calc(var(--hero-left) + var(--hero-width));
+    --stage-w: clamp(
+      520px,
+      min(
+        65vw,
+        calc(((100vw + var(--map-shift)) / 2 - var(--hero-right) - 12px) / 0.57)
+      ),
+      1000px
+    );
+    width: var(--stage-w);
+    height: calc(var(--stage-w) * 0.8);
+  }
+}
+
 /* Phones: the 600px floor above would overflow the screen, so size the stage
    off the viewport instead — capped by height too, for landscape. Everything
    inside is positioned in % of this box, so the whole map scales with it. */
@@ -137,7 +200,7 @@
   border-radius: 12px;
 }
 
-/* Holds a district's image and, on a corrupt city, the fires on top of it.
+/* Holds a district's image and, on a destroyed city, the fires on top of it.
    The float animation lives here so the fires bob with the island. */
 .cityBlockArt {
   position: relative;
@@ -185,8 +248,10 @@
 }
 
 .cityScene--hovering .cityCloudLayer {
+  /* Fade only. A blur here is a full-viewport filter re-run every frame,
+     because the clouds inside the layer are always drifting — it halved the
+     frame rate of the whole scene while a district was hovered. */
   opacity: 0.7;
-  filter: blur(1px);
 }
 
 /* --- Header glass (CityHeader) --- */
@@ -204,25 +269,372 @@
 }
 
 .cityHeaderPill {
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.cityHeaderBrand,
+.cityHeaderValue {
+  color: rgb(var(--ink-deep));
+}
+
+.cityHeaderDivider {
+  width: 1px;
+  height: 18px;
+  background: rgb(var(--ink-deep) / 0.18);
+}
+
+/* Primary nav: quiet links, a filled pill for the page you are on. */
+.cityHeaderNavLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgb(var(--ink-mid));
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cityHeaderNavLink:hover {
+  background: rgba(255, 255, 255, 0.45);
+  color: rgb(var(--ink-deep));
+}
+
+.cityHeaderNavLink--active {
+  background: rgba(255, 255, 255, 0.78);
+  color: rgb(var(--brand-600));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.cityHeaderCoin,
+.cityHero__statIcon--coin {
+  background: radial-gradient(circle at 35% 30%, #ffe8a3, #f5b322 55%, #c47c0b);
+  color: #7a4a05;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.cityHeaderAvatar {
+  background: rgb(var(--brand-100));
+  color: rgb(var(--brand-600));
 }
 
 .cityHeaderHeart {
-  fill: rgb(251 191 36);
+  fill: #ef4444;
+}
+
+.cityHeaderHealthTrack {
+  background: rgb(var(--ink-deep) / 0.12);
 }
 
 .cityHeaderHealthFill {
   background: linear-gradient(90deg, #f59e0b, #fb923c);
 }
 
-/* ═══ Corrupt city ═══════════════════════════════════════════════════════════
-   Low health flips `.cityScene--corrupt` on (app/city/page.tsx): the sky turns
-   to smoke and embers, the clouds to thunderheads, the districts swap to their
-   ruined artwork (DistrictArt) and catch fire (CityFire), and a storm rolls in
-   (StormLayer). Everything below is scoped to that one class. */
+/* ═══ Left column: headline + progress card ══════════════════════════════════
+   Only on large screens; the stages above add matching left padding so the
+   map clears it. The text is pointer-transparent, the card is a button. */
 
-.cityScene--corrupt .cityBackground {
+.cityHero {
+  position: absolute;
+  left: var(--hero-left);
+  top: clamp(92px, 12vh, 130px);
+  z-index: 6;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: var(--hero-width);
+  pointer-events: none;
+  --hero-ink: rgb(var(--ink-deep));
+  --hero-sub: rgb(var(--ink-mid));
+}
+
+@media (min-width: 1024px) {
+  .cityHero {
+    display: flex;
+  }
+}
+
+/* The ruined skies are dark: write the headline in white on them. */
+.cityScene--corrupt .cityHero,
+.cityScene--destroyed .cityHero {
+  --hero-ink: #ffffff;
+  --hero-sub: rgba(255, 255, 255, 0.82);
+}
+
+.cityHero__kicker {
+  margin: 0;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgb(var(--brand-600));
+}
+
+.cityScene--corrupt .cityHero__kicker,
+.cityScene--destroyed .cityHero__kicker {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.cityHero__title {
+  margin: 0;
+  font-size: clamp(2.1rem, 3.3vw, 3.3rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--hero-ink);
+  text-shadow: 0 2px 14px rgba(255, 255, 255, 0.35);
+}
+
+.cityScene--corrupt .cityHero__title,
+.cityScene--destroyed .cityHero__title {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.cityHero__accent {
+  color: rgb(var(--brand-500));
+}
+
+.cityScene--corrupt .cityHero__accent,
+.cityScene--destroyed .cityHero__accent {
+  color: rgb(var(--brand-300));
+}
+
+.cityHero__sub {
+  margin: 2px 0 8px;
+  max-width: 28ch;
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  line-height: 1.35;
+  color: var(--hero-sub);
+}
+
+.cityHero__card {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  border-radius: 18px;
+  background: rgb(var(--surface-card) / 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(15, 40, 70, 0.12);
+  color: rgb(var(--ink-deep));
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cityHero__card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(15, 40, 70, 0.16);
+}
+
+.cityHero__card:focus-visible {
+  outline: 2px solid rgb(var(--brand-500));
+  outline-offset: 2px;
+}
+
+.cityHero__cardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgb(var(--ink-deep));
+}
+
+.cityHero__cardHead svg {
+  color: rgb(var(--brand-500));
+}
+
+.cityHero__cardBody {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cityHero__ring {
+  position: relative;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+}
+
+.cityHero__ringTrack {
+  stroke: rgb(var(--brand-500) / 0.15);
+}
+
+.cityHero__ringFill {
+  stroke: rgb(var(--brand-500));
+}
+
+.cityHero__ringLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: rgb(var(--ink-deep));
+}
+
+.cityHero__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cityHero__stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: rgb(var(--ink-deep));
+}
+
+.cityHero__statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.cityHero__statIcon--pin {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.cityHero__statIcon--heart {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.cityHero__statIcon--heart svg {
+  fill: currentColor;
+}
+
+.cityHero__statStack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.cityHero__statStack small {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: rgb(var(--ink-muted));
+}
+
+/* ═══ Corrupt city: smoke ════════════════════════════════════════════════════
+   The abandoned districts smoulder. Each `.citySmoke` (CitySmoke.tsx) is one
+   plume: four small puffs, evenly staggered so there is always a thin column
+   in flight, that rise a short way, lean with the wind, swell and fade.
+   Sooty charcoal, like the smoke columns in the painted backdrop, and
+   low-opacity so it sits inside the scene rather than on top of it; no blur
+   filters, the edges come from the gradient. */
+
+.citySmoke {
+  position: absolute;
+  aspect-ratio: 1 / 2;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.citySmoke i {
+  position: absolute;
+  display: block;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(38, 40, 46, 0.8) 0%,
+    rgba(44, 46, 52, 0.5) 35%,
+    rgba(50, 52, 58, 0.16) 58%,
+    rgba(50, 52, 58, 0) 70%
+  );
+  opacity: 0;
+  --smoke-dx: 22%;
+  --smoke-dy: -105%;
+  --smoke-grow: 1.35;
+  animation: smoke-rise 7.5s linear infinite;
+  animation-delay: var(--smoke-delay, 0s);
+}
+
+.citySmoke i:nth-child(2) {
+  --smoke-dx: 48%;
+  --smoke-dy: -125%;
+  --smoke-grow: 1.5;
+  animation-delay: calc(var(--smoke-delay, 0s) - 1.9s);
+}
+
+.citySmoke i:nth-child(3) {
+  --smoke-dx: 30%;
+  --smoke-dy: -112%;
+  --smoke-grow: 1.25;
+  animation-delay: calc(var(--smoke-delay, 0s) - 3.8s);
+}
+
+.citySmoke i:nth-child(4) {
+  --smoke-dx: 56%;
+  --smoke-dy: -132%;
+  --smoke-grow: 1.45;
+  animation-delay: calc(var(--smoke-delay, 0s) - 5.6s);
+}
+
+/* Fade in as the puff leaves the roof, drift up and a little to the right
+   (the clouds blow that way too), swell as it thins out, and vanish. */
+@keyframes smoke-rise {
+  0% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  55% {
+    opacity: 0.42;
+  }
+  100% {
+    transform: translate(var(--smoke-dx), var(--smoke-dy))
+      scale(var(--smoke-grow));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .citySmoke {
+    display: none;
+  }
+}
+
+[data-motion='reduced'] .citySmoke {
+  display: none;
+}
+
+/* ═══ Destroyed city ═════════════════════════════════════════════════════════
+   The extra-destructive look. A corrupt city only swaps its district and
+   balloon artwork and needs no styles; the destroyed tier flips
+   `.cityScene--destroyed` on (app/city/page.tsx): the sky turns to smoke and
+   embers, the clouds to thunderheads, the districts swap to their burnt-out
+   artwork (DistrictArt) and catch fire (CityFire), and a storm rolls in
+   (StormLayer). Nothing maps health to this tier yet. Everything below is
+   scoped to that one class. */
+
+.cityScene--destroyed .cityBackground {
   background: linear-gradient(
     180deg,
     #07070c 0%,
@@ -234,7 +646,7 @@
 }
 
 /* Firelight breathing up from below the islands. */
-.cityScene--corrupt .cityBackground::after {
+.cityScene--destroyed .cityBackground::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -257,17 +669,17 @@
 }
 
 /* The ruined artwork is already painted dark — don't dim it again at night. */
-.cityScene--corrupt .cityBlock {
+.cityScene--destroyed .cityBlock {
   filter: none;
 }
 
 /* Stand-in until a district's ruined artwork exists: burn out the healthy one. */
-.cityScene--corrupt .cityBlock--ruinFallback {
+.cityScene--destroyed .cityBlock--ruinFallback {
   filter: grayscale(0.9) sepia(0.5) hue-rotate(-28deg) saturate(1.7)
     brightness(0.4) contrast(1.35);
 }
 
-.cityScene--corrupt .cityBlockItem--active {
+.cityScene--destroyed .cityBlockItem--active {
   filter: drop-shadow(0 0 19px rgba(255, 120, 40, 0.8));
 }
 
@@ -276,8 +688,8 @@
    variables [data-accent] sets in styles/theme.css) inside their own layers,
    so drawers and modals opened from the city keep the user's accent. */
 
-.cityScene--corrupt .cityHeader,
-.cityScene--corrupt .cityModuleLayer {
+.cityScene--destroyed .cityHeader,
+.cityScene--destroyed .cityModuleLayer {
   --brand-50: 255 244 235;
   --brand-100: 255 224 200;
   --brand-200: 255 190 140;
@@ -296,7 +708,7 @@
   --ruin-cracks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23ff7a33' stroke-width='1' stroke-linejoin='bevel' vector-effect='non-scaling-stroke'%3E%3Cpath vector-effect='non-scaling-stroke' d='M0 18 22 24 31 14 52 30 60 60M52 30 78 26'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M200 40 176 34 168 46 150 38 141 0M150 38 128 44'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-.cityScene--corrupt .cityHeaderBar {
+.cityScene--destroyed .cityHeaderBar {
   background: linear-gradient(
     180deg,
     rgba(34, 16, 14, 0.72) 0%,
@@ -308,8 +720,8 @@
     inset 0 -8px 14px -8px rgba(255, 80, 10, 0.35);
 }
 
-.cityScene--corrupt .cityHeaderBar::after,
-.cityScene--corrupt .cityModuleBtn::after {
+.cityScene--destroyed .cityHeaderBar::after,
+.cityScene--destroyed .cityModuleBtn::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -321,29 +733,29 @@
 
 /* The bar is far wider than a button: stretching one set of cracks across it
    turns them into scratches, so lay two fixed-width sets instead. */
-.cityScene--corrupt .cityHeaderBar::after {
+.cityScene--destroyed .cityHeaderBar::after {
   background: var(--ruin-cracks) 9% 0 / 300px 100% no-repeat,
     var(--ruin-cracks) 62% 0 / 260px 100% no-repeat;
 }
 
-.cityScene--corrupt .cityHeaderPill {
+.cityScene--destroyed .cityHeaderPill {
   background: rgba(0, 0, 0, 0.38);
   border-color: rgba(255, 120, 50, 0.4);
 }
 
-.cityScene--corrupt .cityHeaderPill:hover {
+.cityScene--destroyed .cityHeaderPill:hover {
   background: rgba(120, 30, 8, 0.55);
 }
 
 /* A failing city has a racing pulse. */
-.cityScene--corrupt .cityHeaderHeart {
+.cityScene--destroyed .cityHeaderHeart {
   fill: #ff4a2a;
   transform-box: fill-box;
   transform-origin: center;
   animation: ruin-heartbeat 1.1s ease-in-out infinite;
 }
 
-.cityScene--corrupt .cityHeaderHealthFill {
+.cityScene--destroyed .cityHeaderHealthFill {
   background: linear-gradient(90deg, #b91c1c, #ff5a1f);
 }
 
@@ -364,11 +776,11 @@
 /* District buttons: charred slabs with chipped edges and an ember rim. The
    chips are a clip-path, which would also clip a box-shadow — so the glow is
    a drop-shadow on the wrapper instead. */
-.cityScene--corrupt .cityModuleFloat {
+.cityScene--destroyed .cityModuleFloat {
   filter: drop-shadow(0 0 9px rgba(255, 90, 20, 0.5));
 }
 
-.cityScene--corrupt .cityModuleBtn {
+.cityScene--destroyed .cityModuleBtn {
   position: relative;
   background: linear-gradient(
     180deg,
@@ -395,8 +807,8 @@
   );
 }
 
-.cityScene--corrupt .cityModuleBtn:hover,
-.cityScene--corrupt .cityModuleBtn--active {
+.cityScene--destroyed .cityModuleBtn:hover,
+.cityScene--destroyed .cityModuleBtn--active {
   background: linear-gradient(
     180deg,
     rgba(255, 128, 40, 0.95) 0%,
@@ -405,39 +817,39 @@
   border-color: rgba(255, 210, 150, 0.8);
 }
 
-.cityScene--corrupt .cityModuleRing__track {
+.cityScene--destroyed .cityModuleRing__track {
   color: rgba(255, 140, 70, 0.25);
 }
 
-.cityScene--corrupt .cityModuleRing__fill {
+.cityScene--destroyed .cityModuleRing__fill {
   color: #ff8a3c;
 }
 
-.cityScene--corrupt .cityModuleBadge {
+.cityScene--destroyed .cityModuleBadge {
   background: rgba(255, 110, 40, 0.22);
   color: #ffc79a;
 }
 
-.cityScene--corrupt .cityModuleBtn:hover .cityModuleBadge,
-.cityScene--corrupt .cityModuleBtn--active .cityModuleBadge,
-.cityScene--corrupt .cityModuleBtn:hover .cityModuleRing__fill,
-.cityScene--corrupt .cityModuleBtn--active .cityModuleRing__fill {
+.cityScene--destroyed .cityModuleBtn:hover .cityModuleBadge,
+.cityScene--destroyed .cityModuleBtn--active .cityModuleBadge,
+.cityScene--destroyed .cityModuleBtn:hover .cityModuleRing__fill,
+.cityScene--destroyed .cityModuleBtn--active .cityModuleRing__fill {
   color: #ffffff;
 }
 
 /* --- Thunderclouds: the same cloud art, darkened and lit from the fires --- */
 
-.cityScene--corrupt .cityCloud {
+.cityScene--destroyed .cityCloud {
   filter: brightness(0.24) saturate(0.55) contrast(1.3)
     drop-shadow(0 10px 22px rgba(255, 70, 10, 0.3));
   animation-duration: 9s;
 }
 
-.cityScene--corrupt .cityCloud--left {
+.cityScene--destroyed .cityCloud--left {
   width: clamp(170px, 22vw, 440px);
 }
 
-.cityScene--corrupt .cityCloud--right {
+.cityScene--destroyed .cityCloud--right {
   width: clamp(160px, 20vw, 400px);
 }
 
@@ -778,7 +1190,7 @@
 /* Reduced motion: the fires stay lit but hold still, without the particles
    that only make sense in flight. (StormLayer stops itself in JS.) */
 @media (prefers-reduced-motion: reduce) {
-  .cityScene--corrupt .cityBackground::after,
+  .cityScene--destroyed .cityBackground::after,
   .cityFire__core,
   .cityFire__glow {
     animation: none;
@@ -901,8 +1313,9 @@
   bottom: var(--gg-dock-bottom);
   z-index: 5;
   display: flex;
-  /* Bubble aligns to her head; margin-top drops it to her mouth */
-  align-items: flex-start;
+  /* The bubble is pinned by its *bottom* (see .gracieGuide__bubbleWrap) so a
+     long line grows upward and never runs off the bottom of the screen. */
+  align-items: flex-end;
   gap: 14px;
   /* Never block hovers/clicks on the city blocks underneath */
   pointer-events: none;
@@ -930,10 +1343,13 @@
   z-index: 60;
 }
 
-/* Home. `transform: none` glides her back to the lower-left corner. */
+/* Home. `transform: none` glides her back to the lower-left corner, and she
+   shrinks on the way so she sits under the progress card without covering
+   the map (the video box transitions its size to match). */
 .gracieGuide--docked {
   transform: none;
   opacity: 1;
+  --gg-h: clamp(320px, 52vh, 580px);
 }
 
 /* Bigger, easier-to-read bubble while she has the whole screen. */
@@ -1001,6 +1417,8 @@
   width: var(--gg-w);
   height: var(--gg-h);
   flex-shrink: 0;
+  transition: width 1150ms cubic-bezier(0.22, 0.75, 0.24, 1),
+    height 1150ms cubic-bezier(0.22, 0.75, 0.24, 1);
 }
 
 .gracieGuide__video {
@@ -1030,14 +1448,18 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  margin-top: calc(var(--gg-h) * 0.3);
+  /* Bottom of the bubble sits at her chest; text stacks up from there. */
+  margin-bottom: calc(var(--gg-h) * 0.45);
   margin-left: -50px;
 }
 
 .gracieGuide__bubble {
   position: relative;
-  max-width: clamp(180px, 22vw, 320px);
-  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: clamp(220px, 26vw, 380px);
+  padding: 12px 18px 14px;
   background: #ffffff;
   color: #1f2937;
   border-radius: 18px;
@@ -1045,6 +1467,21 @@
   line-height: 1.35;
   /* Lifted off the city with a soft drop + tight contact shadow. */
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.gracieGuide__bubbleTitle {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6b8faa;
+  margin-bottom: 2px;
+}
+
+.gracieGuide__greeting {
+  font-size: 1.15em;
+  font-weight: 800;
+  color: #2563eb;
 }
 
 /* Speaker toggle tucked into the bubble's top-right corner — the same switch
@@ -1203,4 +1640,146 @@
     transform: translate(var(--gg-center-x), var(--gg-center-y));
     opacity: 1;
   }
+}
+
+/* ═══ Content pages: leaderboard, subjects, settings (CityShell) ═════════════
+   The city's painted sky as a fixed backdrop, washed lighter (or darker, on
+   the ruined sky) so cards and text read on top; the map's header pinned to
+   the top; content scrolls underneath. */
+
+.cityShell {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  --hero-ink: rgb(var(--ink-deep));
+  --hero-sub: rgb(var(--ink-mid));
+  --hero-kicker: rgb(var(--brand-600));
+}
+
+.cityShell__bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--city-sky, #d7f1ff) url('/assets/city/background.png')
+    center / cover no-repeat;
+}
+
+.cityShell__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
+}
+
+.cityShell--corrupt .cityShell__bg,
+.cityShell--destroyed .cityShell__bg {
+  background-image: url('/assets/corrupted-city/corrupted-background.png');
+}
+
+.cityShell--corrupt .cityShell__bg::after,
+.cityShell--destroyed .cityShell__bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 14, 26, 0.3) 0%,
+    rgba(8, 14, 26, 0.55) 100%
+  );
+}
+
+.cityShell--corrupt,
+.cityShell--destroyed {
+  --hero-ink: #ffffff;
+  --hero-sub: rgba(255, 255, 255, 0.82);
+  --hero-kicker: rgba(255, 255, 255, 0.78);
+}
+
+[data-theme='dark'] .cityShell__bg {
+  filter: brightness(0.55) saturate(0.85);
+}
+
+[data-theme='dark'] .cityShell__bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(5, 10, 20, 0.3) 0%,
+    rgba(5, 10, 20, 0.55) 100%
+  );
+}
+
+/* The header is absolute on the map; here the page scrolls, so pin it. */
+.cityShell .cityHeader {
+  position: fixed;
+}
+
+.cityShell__content {
+  position: relative;
+  z-index: 1;
+  padding-top: clamp(88px, 12vh, 116px);
+  padding-bottom: 72px;
+}
+
+/* Frosted card, the same glass as the progress widget on the map. */
+.cityGlass {
+  background: rgb(var(--surface-card) / 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(15, 40, 70, 0.12);
+}
+
+[data-theme='dark'] .cityGlass {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Page heading, in the voice of the map's "Protect your City" block. */
+.pageTitle {
+  margin-bottom: 22px;
+}
+
+.pageTitle__kicker {
+  margin: 0 0 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hero-kicker);
+}
+
+.pageTitle__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--hero-ink);
+  text-shadow: 0 2px 14px rgba(255, 255, 255, 0.35);
+}
+
+.cityShell--corrupt .pageTitle__title,
+.cityShell--destroyed .pageTitle__title {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.pageTitle__icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  color: rgb(var(--brand-500));
+}
+
+.cityShell--corrupt .pageTitle__icon,
+.cityShell--destroyed .pageTitle__icon {
+  color: rgb(var(--brand-300));
+}
+
+.pageTitle__sub {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: var(--hero-sub);
 }

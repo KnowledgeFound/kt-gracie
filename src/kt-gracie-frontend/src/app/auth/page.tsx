@@ -16,7 +16,7 @@ const fade = {
 export default function AuthPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { user, city, createUser } = useUser();
+	const { user, city, signedIn, createUser } = useUser();
 
 	// Where to send the user after profile creation.
 	// ProtectedRoute passes the blocked path via location.state.from — fall back to /city.
@@ -25,8 +25,8 @@ export default function AuthPage() {
 
 	// Already has a profile — skip straight to the destination
 	useEffect(() => {
-		if (user && city) navigate(from, { replace: true });
-	}, [user, city, from, navigate]);
+		if (user && city && signedIn) navigate(from, { replace: true });
+	}, [user, city, signedIn, from, navigate]);
 
 	function handleCreate(input: CreateUserInput) {
 		createUser(input);

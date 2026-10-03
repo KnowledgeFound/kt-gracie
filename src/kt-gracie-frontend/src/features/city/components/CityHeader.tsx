@@ -1,5 +1,5 @@
-import { Settings, TrendingUp } from 'lucide-react';
-import { useEffect } from 'react';
+import { BookOpen, ChevronDown, Home, TrendingUp, Trophy } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
 interface CityHeaderProps {
 	health: number;
@@ -7,11 +7,28 @@ interface CityHeaderProps {
 	username: string;
 	onClickHealth?: () => void;
 	onClickToken?: () => void;
+	/** Opens the progress modal. Only shown below `lg`, where the left-hand
+	 *  progress widget is hidden. */
 	onClickTrend?: () => void;
 	onClickUser?: () => void;
-	onClickSettings?: () => void;
 }
 
+/** Top-level pages that already exist. Add to this list as pages land. */
+const NAV = [
+	{ label: 'Home', to: '/city', icon: Home },
+	{ label: 'Subjects', to: '/subjects', icon: BookOpen },
+	{ label: 'Leaderboard', to: '/leaderboard', icon: Trophy },
+];
+
+const PILL =
+	'cityHeaderPill flex items-center rounded-full transition-all duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60';
+
+/**
+ * Glass bar across the top of the city: wordmark, primary nav (large screens
+ * only — the drawer covers it elsewhere), and the KT / health / user badge
+ * cluster. Colours come from the ink and brand tokens so the destroyed
+ * city can restyle the whole bar from city.css.
+ */
 export default function CityHeader({
 	health,
 	tokens,
@@ -20,63 +37,79 @@ export default function CityHeader({
 	onClickToken,
 	onClickTrend,
 	onClickUser,
-	onClickSettings,
 }: CityHeaderProps) {
-	const pct     = Math.round(Math.min(100, Math.max(0, health)));
+	const pct = Math.round(Math.min(100, Math.max(0, health)));
 	const initial = username.charAt(0).toUpperCase();
 
 	return (
 		<header className="cityHeader absolute top-0 left-0 right-0 z-20 animate-fadeSlideDown">
-			{/* Glass look lives in city.css (.cityHeaderBar / .cityHeaderPill) so the
-			    corrupt city can restyle it. */}
-			<div className="cityHeaderBar mx-3 mt-3 md:mx-6 md:mt-4 rounded-2xl px-4 py-2 flex items-center justify-between gap-3">
+			<div className="cityHeaderBar mx-3 mt-3 md:mx-6 md:mt-4 rounded-2xl px-3 md:px-5 py-2 flex items-center gap-3">
 				{/* ── Left: wordmark ─────────────────────────────────────── */}
-				<span className="text-white font-black tracking-[0.18em] text-sm md:text-base select-none drop-shadow-sm uppercase">
-					Gracie
-				</span>
+				<div className="flex items-center gap-3 shrink-0">
+					<span className="cityHeaderBrand font-black tracking-[0.22em] text-sm md:text-base select-none uppercase">
+						Gracie
+					</span>
+					<span className="cityHeaderDivider hidden lg:block" aria-hidden="true" />
+				</div>
+
+				{/* ── Centre: primary nav ────────────────────────────────── */}
+				<nav
+					aria-label="Primary"
+					className="hidden lg:flex flex-1 items-center justify-center gap-1"
+				>
+					{NAV.map(({ label, to, icon: Icon }) => (
+						<NavLink
+							key={to}
+							to={to}
+							end
+							className={({ isActive }) =>
+								`cityHeaderNavLink${isActive ? ' cityHeaderNavLink--active' : ''}`
+							}
+						>
+							<Icon className="size-4" aria-hidden="true" />
+							<span>{label}</span>
+						</NavLink>
+					))}
+				</nav>
 
 				{/* ── Right: badge cluster ───────────────────────────────── */}
-				<div className="flex items-center gap-2">
-
-					{/* KT Tokens pill */}
+				<div className="flex items-center gap-2 ml-auto">
+					{/* KT tokens */}
 					<button
 						onClick={onClickToken}
 						aria-label={`${tokens.toLocaleString()} Knowledge Tokens`}
-						className="cityHeaderPill flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+						className={`${PILL} gap-1.5 px-3 py-1.5`}
 					>
-						{/* KT coin */}
-						<span className="w-5 h-5 rounded-full bg-gradient-to-br from-brand-200 via-brand-500 to-brand-700 flex items-center justify-center shadow-sm shrink-0">
-							<span className="text-[8px] font-black text-white leading-none">KT</span>
+						<span className="cityHeaderCoin w-5 h-5 rounded-full flex items-center justify-center shrink-0">
+							<span className="text-[8px] font-black leading-none">KT</span>
 						</span>
-						<span className="text-sm font-bold text-white drop-shadow-sm whitespace-nowrap">
+						<span className="cityHeaderValue text-sm font-bold whitespace-nowrap">
 							{tokens.toLocaleString()} KT
 						</span>
 					</button>
 
-					{/* Divider */}
-					<div className="w-px h-4 bg-white/30 hidden md:block" />
-
-					{/* Health pill */}
+					{/* City health */}
 					<button
 						onClick={onClickHealth}
 						aria-label={`City health ${pct}%`}
-						className="cityHeaderPill flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+						className={`${PILL} gap-2 px-3 py-1.5`}
 					>
-						{/* Heart icon */}
-						<svg width="14" height="13" viewBox="0 0 24 22" fill="none" aria-hidden="true" className="shrink-0">
+						<svg
+							width="15"
+							height="14"
+							viewBox="0 0 24 22"
+							fill="none"
+							aria-hidden="true"
+							className="shrink-0"
+						>
 							<path
 								d="M12 21s-9-5.5-9-12.5C3 4.5 5.5 2 8.5 2c1.74 0 3.41.81 4.5 2.09A6.04 6.04 0 0 1 17.5 2C20.5 2 23 4.5 23 8.5 23 15.5 12 21 12 21z"
 								className="cityHeaderHeart"
 							/>
 						</svg>
-
-						{/* Percentage */}
-						<span className="text-sm font-bold text-white drop-shadow-sm">{pct}%</span>
-
-						{/* Bar */}
+						<span className="cityHeaderValue text-sm font-bold">{pct}%</span>
 						<div
-							className="h-1.5 w-14 md:w-20 rounded-full overflow-hidden shrink-0"
-							style={{ background: 'rgba(255,255,255,0.25)' }}
+							className="cityHeaderHealthTrack h-1.5 w-12 lg:w-20 rounded-full overflow-hidden shrink-0"
 							role="progressbar"
 							aria-valuenow={pct}
 							aria-valuemin={0}
@@ -89,37 +122,31 @@ export default function CityHeader({
 						</div>
 					</button>
 
-					{/* Divider */}
-					<div className="w-px h-4 bg-white/30 hidden md:block" />
-
-					{/* Trend arrow — icon-only pill */}
+					{/* Progress — the sidebar widget covers this on large screens */}
 					<button
 						onClick={onClickTrend}
-						className="cityHeaderPill p-1.5 rounded-full transition-all duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-						aria-label="View trend"
+						className={`${PILL} p-1.5 lg:hidden`}
+						aria-label="View progress"
 					>
-						<TrendingUp className="size-4 text-white drop-shadow-sm" />
+						<TrendingUp className="cityHeaderValue size-4" />
 					</button>
 
-					{/* Divider */}
-					<div className="w-px h-4 bg-white/30" />
+					<span className="cityHeaderDivider" aria-hidden="true" />
 
-					{/* User pill */}
+					{/* User */}
 					<button
 						onClick={onClickUser}
 						aria-label={`Open menu for ${username}`}
-						className="cityHeaderPill flex items-center gap-2 pl-1 pr-3 py-1 rounded-full transition-all duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+						className={`${PILL} gap-2 pl-1 pr-2.5 py-1`}
 					>
-						{/* Avatar */}
-						<div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-brand-700 flex items-center justify-center shrink-0 text-white font-black text-xs select-none shadow-sm">
+						<span className="cityHeaderAvatar w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-black text-xs select-none">
 							{initial}
-						</div>
-						{/* Name */}
-						<span className="text-sm font-semibold text-white drop-shadow-sm max-w-[80px] truncate hidden sm:block">
+						</span>
+						<span className="cityHeaderValue text-sm font-semibold max-w-[88px] truncate hidden sm:block">
 							{username}
 						</span>
+						<ChevronDown className="cityHeaderValue size-4 opacity-70 hidden sm:block" aria-hidden="true" />
 					</button>
-
 				</div>
 			</div>
 		</header>
