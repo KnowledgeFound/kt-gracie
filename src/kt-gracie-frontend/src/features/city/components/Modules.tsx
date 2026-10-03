@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { cityBlocks } from '../constants';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
@@ -254,6 +255,12 @@ function MapButtonInner({
 					{pct}%
 				</span>
 			)}
+			<ChevronRight
+				className={`hidden md:block w-4 h-4 shrink-0 transition-colors ${
+					isActive ? 'text-white' : 'text-ink-muted group-hover:text-white'
+				}`}
+				aria-hidden="true"
+			/>
 		</>
 	);
 }

@@ -1,4 +1,9 @@
 .cityScene {
+  /* Left column geometry — shared with the stage cap below. */
+  --hero-left: clamp(16px, 2.5vw, 36px);
+  --hero-width: clamp(220px, 17vw, 270px);
+  /* How far the map sits right of centre on large screens. */
+  --map-shift: clamp(120px, 11vw, 170px);
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -129,6 +134,33 @@
   height: clamp(480px, 52vw, 780px);
 }
 
+/* Large screens: the headline and progress card sit in a slim left column
+   (`.cityHero`). Both stages are nudged right by `--map-shift` (one rule, so
+   the buttons stay on their districts) and the stage is capped so the two
+   left-hand islands, whose art reaches about 7% past the stage's left edge,
+   clear that column. With the nudge, stage left edge = (100vw + shift - w) / 2,
+   so the cap solves (100vw + shift - w) / 2 - 0.07w >= hero right + gap. */
+@media (min-width: 1024px) {
+  .cityBlockGridWrapper,
+  .cityModuleLayer {
+    padding-left: var(--map-shift);
+  }
+
+  .cityBlocks {
+    --hero-right: calc(var(--hero-left) + var(--hero-width));
+    --stage-w: clamp(
+      520px,
+      min(
+        65vw,
+        calc(((100vw + var(--map-shift)) / 2 - var(--hero-right) - 12px) / 0.57)
+      ),
+      1000px
+    );
+    width: var(--stage-w);
+    height: calc(var(--stage-w) * 0.8);
+  }
+}
+
 /* Phones: the 600px floor above would overflow the screen, so size the stage
    off the viewport instead — capped by height too, for landscape. Everything
    inside is positioned in % of this box, so the whole map scales with it. */
@@ -237,16 +269,271 @@
 }
 
 .cityHeaderPill {
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.cityHeaderBrand,
+.cityHeaderValue {
+  color: rgb(var(--ink-deep));
+}
+
+.cityHeaderDivider {
+  width: 1px;
+  height: 18px;
+  background: rgb(var(--ink-deep) / 0.18);
+}
+
+/* Primary nav: quiet links, a filled pill for the page you are on. */
+.cityHeaderNavLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgb(var(--ink-mid));
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cityHeaderNavLink:hover {
+  background: rgba(255, 255, 255, 0.45);
+  color: rgb(var(--ink-deep));
+}
+
+.cityHeaderNavLink--active {
+  background: rgba(255, 255, 255, 0.78);
+  color: rgb(var(--brand-600));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.cityHeaderCoin,
+.cityHero__statIcon--coin {
+  background: radial-gradient(circle at 35% 30%, #ffe8a3, #f5b322 55%, #c47c0b);
+  color: #7a4a05;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.cityHeaderAvatar {
+  background: rgb(var(--brand-100));
+  color: rgb(var(--brand-600));
 }
 
 .cityHeaderHeart {
-  fill: rgb(251 191 36);
+  fill: #ef4444;
+}
+
+.cityHeaderHealthTrack {
+  background: rgb(var(--ink-deep) / 0.12);
 }
 
 .cityHeaderHealthFill {
   background: linear-gradient(90deg, #f59e0b, #fb923c);
+}
+
+/* ═══ Left column: headline + progress card ══════════════════════════════════
+   Only on large screens; the stages above add matching left padding so the
+   map clears it. The text is pointer-transparent, the card is a button. */
+
+.cityHero {
+  position: absolute;
+  left: var(--hero-left);
+  top: clamp(92px, 12vh, 130px);
+  z-index: 6;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: var(--hero-width);
+  pointer-events: none;
+  --hero-ink: rgb(var(--ink-deep));
+  --hero-sub: rgb(var(--ink-mid));
+}
+
+@media (min-width: 1024px) {
+  .cityHero {
+    display: flex;
+  }
+}
+
+/* The ruined skies are dark: write the headline in white on them. */
+.cityScene--corrupt .cityHero,
+.cityScene--destroyed .cityHero {
+  --hero-ink: #ffffff;
+  --hero-sub: rgba(255, 255, 255, 0.82);
+}
+
+.cityHero__kicker {
+  margin: 0;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgb(var(--brand-600));
+}
+
+.cityScene--corrupt .cityHero__kicker,
+.cityScene--destroyed .cityHero__kicker {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.cityHero__title {
+  margin: 0;
+  font-size: clamp(2.1rem, 3.3vw, 3.3rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--hero-ink);
+  text-shadow: 0 2px 14px rgba(255, 255, 255, 0.35);
+}
+
+.cityScene--corrupt .cityHero__title,
+.cityScene--destroyed .cityHero__title {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.cityHero__accent {
+  color: rgb(var(--brand-500));
+}
+
+.cityScene--corrupt .cityHero__accent,
+.cityScene--destroyed .cityHero__accent {
+  color: rgb(var(--brand-300));
+}
+
+.cityHero__sub {
+  margin: 2px 0 8px;
+  max-width: 28ch;
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  line-height: 1.35;
+  color: var(--hero-sub);
+}
+
+.cityHero__card {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  border-radius: 18px;
+  background: rgb(var(--surface-card) / 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(15, 40, 70, 0.12);
+  color: rgb(var(--ink-deep));
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cityHero__card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(15, 40, 70, 0.16);
+}
+
+.cityHero__card:focus-visible {
+  outline: 2px solid rgb(var(--brand-500));
+  outline-offset: 2px;
+}
+
+.cityHero__cardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgb(var(--ink-deep));
+}
+
+.cityHero__cardHead svg {
+  color: rgb(var(--brand-500));
+}
+
+.cityHero__cardBody {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cityHero__ring {
+  position: relative;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+}
+
+.cityHero__ringTrack {
+  stroke: rgb(var(--brand-500) / 0.15);
+}
+
+.cityHero__ringFill {
+  stroke: rgb(var(--brand-500));
+}
+
+.cityHero__ringLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: rgb(var(--ink-deep));
+}
+
+.cityHero__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cityHero__stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: rgb(var(--ink-deep));
+}
+
+.cityHero__statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.cityHero__statIcon--pin {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.cityHero__statIcon--heart {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.cityHero__statIcon--heart svg {
+  fill: currentColor;
+}
+
+.cityHero__statStack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.cityHero__statStack small {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: rgb(var(--ink-muted));
 }
 
 /* ═══ Corrupt city: smoke ════════════════════════════════════════════════════
@@ -1055,10 +1342,13 @@
   z-index: 60;
 }
 
-/* Home. `transform: none` glides her back to the lower-left corner. */
+/* Home. `transform: none` glides her back to the lower-left corner, and she
+   shrinks on the way so she sits under the progress card without covering
+   the map (the video box transitions its size to match). */
 .gracieGuide--docked {
   transform: none;
   opacity: 1;
+  --gg-h: clamp(280px, 42vh, 460px);
 }
 
 /* Bigger, easier-to-read bubble while she has the whole screen. */
@@ -1126,6 +1416,8 @@
   width: var(--gg-w);
   height: var(--gg-h);
   flex-shrink: 0;
+  transition: width 1150ms cubic-bezier(0.22, 0.75, 0.24, 1),
+    height 1150ms cubic-bezier(0.22, 0.75, 0.24, 1);
 }
 
 .gracieGuide__video {
@@ -1161,8 +1453,11 @@
 
 .gracieGuide__bubble {
   position: relative;
-  max-width: clamp(180px, 22vw, 320px);
-  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: clamp(200px, 22vw, 320px);
+  padding: 12px 18px 14px;
   background: #ffffff;
   color: #1f2937;
   border-radius: 18px;
@@ -1170,6 +1465,21 @@
   line-height: 1.35;
   /* Lifted off the city with a soft drop + tight contact shadow. */
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.gracieGuide__bubbleTitle {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6b8faa;
+  margin-bottom: 2px;
+}
+
+.gracieGuide__greeting {
+  font-size: 1.15em;
+  font-weight: 800;
+  color: #2563eb;
 }
 
 /* Speaker toggle tucked into the bubble's top-right corner — the same switch

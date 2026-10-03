@@ -6,6 +6,7 @@ import {
 	StormLayer,
 	DistrictArt,
 	CityHeader,
+	CityHero,
 	DrawerMenu,
 	CityMenu,
 	ModuleDrawer,
@@ -294,7 +295,15 @@ export default function CityScene() {
 				onClickToken={() => setTokenOpen(true)}
 				onClickTrend={() => setProgressOpen(true)}
 				onClickUser={() => setDrawerOpen(true)}
-				onClickSettings={() => navigate('/settings')}
+			/>
+
+			{/* Headline and progress card down the left; the map is pushed right
+			    to make room on large screens (see `.cityHero` in city.css). */}
+			<CityHero
+				restore={!isVibrant}
+				tokens={user?.tokenBalance ?? 0}
+				health={city?.health ?? 0}
+				onOpenProgress={() => setProgressOpen(true)}
 			/>
 
 			{/* User profile drawer — right side */}
@@ -336,6 +345,8 @@ export default function CityScene() {
 			{settings.guide.visible && (
 				<GracieGuide
 					moduleId={moduleId}
+					userName={user?.firstName}
+					restore={!isVibrant}
 					onIntroDone={() => setIntroDone(true)}
 				/>
 			)}
