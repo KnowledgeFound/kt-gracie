@@ -11,6 +11,9 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 );
 
 const INPUT = {
+	username: "alice",
+	passwordHash: "hash",
+	passwordSalt: "salt",
 	firstName: "Alice",
 	ageBucket: AgeBucket.AGE_20_22,
 	gender: Gender.FEMALE,

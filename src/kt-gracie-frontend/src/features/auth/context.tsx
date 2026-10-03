@@ -26,6 +26,12 @@ import { City } from '@/models/City';
 interface UserContextValue {
 	user: User | null;
 	city: City | null;
+	/** Whether the account on this device is signed in right now. */
+	signedIn: boolean;
+	/** Check credentials against the local account; true on success. */
+	login: (username: string, password: string) => Promise<boolean>;
+	/** Close the session. The account and its progress stay on the device. */
+	logout: () => void;
 	createUser: (input: CreateUserInput) => User;
 	updateUser: (updates: UpdateUserInput) => User;
 	deleteUser: () => void;
@@ -50,11 +56,27 @@ const UserContext = createContext<UserContextValue | null>(null);
 export function UserProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User | null>(() => userServices.getUser());
 	const [city, setCity] = useState(() => cityServices.getCityFromLocalStorage());
+	const [signedIn, setSignedIn] = useState<boolean>(() => userServices.isSignedIn());
+
+	const login = useCallback(async (username: string, password: string) => {
+		const ok = await userServices.login(username, password);
+		if (ok) {
+			setUser(userServices.getUser());
+			setSignedIn(true);
+		}
+		return ok;
+	}, []);
+
+	const logout = useCallback((): void => {
+		userServices.signOut();
+		setSignedIn(false);
+	}, []);
 
 	const createUser = useCallback((input: CreateUserInput): User => {
 		// Create the user profile
 		const created = userServices.createUser(input);
 		setUser(created);
+		setSignedIn(true);
 
 		// Create and persist the city, and reflect it in context state so
 		// consumers (e.g. the auth redirect gate) see it without a page reload.
@@ -81,6 +103,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 	const deleteUser = useCallback((): void => {
 		userServices.deleteUser();
 		setUser(null);
+		setSignedIn(false);
 		cityServices.deleteCityFromLocalStorage();
 		setCity(null);
 	}, []);
@@ -158,6 +181,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
 				creditTokens,
 				debitTokens,
 				refreshCity,
+				signedIn,
+				login,
+				logout,
 			}}
 		>
 			{children}
@@ -181,10 +207,11 @@ export function useUser(): UserContextValue {
 
 /**
  * Same as useUser() but returns null instead of throwing when there is
- * no logged-in user. Use this when a component should render gracefully
+ * no signed-in user. Use this when a component should render gracefully
  * for both authenticated and unauthenticated states.
  */
 export function useOptionalUser(): User | null {
 	const ctx = useContext(UserContext);
-	return ctx?.user ?? null;
+	if (!ctx || !ctx.signedIn) return null;
+	return ctx.user;
 }

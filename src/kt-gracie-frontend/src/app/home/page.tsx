@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MainLayout } from '@/components/layout';
-import { useUser, CreateUserForm } from '@/features/auth';
+import { useUser, CreateUserForm, LoginForm } from '@/features/auth';
 import type { CreateUserInput } from '@/features/auth';
 import { ArrowLeft } from 'lucide-react';
 import gracieVideo from './animation-home/gracie-wave-in-ballon.mp4';
@@ -16,18 +16,23 @@ const fade = {
 
 export default function HomePage() {
 	const navigate = useNavigate();
-	const { createUser, user } = useUser();
-	const [showForm, setShowForm] = useState(false);
+	const { createUser, login, user, signedIn } = useUser();
+	const [form, setForm] = useState<'none' | 'create' | 'login'>('none');
+	const [createError, setCreateError] = useState('');
 
-	// Navigate to city once the user profile is ready in the global context
+	// Navigate to the city once the account is signed in
 	useEffect(() => {
-		if (user) {
+		if (user && signedIn) {
 			navigate('/city', { replace: true });
 		}
-	}, [user, navigate]);
+	}, [user, signedIn, navigate]);
 
 	function handleCreate(input: CreateUserInput) {
-		createUser(input);
+		try {
+			createUser(input);
+		} catch (err) {
+			setCreateError((err as Error).message);
+		}
 	}
 
 	return (
@@ -50,7 +55,7 @@ export default function HomePage() {
 				{/* ── Right: buttons or create-profile form ── */}
 				<div className="w-1/2 flex items-center justify-start py-8 pr-8 pl-0 lg:pl-4">
 					<AnimatePresence mode="wait">
-						{!showForm ? (
+						{form === 'none' ? (
 							<motion.div
 								key="welcome"
 								{...fade}
@@ -65,7 +70,7 @@ export default function HomePage() {
 
 								{/* Get Started — blue button */}
 								<button
-									onClick={() => setShowForm(true)}
+									onClick={() => setForm('create')}
 									className="w-full max-w-xs px-8 py-3 rounded-xl font-semibold text-lg text-white
 									           bg-gradient-to-r from-brand-500 to-brand-600
 									           shadow-md hover:shadow-lg hover:scale-[1.02]
@@ -76,7 +81,7 @@ export default function HomePage() {
 
 								{/* Already have an account — outlined blue */}
 								<button
-									onClick={() => setShowForm(true)}
+									onClick={() => setForm('login')}
 									className="w-full max-w-xs px-8 py-3 rounded-xl font-semibold text-lg
 									           text-brand-500 border-2 border-brand-500
 									           hover:bg-brand-50 hover:scale-[1.02]
@@ -87,13 +92,13 @@ export default function HomePage() {
 							</motion.div>
 						) : (
 							<motion.div
-								key="create-form"
+								key={form}
 								{...fade}
 								className="max-w-md w-full"
 							>
 								<div className="flex items-center gap-3 mb-6">
 									<button
-										onClick={() => setShowForm(false)}
+										onClick={() => setForm('none')}
 										className="p-2 rounded-full hover:bg-brand-50 text-ink-muted hover:text-ink-deep transition-colors"
 										aria-label="Go back"
 									>
@@ -103,7 +108,24 @@ export default function HomePage() {
 										Back
 									</span>
 								</div>
-								<CreateUserForm onSubmit={handleCreate} />
+								{form === 'create' ? (
+									<>
+										{createError && (
+											<p className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+												{createError}
+											</p>
+										)}
+										<CreateUserForm
+											onSubmit={handleCreate}
+											onSignIn={() => setForm('login')}
+										/>
+									</>
+								) : (
+									<LoginForm
+										onSubmit={login}
+										onCreateAccount={() => setForm('create')}
+									/>
+								)}
 							</motion.div>
 						)}
 					</AnimatePresence>

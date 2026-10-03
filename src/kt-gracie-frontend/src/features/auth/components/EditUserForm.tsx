@@ -1,11 +1,8 @@
 import { FormEvent } from 'react';
 import type { User, UpdateUserInput} from '../../../types/user';
-import {AgeBucket, Gender, Region } from '../../../ENUMS/enums';
-import {
-	AGE_BUCKET_LABELS,
-	GENDER_LABELS,
-	REGION_LABELS,
-} from '../constants';
+import { AgeBucket, Gender } from '../../../ENUMS/enums';
+import { AGE_BUCKET_LABELS, GENDER_LABELS } from '../constants';
+import { COUNTRIES } from '../countries';
 import { Button } from '@/components/ui';
 
 interface EditUserFormProps {
@@ -26,8 +23,7 @@ export default function EditUserForm({
 			firstName: (fd.get('firstName') as string).trim() || undefined,
 			ageBucket: fd.get('ageBucket') as AgeBucket,
 			gender: fd.get('gender') as Gender,
-			region: fd.get('region') as Region,
-			country: (fd.get('country') as string).trim() || undefined,
+			country: (fd.get('country') as string) || undefined,
 		});
 	}
 
@@ -78,29 +74,20 @@ export default function EditUserForm({
 				</select>
 			</Field>
 
-			<Field label="Region" htmlFor="region">
+			<Field label="Country" htmlFor="country">
 				<select
-					id="region"
-					name="region"
-					defaultValue={user.region}
+					id="country"
+					name="country"
+					defaultValue={user.country}
 					className={inputCls}
 				>
-					{Object.entries(REGION_LABELS).map(([value, label]) => (
-						<option key={value} value={value}>
-							{label}
+					<option value="">Select your country</option>
+					{COUNTRIES.map((c) => (
+						<option key={c.name} value={c.name}>
+							{c.name}
 						</option>
 					))}
 				</select>
-			</Field>
-
-			<Field label="Country (local only)" htmlFor="country">
-				<input
-					id="country"
-					name="country"
-					type="text"
-					defaultValue={user.country}
-					className={inputCls}
-				/>
 			</Field>
 
 			<div className="flex gap-3 pt-2">
