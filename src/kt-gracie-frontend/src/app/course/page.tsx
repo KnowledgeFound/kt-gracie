@@ -14,6 +14,7 @@ import {
 } from '@/features/course';
 import type { Module } from '@/features/city/types';
 import { getAllModules } from '@/services/corpusService';
+import { useModuleImage } from '@/features/city';
 
 /**
  * Course route — /course/:moduleId
@@ -27,6 +28,8 @@ export default function CoursePage() {
 	const course = useCourse(moduleId);
 	const [nextModule, setNextModule] = useState<Module | null>(null);
 	const [chatOpen, setChatOpen] = useState(false);
+	// Hooks run before the early returns below, so the count never changes.
+	const art = useModuleImage(course.module);
 
 	useEffect(() => {
 		if (!course.module) return;
@@ -71,7 +74,7 @@ export default function CoursePage() {
 		<div
 			className="min-h-screen relative overflow-hidden bg-surface-page bg-cover bg-center bg-fixed"
 			style={
-				module.image ? { backgroundImage: `url(${module.image})` } : undefined
+				art ? { backgroundImage: `url(${art})` } : undefined
 			}
 		>
 			{/* Module artwork behind every step; the scrim keeps the cards readable */}

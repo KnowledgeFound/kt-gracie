@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useModuleImage } from '@/features/city';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import {
@@ -297,6 +298,7 @@ const ResultsScreen = ({
 	onContinue,
 	continueLabel = 'Continue',
 }: ResultsScreenProps) => {
+	const art = useModuleImage(module);
 	const navigate = useNavigate();
 	const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
@@ -331,7 +333,7 @@ const ResultsScreen = ({
 	return (
 		<motion.div
 			className="flex items-center justify-center min-h-[100dvh] relative bg-cover bg-center bg-fixed"
-			style={{ backgroundImage: `url(${module?.image})` }}
+			style={{ backgroundImage: `url(${art})` }}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useModuleImage } from '@/features/city';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import classnames from 'classnames';
 import type { Question, UserAnswer } from '../types';
@@ -81,6 +82,7 @@ const QuizScreen = ({
 	elapsed = 0,
 	module,
 }: QuizScreenProps) => {
+	const art = useModuleImage(module);
 	
 	const navigate = useNavigate();
 	const quit = () => (onQuit ? onQuit() : navigate(`/course/${module?.id}`));
@@ -159,7 +161,7 @@ const QuizScreen = ({
 	return (
 		<motion.div
 			className="min-h-[100dvh] flex flex-col justify-center relative bg-cover bg-center bg-fixed"
-			style={{ backgroundImage: `url(${module?.image})` }}
+			style={{ backgroundImage: `url(${art})` }}
 			variants={containerVariants}
 			initial="hidden"
 			animate="visible"

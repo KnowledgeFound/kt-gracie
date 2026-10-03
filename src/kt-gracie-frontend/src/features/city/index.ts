@@ -2,6 +2,7 @@ export { default as CityHeader } from './components/CityHeader';
 export { default as CityHero } from './components/CityHero';
 export { default as CityShell, PageTitle } from './components/CityShell';
 export { useCityLook, cityLookFor } from './hooks/useCityLook';
+export { useModuleImage } from './hooks/useModuleImage';
 export { default as CloudLayer } from './components/CloudLayer';
 export { default as DriftingCloud } from './components/DriftingCloud';
 export { default as StormLayer } from './components/StormLayer';

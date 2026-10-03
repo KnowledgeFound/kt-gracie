@@ -148,6 +148,8 @@ export interface Module {
 	audience: string;
 	icon: ComponentType<{ className?: string }>;
 	image: string;
+	/** Ruined version of `image`, shown while the city is corrupt. */
+	corruptImage?: string;
 	/** Which floating district on the city map this module lives on */
 	block: CityBlockId;
 	/** Learning objectives shown on WelcomeScreen left panel (see `description`) */

@@ -5,7 +5,7 @@ import { setLocalStorage, getLocalStorage } from "../commons/utilts";
 import { Module, ModuleAssessment } from "@/features/city/types";
 import { resolveIcon, cityBlockIdMapper } from "./mappers/iconMapper";
 import { mapAssessmentDifficulty, mapDuration } from "./mappers/mappers";
-import { resolveImage } from "./mappers/imageMapper";
+import { resolveCorruptImage, resolveImage } from "./mappers/imageMapper";
 import { AssessmentType } from "@/ENUMS/enums";
 import { withLeveledCopy } from "./mappers/readingLevelMapper";
 
@@ -71,6 +71,7 @@ export async function getAllModules(): Promise<Module[]> {
                 audience: knowledgeUnit.audience,
                 icon: resolveIcon(knowledgeUnit.icon),
                 image: resolveImage(knowledgeUnit.image),
+                corruptImage: resolveCorruptImage(knowledgeUnit.image),
                 block: cityBlockIdMapper(knowledgeUnit.block),
                 objectives: knowledgeUnit.learningObjectives,
                 expectations: knowledgeUnit.expectations,

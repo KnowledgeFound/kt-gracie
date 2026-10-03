@@ -1,4 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
+import { useModuleImage } from '@/features/city';
 import { useState } from 'react';
 import {
 	CheckCircle2,
@@ -249,6 +250,7 @@ const WelcomeScreen = ({
 	isDone,
 	percent,
 }: WelcomeScreenProps) => {
+	const art = useModuleImage(module);
 	const user = useOptionalUser();
 	const navigate = useNavigate();
 	const { t } = useReadingLevel();
@@ -412,7 +414,7 @@ const WelcomeScreen = ({
 	return (
 		<motion.div
 			className="flex items-center justify-center min-h-screen relative bg-cover bg-center bg-fixed"
-			style={{ backgroundImage: `url(${module?.image})` }}
+			style={{ backgroundImage: `url(${art})` }}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
