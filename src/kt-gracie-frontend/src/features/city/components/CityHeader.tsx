@@ -16,7 +16,7 @@ interface CityHeaderProps {
 /** Top-level pages that already exist. Add to this list as pages land. */
 const NAV = [
 	{ label: 'Home', to: '/city', icon: Home },
-	{ label: 'Subjects', to: '/subjects', icon: BookOpen },
+	//{ label: 'Subjects', to: '/subjects', icon: BookOpen },
 	{ label: 'Leaderboard', to: '/leaderboard', icon: Trophy },
 ];
 
