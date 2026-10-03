@@ -124,7 +124,7 @@ export default function LessonScreen({
 							{/* Only a video section carries a toggle — the thing being marked
 							    done here is the watching. Text and embed sections are done
 							    by pressing Continue. */}
-							<div className="mb-6 flex items-center justify-end gap-3">
+							{/* <div className="mb-6 flex items-center justify-end gap-3">
 								<span className="text-sm font-medium text-ink-deep">
 									Video completed
 								</span>
@@ -133,7 +133,7 @@ export default function LessonScreen({
 									label={`Mark "${section.title}" as completed`}
 									onChange={() => onToggleComplete(section.id)}
 								/>
-							</div>
+							</div> */}
 						</>
 					)}
 					{section.embed && driveFileId(section.embed.url) && (
