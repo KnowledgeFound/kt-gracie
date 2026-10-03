@@ -91,7 +91,7 @@ export interface LearningSettings {
 }
 
 export interface CitySettings {
-	/** Drifting cloud layer. */
+	/** Drifting thundercloud layer over a destroyed city. */
 	clouds: boolean;
 	/** Hot-air balloon that trails the cursor. */
 	balloonCursor: boolean;

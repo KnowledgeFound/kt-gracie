@@ -21,6 +21,37 @@
   transition: filter 0.35s ease, background-color 0.35s ease;
 }
 
+/* A painted cloudscape behind the districts: bright for the healthy city,
+   overcast and ruined for the corrupt one. Cover-fit and centred so the
+   horizon stays put at any viewport; the theme sky colour still shows
+   through while the image loads. The destroyed look keeps its ember sky. */
+.cityScene--vibrant .cityBackground,
+.cityScene--corrupt .cityBackground {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cityScene--vibrant .cityBackground {
+  background-image: url('/assets/city/background.png');
+}
+
+.cityScene--corrupt .cityBackground {
+  background-image: url('/assets/corrupted-city/corrupted-background.png');
+}
+
+/* The paintings are daylight; settle them down for the dark theme like the
+   districts and clouds above them. */
+[data-theme='dark'] .cityScene--vibrant .cityBackground,
+[data-theme='dark'] .cityScene--corrupt .cityBackground {
+  filter: brightness(0.55) saturate(0.85);
+}
+
+[data-theme='dark'] .cityScene--vibrant.cityScene--hovering .cityBackground,
+[data-theme='dark'] .cityScene--corrupt.cityScene--hovering .cityBackground {
+  filter: brightness(0.47) saturate(0.85) blur(1px);
+}
+
 /* Night city: the artwork is painted for a bright sky, so settle it down to
    match the dark theme rather than glowing against it. */
 [data-theme='dark'] .cityBlock,
@@ -222,8 +253,9 @@
    The abandoned districts smoulder. Each `.citySmoke` (CitySmoke.tsx) is one
    plume: four small puffs, evenly staggered so there is always a thin column
    in flight, that rise a short way, lean with the wind, swell and fade.
-   Cool grey and low-opacity so it sits inside the artwork's daylight rather
-   than on top of it; no blur filters, the edges come from the gradient. */
+   Sooty charcoal, like the smoke columns in the painted backdrop, and
+   low-opacity so it sits inside the scene rather than on top of it; no blur
+   filters, the edges come from the gradient. */
 
 .citySmoke {
   position: absolute;
@@ -242,10 +274,10 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(150, 156, 166, 0.7) 0%,
-    rgba(136, 142, 152, 0.4) 35%,
-    rgba(120, 126, 136, 0.12) 58%,
-    rgba(120, 126, 136, 0) 70%
+    rgba(38, 40, 46, 0.8) 0%,
+    rgba(44, 46, 52, 0.5) 35%,
+    rgba(50, 52, 58, 0.16) 58%,
+    rgba(50, 52, 58, 0) 70%
   );
   opacity: 0;
   --smoke-dx: 22%;
@@ -284,10 +316,10 @@
     opacity: 0;
   }
   10% {
-    opacity: 0.6;
+    opacity: 0.7;
   }
   55% {
-    opacity: 0.35;
+    opacity: 0.42;
   }
   100% {
     transform: translate(var(--smoke-dx), var(--smoke-dy))

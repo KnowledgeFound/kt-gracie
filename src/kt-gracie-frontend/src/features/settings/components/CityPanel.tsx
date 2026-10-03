@@ -32,7 +32,7 @@ export default function CityPanel() {
 			>
 				<SettingRow
 					title="Drifting clouds"
-					description="The animated cloud layer above the districts."
+					description="The animated thunderclouds above the districts while the city is destroyed."
 				>
 					<Toggle
 						label="Drifting clouds"

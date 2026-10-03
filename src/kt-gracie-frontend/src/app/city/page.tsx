@@ -69,9 +69,10 @@ export default function CityScene() {
 			})
 			.catch(() => setContinueModule(null));
 	}, []);
-	// Low health corrupts the city: the districts and the balloon swap to their
-	// abandoned artwork and nothing else changes. The destroyed look (ember sky,
-	// fires, storm) is kept for a harsher tier the backend may add later.
+	// Low health corrupts the city: the districts, balloon and backdrop swap to
+	// their abandoned artwork and a little smoke rises; nothing else changes.
+	// The destroyed look (ember sky, fires, storm) is kept for a harsher tier
+	// the backend may add later.
 	// In development `?cityState=corrupt` / `=destroyed` (or `=vibrant`) forces
 	// a look, so the artwork can be checked without editing the stored health.
 	const [searchParams] = useSearchParams();
@@ -91,6 +92,7 @@ export default function CityScene() {
 			: cityState === CityState.CORRUPT
 				? 'corrupt'
 				: 'normal';
+	const isVibrant = look === 'normal';
 	const isCorrupt = look === 'corrupt';
 	const isDestroyed = look === 'destroyed';
 	const reduceMotion =
@@ -203,6 +205,8 @@ export default function CityScene() {
 			className={[
 				'cityScene',
 				hoveredBlock ? 'cityScene--hovering' : '',
+				isVibrant ? 'cityScene--vibrant' : '',
+				isCorrupt ? 'cityScene--corrupt' : '',
 				isDestroyed ? 'cityScene--destroyed' : '',
 			]
 				.filter(Boolean)
@@ -211,10 +215,12 @@ export default function CityScene() {
 			{/* City background */}
 			<div aria-hidden="true" className="cityBackground" />
 
-			{/* Cloud layer — ambience, opt-out in Settings */}
-			{settings.city.clouds && (
+			{/* Thunderclouds over a destroyed city — opt-out in Settings. The
+			    vibrant and corrupt looks paint their own skies, so the drifting
+			    cloud layer stays off there. */}
+			{isDestroyed && settings.city.clouds && (
 				<div className="cityCloudLayer">
-					<CloudLayer stormy={isDestroyed} />
+					<CloudLayer stormy />
 				</div>
 			)}
 

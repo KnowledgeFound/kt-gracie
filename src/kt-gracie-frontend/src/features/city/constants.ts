@@ -207,7 +207,7 @@ const BLOCK_LAYOUT: Record<
 	}
 > = {
 	leftUp: {
-		src: '/assets/city/block-left-up.png',
+		src: '/assets/Vibrant-city/block-left-up.png',
 		corruptSrc: '/assets/corrupted-city/block-left-up.png',
 		destroyedSrc: '/assets/city/corrupt/block-left-up.png',
 		fires: [
@@ -224,7 +224,7 @@ const BLOCK_LAYOUT: Record<
 		labelBias: { x: 0.42, y: 0.6 },
 	},
 	rightUp: {
-		src: '/assets/city/block-right-up.png',
+		src: '/assets/Vibrant-city/block-right-up.png',
 		corruptSrc: '/assets/corrupted-city/block-right-up.png',
 		destroyedSrc: '/assets/city/corrupt/block-right-up.png',
 		fires: [
@@ -242,7 +242,7 @@ const BLOCK_LAYOUT: Record<
 		labelBias: { x: 0.64, y: 0.4 },
 	},
 	central: {
-		src: '/assets/city/block-central.png',
+		src: '/assets/Vibrant-city/block-central.png',
 		corruptSrc: '/assets/corrupted-city/block-central.png',
 		destroyedSrc: '/assets/city/corrupt/block-central.png',
 		fires: [
@@ -255,7 +255,7 @@ const BLOCK_LAYOUT: Record<
 		z: 2,
 	},
 	leftDown: {
-		src: '/assets/city/block-left-down.png',
+		src: '/assets/Vibrant-city/block-left-down.png',
 		corruptSrc: '/assets/corrupted-city/block-left-down.png',
 		destroyedSrc: '/assets/city/corrupt/block-left-down.png',
 		fires: [
@@ -274,7 +274,7 @@ const BLOCK_LAYOUT: Record<
 		labelBias: { x: 0.75, y: 0.3 },
 	},
 	rightDown: {
-		src: '/assets/city/block-right-down.png',
+		src: '/assets/Vibrant-city/block-right-down.png',
 		corruptSrc: '/assets/corrupted-city/block-right-down.png',
 		destroyedSrc: '/assets/city/corrupt/block-right-down.png',
 		fires: [
