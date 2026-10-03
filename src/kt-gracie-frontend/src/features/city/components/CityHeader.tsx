@@ -28,7 +28,7 @@ export default function CityHeader({
 	return (
 		<header className="cityHeader absolute top-0 left-0 right-0 z-20 animate-fadeSlideDown">
 			{/* Glass look lives in city.css (.cityHeaderBar / .cityHeaderPill) so the
-			    corrupt city can restyle it. */}
+			    destroyed city can restyle it. */}
 			<div className="cityHeaderBar mx-3 mt-3 md:mx-6 md:mt-4 rounded-2xl px-4 py-2 flex items-center justify-between gap-3">
 				{/* ── Left: wordmark ─────────────────────────────────────── */}
 				<span className="text-white font-black tracking-[0.18em] text-sm md:text-base select-none drop-shadow-sm uppercase">

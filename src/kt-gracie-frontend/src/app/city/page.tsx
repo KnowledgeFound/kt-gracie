@@ -19,7 +19,7 @@ import {
 import { useUser } from '@/features/auth';
 import { useSettings } from '@/features/settings';
 import { cityBlocks, getCityBlock } from '@/features/city/constants';
-import type { CityBlockId } from '@/features/city/types';
+import type { CityBlockId, CityLook } from '@/features/city/types';
 import { getCorpus } from '@/services/corpusService';
 import {
 	addProgressToContainer,
@@ -69,16 +69,30 @@ export default function CityScene() {
 			})
 			.catch(() => setContinueModule(null));
 	}, []);
-	// Low health corrupts the city: ruined districts, fires, a storm overhead.
-	// In development `?cityState=corrupt` (or `=vibrant`) forces a look, so the
-	// artwork can be checked without editing the stored health.
+	// Low health corrupts the city: the districts and the balloon swap to their
+	// abandoned artwork and nothing else changes. The destroyed look (ember sky,
+	// fires, storm) is kept for a harsher tier the backend may add later.
+	// In development `?cityState=corrupt` / `=destroyed` (or `=vibrant`) forces
+	// a look, so the artwork can be checked without editing the stored health.
 	const [searchParams] = useSearchParams();
 	const forcedState = import.meta.env.DEV
 		? searchParams.get('cityState')
 		: null;
-	const isCorrupt = forcedState
+	const cityState = forcedState
 		? forcedState === 'corrupt'
-		: city?.getCityState() === CityState.CORRUPT;
+			? CityState.CORRUPT
+			: forcedState === 'destroyed'
+				? CityState.DESTROYED
+				: CityState.NORMAL
+		: city?.getCityState();
+	const look: CityLook =
+		cityState === CityState.DESTROYED
+			? 'destroyed'
+			: cityState === CityState.CORRUPT
+				? 'corrupt'
+				: 'normal';
+	const isCorrupt = look === 'corrupt';
+	const isDestroyed = look === 'destroyed';
 	const reduceMotion =
 		settings.appearance.reduceMotion ||
 		window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -189,7 +203,7 @@ export default function CityScene() {
 			className={[
 				'cityScene',
 				hoveredBlock ? 'cityScene--hovering' : '',
-				isCorrupt ? 'cityScene--corrupt' : '',
+				isDestroyed ? 'cityScene--destroyed' : '',
 			]
 				.filter(Boolean)
 				.join(' ')}
@@ -200,12 +214,12 @@ export default function CityScene() {
 			{/* Cloud layer — ambience, opt-out in Settings */}
 			{settings.city.clouds && (
 				<div className="cityCloudLayer">
-					<CloudLayer stormy={isCorrupt} />
+					<CloudLayer stormy={isDestroyed} />
 				</div>
 			)}
 
-			{/* Rain and lightning over a corrupt city — opt-out in Settings */}
-			{isCorrupt && settings.city.stormEffects && (
+			{/* Rain and lightning over a destroyed city — opt-out in Settings */}
+			{isDestroyed && settings.city.stormEffects && (
 				<StormLayer reduceMotion={reduceMotion} />
 			)}
 
@@ -245,7 +259,7 @@ export default function CityScene() {
 							>
 								<DistrictArt
 									block={block}
-									corrupt={isCorrupt}
+									look={look}
 									floating={settings.city.floatingDistricts}
 									fires={settings.city.stormEffects}
 								/>
@@ -324,7 +338,7 @@ export default function CityScene() {
 			    Gracie while she has the screen, so it waits for her to dock. With
 			    no guide on screen there is nothing to wait for. */}
 			{(introDone || !settings.guide.visible) &&
-				settings.city.balloonCursor && <BalloonCursor />}
+				settings.city.balloonCursor && <BalloonCursor corrupt={isCorrupt} />}
 		</div>
 	);
 }

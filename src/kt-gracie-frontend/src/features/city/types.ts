@@ -92,15 +92,23 @@ export interface CityBlockFire {
  * its module button are positioned from these numbers, so they can never
  * drift apart.
  */
+/**
+ * How the map is drawn. `corrupt` only swaps the district (and balloon)
+ * artwork; `destroyed` is the full ember-sky, fire and storm treatment.
+ */
+export type CityLook = 'normal' | 'corrupt' | 'destroyed';
+
 export interface CityBlock {
 	id: CityBlockId;
 	/** Module this district represents. */
 	moduleId: number;
 	src: string;
-	/** Ruined artwork shown while the city is corrupt — same canvas as `src`. */
+	/** Abandoned artwork shown while the city is corrupt — same canvas as `src`. */
 	corruptSrc: string;
+	/** Burnt-out artwork for the destroyed look — same canvas as `src`. */
+	destroyedSrc: string;
 	alt: string;
-	/** Fires burning on the district while the city is corrupt. */
+	/** Fires burning on the district while the city is destroyed. */
 	fires: CityBlockFire[];
 	/** Image box within the stage. */
 	box: { left: number; top: number; width: number; height: number };

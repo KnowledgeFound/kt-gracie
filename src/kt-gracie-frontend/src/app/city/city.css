@@ -137,7 +137,7 @@
   border-radius: 12px;
 }
 
-/* Holds a district's image and, on a corrupt city, the fires on top of it.
+/* Holds a district's image and, on a destroyed city, the fires on top of it.
    The float animation lives here so the fires bob with the island. */
 .cityBlockArt {
   position: relative;
@@ -218,13 +218,16 @@
   background: linear-gradient(90deg, #f59e0b, #fb923c);
 }
 
-/* ═══ Corrupt city ═══════════════════════════════════════════════════════════
-   Low health flips `.cityScene--corrupt` on (app/city/page.tsx): the sky turns
-   to smoke and embers, the clouds to thunderheads, the districts swap to their
-   ruined artwork (DistrictArt) and catch fire (CityFire), and a storm rolls in
-   (StormLayer). Everything below is scoped to that one class. */
+/* ═══ Destroyed city ═════════════════════════════════════════════════════════
+   The extra-destructive look. A corrupt city only swaps its district and
+   balloon artwork and needs no styles; the destroyed tier flips
+   `.cityScene--destroyed` on (app/city/page.tsx): the sky turns to smoke and
+   embers, the clouds to thunderheads, the districts swap to their burnt-out
+   artwork (DistrictArt) and catch fire (CityFire), and a storm rolls in
+   (StormLayer). Nothing maps health to this tier yet. Everything below is
+   scoped to that one class. */
 
-.cityScene--corrupt .cityBackground {
+.cityScene--destroyed .cityBackground {
   background: linear-gradient(
     180deg,
     #07070c 0%,
@@ -236,7 +239,7 @@
 }
 
 /* Firelight breathing up from below the islands. */
-.cityScene--corrupt .cityBackground::after {
+.cityScene--destroyed .cityBackground::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -259,17 +262,17 @@
 }
 
 /* The ruined artwork is already painted dark — don't dim it again at night. */
-.cityScene--corrupt .cityBlock {
+.cityScene--destroyed .cityBlock {
   filter: none;
 }
 
 /* Stand-in until a district's ruined artwork exists: burn out the healthy one. */
-.cityScene--corrupt .cityBlock--ruinFallback {
+.cityScene--destroyed .cityBlock--ruinFallback {
   filter: grayscale(0.9) sepia(0.5) hue-rotate(-28deg) saturate(1.7)
     brightness(0.4) contrast(1.35);
 }
 
-.cityScene--corrupt .cityBlockItem--active {
+.cityScene--destroyed .cityBlockItem--active {
   filter: drop-shadow(0 0 19px rgba(255, 120, 40, 0.8));
 }
 
@@ -278,8 +281,8 @@
    variables [data-accent] sets in styles/theme.css) inside their own layers,
    so drawers and modals opened from the city keep the user's accent. */
 
-.cityScene--corrupt .cityHeader,
-.cityScene--corrupt .cityModuleLayer {
+.cityScene--destroyed .cityHeader,
+.cityScene--destroyed .cityModuleLayer {
   --brand-50: 255 244 235;
   --brand-100: 255 224 200;
   --brand-200: 255 190 140;
@@ -298,7 +301,7 @@
   --ruin-cracks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23ff7a33' stroke-width='1' stroke-linejoin='bevel' vector-effect='non-scaling-stroke'%3E%3Cpath vector-effect='non-scaling-stroke' d='M0 18 22 24 31 14 52 30 60 60M52 30 78 26'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M200 40 176 34 168 46 150 38 141 0M150 38 128 44'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-.cityScene--corrupt .cityHeaderBar {
+.cityScene--destroyed .cityHeaderBar {
   background: linear-gradient(
     180deg,
     rgba(34, 16, 14, 0.72) 0%,
@@ -310,8 +313,8 @@
     inset 0 -8px 14px -8px rgba(255, 80, 10, 0.35);
 }
 
-.cityScene--corrupt .cityHeaderBar::after,
-.cityScene--corrupt .cityModuleBtn::after {
+.cityScene--destroyed .cityHeaderBar::after,
+.cityScene--destroyed .cityModuleBtn::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -323,29 +326,29 @@
 
 /* The bar is far wider than a button: stretching one set of cracks across it
    turns them into scratches, so lay two fixed-width sets instead. */
-.cityScene--corrupt .cityHeaderBar::after {
+.cityScene--destroyed .cityHeaderBar::after {
   background: var(--ruin-cracks) 9% 0 / 300px 100% no-repeat,
     var(--ruin-cracks) 62% 0 / 260px 100% no-repeat;
 }
 
-.cityScene--corrupt .cityHeaderPill {
+.cityScene--destroyed .cityHeaderPill {
   background: rgba(0, 0, 0, 0.38);
   border-color: rgba(255, 120, 50, 0.4);
 }
 
-.cityScene--corrupt .cityHeaderPill:hover {
+.cityScene--destroyed .cityHeaderPill:hover {
   background: rgba(120, 30, 8, 0.55);
 }
 
 /* A failing city has a racing pulse. */
-.cityScene--corrupt .cityHeaderHeart {
+.cityScene--destroyed .cityHeaderHeart {
   fill: #ff4a2a;
   transform-box: fill-box;
   transform-origin: center;
   animation: ruin-heartbeat 1.1s ease-in-out infinite;
 }
 
-.cityScene--corrupt .cityHeaderHealthFill {
+.cityScene--destroyed .cityHeaderHealthFill {
   background: linear-gradient(90deg, #b91c1c, #ff5a1f);
 }
 
@@ -366,11 +369,11 @@
 /* District buttons: charred slabs with chipped edges and an ember rim. The
    chips are a clip-path, which would also clip a box-shadow — so the glow is
    a drop-shadow on the wrapper instead. */
-.cityScene--corrupt .cityModuleFloat {
+.cityScene--destroyed .cityModuleFloat {
   filter: drop-shadow(0 0 9px rgba(255, 90, 20, 0.5));
 }
 
-.cityScene--corrupt .cityModuleBtn {
+.cityScene--destroyed .cityModuleBtn {
   position: relative;
   background: linear-gradient(
     180deg,
@@ -397,8 +400,8 @@
   );
 }
 
-.cityScene--corrupt .cityModuleBtn:hover,
-.cityScene--corrupt .cityModuleBtn--active {
+.cityScene--destroyed .cityModuleBtn:hover,
+.cityScene--destroyed .cityModuleBtn--active {
   background: linear-gradient(
     180deg,
     rgba(255, 128, 40, 0.95) 0%,
@@ -407,39 +410,39 @@
   border-color: rgba(255, 210, 150, 0.8);
 }
 
-.cityScene--corrupt .cityModuleRing__track {
+.cityScene--destroyed .cityModuleRing__track {
   color: rgba(255, 140, 70, 0.25);
 }
 
-.cityScene--corrupt .cityModuleRing__fill {
+.cityScene--destroyed .cityModuleRing__fill {
   color: #ff8a3c;
 }
 
-.cityScene--corrupt .cityModuleBadge {
+.cityScene--destroyed .cityModuleBadge {
   background: rgba(255, 110, 40, 0.22);
   color: #ffc79a;
 }
 
-.cityScene--corrupt .cityModuleBtn:hover .cityModuleBadge,
-.cityScene--corrupt .cityModuleBtn--active .cityModuleBadge,
-.cityScene--corrupt .cityModuleBtn:hover .cityModuleRing__fill,
-.cityScene--corrupt .cityModuleBtn--active .cityModuleRing__fill {
+.cityScene--destroyed .cityModuleBtn:hover .cityModuleBadge,
+.cityScene--destroyed .cityModuleBtn--active .cityModuleBadge,
+.cityScene--destroyed .cityModuleBtn:hover .cityModuleRing__fill,
+.cityScene--destroyed .cityModuleBtn--active .cityModuleRing__fill {
   color: #ffffff;
 }
 
 /* --- Thunderclouds: the same cloud art, darkened and lit from the fires --- */
 
-.cityScene--corrupt .cityCloud {
+.cityScene--destroyed .cityCloud {
   filter: brightness(0.24) saturate(0.55) contrast(1.3)
     drop-shadow(0 10px 22px rgba(255, 70, 10, 0.3));
   animation-duration: 9s;
 }
 
-.cityScene--corrupt .cityCloud--left {
+.cityScene--destroyed .cityCloud--left {
   width: clamp(170px, 22vw, 440px);
 }
 
-.cityScene--corrupt .cityCloud--right {
+.cityScene--destroyed .cityCloud--right {
   width: clamp(160px, 20vw, 400px);
 }
 
@@ -780,7 +783,7 @@
 /* Reduced motion: the fires stay lit but hold still, without the particles
    that only make sense in flight. (StormLayer stops itself in JS.) */
 @media (prefers-reduced-motion: reduce) {
-  .cityScene--corrupt .cityBackground::after,
+  .cityScene--destroyed .cityBackground::after,
   .cityFire__core,
   .cityFire__glow {
     animation: none;

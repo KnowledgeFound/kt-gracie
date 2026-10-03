@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 const BALLOON_SRC = '/assets/balloon.png';
+/** Worn, patched-up balloon flown over a corrupt city. */
+const CORRUPT_BALLOON_SRC = '/assets/corrupted-city/balloon.png';
 
 /**
  * Spring that pulls the balloon toward the cursor (mass 1). The damping ratio
@@ -30,7 +32,12 @@ const MAX_LEAN_DEG = 7;
  * - The balloon gently bobs up/down at all times (CSS keyframes, so the
  *   compositor handles it).
  */
-export default function BalloonCursor() {
+interface BalloonCursorProps {
+	/** Fly the worn balloon that matches the corrupt districts. */
+	corrupt?: boolean;
+}
+
+export default function BalloonCursor({ corrupt = false }: BalloonCursorProps) {
 	const wrapRef = useRef<HTMLDivElement>(null);
 
 	// Where the cursor is, and where the balloon is (with its velocity).
@@ -97,7 +104,7 @@ export default function BalloonCursor() {
 			    No CSS filter here: a drop-shadow is a blur pass that would be
 			    recomputed every frame while the balloon moves. */}
 			<img
-				src={BALLOON_SRC}
+				src={corrupt ? CORRUPT_BALLOON_SRC : BALLOON_SRC}
 				alt="balloon"
 				className="w-40 h-auto select-none rounded animate-balloonBob"
 				draggable={false}
