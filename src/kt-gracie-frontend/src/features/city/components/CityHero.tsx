@@ -46,7 +46,7 @@ export default function CityHero({
 			<h1 className="cityHero__title">
 				{restore ? 'Restore' : 'Protect'}
 				<br />
-				the <span className="cityHero__accent">City</span>
+				your <span className="cityHero__accent">City</span>
 			</h1>
 			<p className="cityHero__sub">
 				{restore

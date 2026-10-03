@@ -1,9 +1,8 @@
-import { MainLayout } from '@/components/layout';
+import { Trophy } from 'lucide-react';
+import { CityShell, PageTitle } from '@/features/city';
 import { useOptionalUser } from '@/features/auth';
 import { LeaderboardTable } from '@/features/leaderboard';
 import type { LeaderboardEntry } from '@/features/leaderboard';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import * as ProgressContainer from '@/services/progressContainerService';
 
 // Placeholder — replace with a canister call via useLeaderboard() hook
@@ -33,60 +32,51 @@ const MOCK_ENTRIES: LeaderboardEntry[] = [
 
 export default function LeaderboardPage() {
 	const user = useOptionalUser();
-	const navigate = useNavigate();
 	return (
-		<MainLayout>
-			<div className="max-w-3xl mx-auto px-4 py-12 w-full">
-				<div className="flex items-center justify-start gap-4 mb-8">
-					<button
-						onClick={() => navigate(-1)}
-						className="p-2 rounded-full hover:bg-brand-100 text-ink-muted hover:text-ink-deep transition-colors"
-								aria-label="Go back"
-							>
-						<ArrowLeft className="w-4 h-4" />
-					
-					</button>
-					<h1 className="text-3xl md:text-4xl font-bold text-indigo-600 text-center">
-						🏆 Leaderboard
-					</h1>
-				</div>
+		<CityShell>
+			<PageTitle
+				icon={Trophy}
+				kicker="Top learners"
+				title="Leaderboard"
+				sub="See how your city compares with the rest of the class."
+			/>
 
-				{/* Personal stats card — only shown when a profile exists */}
-				{user && (
-					<div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-8 flex flex-wrap gap-6 items-center justify-between">
-						<div className="flex items-center gap-3">
-							<div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold">
-								{user.firstName.charAt(0).toUpperCase()}
-							</div>
-							<span className="font-semibold text-gray-800">
-								{user.firstName}
-							</span>
+			{/* Personal stats card — only shown when a profile exists */}
+			{user && (
+				<div className="cityGlass mb-6 flex flex-wrap items-center justify-between gap-6 px-6 py-5">
+					<div className="flex items-center gap-3">
+						<div className="cityHeaderAvatar flex h-11 w-11 items-center justify-center rounded-full text-base font-black">
+							{user.firstName.charAt(0).toUpperCase()}
 						</div>
-						<div className="flex gap-6">
-							<Stat label="High Score" value={ProgressContainer.getTotalScore()} />
-							<Stat label="Quizzes" value={ProgressContainer.getNumberOfQuizzesCompleted()} />
-							<Stat
-								label="Accuracy"
-								value={
-									10 // Consult Leo about this
-								}
-							/>
-							<Stat label="Streak" value={`${5}d`} />
+						<div>
+							<p className="font-bold text-ink-deep">{user.firstName}</p>
+							<p className="text-xs text-ink-muted">Your standing</p>
 						</div>
 					</div>
-				)}
+					<div className="flex flex-wrap gap-6">
+						<Stat label="High Score" value={ProgressContainer.getTotalScore()} />
+						<Stat label="Quizzes" value={ProgressContainer.getNumberOfQuizzesCompleted()} />
+						<Stat
+							label="Accuracy"
+							value={
+								10 // Consult Leo about this
+							}
+						/>
+						<Stat label="Streak" value={`${5}d`} />
+					</div>
+				</div>
+			)}
 
-				<LeaderboardTable entries={MOCK_ENTRIES} />
-			</div>
-		</MainLayout>
+			<LeaderboardTable entries={MOCK_ENTRIES} />
+		</CityShell>
 	);
 }
 
 function Stat({ label, value }: { label: string; value: string | number }) {
 	return (
 		<div className="flex flex-col items-center">
-			<span className="text-xl font-bold text-indigo-600">{value}</span>
-			<span className="text-xs text-gray-500 mt-0.5">{label}</span>
+			<span className="text-xl font-black text-brand-600">{value}</span>
+			<span className="mt-0.5 text-xs text-ink-muted">{label}</span>
 		</div>
 	);
 }

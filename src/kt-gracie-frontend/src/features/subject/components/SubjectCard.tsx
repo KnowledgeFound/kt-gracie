@@ -10,7 +10,7 @@ export default function SubjectCard({ subject, onClick }: SubjectCardProps) {
 	return (
 		<button
 			onClick={() => onClick?.(subject)}
-			className="w-full text-left bg-surface-card rounded-card p-5 shadow-card hover:shadow-card-lg hover:-translate-y-0.5 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+			className="cityGlass w-full text-left p-5 hover:-translate-y-0.5 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
 		>
 			<div className="flex items-start justify-between gap-3">
 				{/* Icon */}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './city.css';
 import {
 	CloudLayer,
@@ -20,7 +20,8 @@ import {
 import { useUser } from '@/features/auth';
 import { useSettings } from '@/features/settings';
 import { cityBlocks, getCityBlock } from '@/features/city/constants';
-import type { CityBlockId, CityLook } from '@/features/city/types';
+import type { CityBlockId } from '@/features/city/types';
+import { useCityLook } from '@/features/city/hooks/useCityLook';
 import { getCorpus } from '@/services/corpusService';
 import {
 	addProgressToContainer,
@@ -31,7 +32,7 @@ import {
 import { getAllModules } from '@/services/corpusService';
 import { createProgress } from '@/services/progressService';
 import { SubProgress, SubProgressTeaching } from '@/types/user';
-import { AssessmentType, CityState } from '@/ENUMS/enums';
+import { AssessmentType } from '@/ENUMS/enums';
 import { createCity, getCityFromLocalStorage, saveCityToLocalStorage } from '@/services/cityService';
 
 /**
@@ -73,26 +74,8 @@ export default function CityScene() {
 	// Low health corrupts the city: the districts, balloon and backdrop swap to
 	// their abandoned artwork and a little smoke rises; nothing else changes.
 	// The destroyed look (ember sky, fires, storm) is kept for a harsher tier
-	// the backend may add later.
-	// In development `?cityState=corrupt` / `=destroyed` (or `=vibrant`) forces
-	// a look, so the artwork can be checked without editing the stored health.
-	const [searchParams] = useSearchParams();
-	const forcedState = import.meta.env.DEV
-		? searchParams.get('cityState')
-		: null;
-	const cityState = forcedState
-		? forcedState === 'corrupt'
-			? CityState.CORRUPT
-			: forcedState === 'destroyed'
-				? CityState.DESTROYED
-				: CityState.NORMAL
-		: city?.getCityState();
-	const look: CityLook =
-		cityState === CityState.DESTROYED
-			? 'destroyed'
-			: cityState === CityState.CORRUPT
-				? 'corrupt'
-				: 'normal';
+	// the backend may add later. See useCityLook for the dev override.
+	const look = useCityLook(city);
 	const isVibrant = look === 'normal';
 	const isCorrupt = look === 'corrupt';
 	const isDestroyed = look === 'destroyed';

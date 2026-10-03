@@ -22,7 +22,7 @@ export default function SettingsCard({
 	footer,
 }: SettingsCardProps) {
 	return (
-		<section className="overflow-hidden rounded-2xl border border-line-soft bg-surface-card shadow-sm">
+		<section className="cityGlass overflow-hidden">
 			<header className="flex items-start gap-3 border-b border-line-soft px-4 py-4 sm:px-5">
 				<span className="mt-0.5 flex size-8 flex-shrink-0 items-center justify-center rounded-xl bg-brand-500/10 text-brand-600">
 					<Icon className="size-4" />

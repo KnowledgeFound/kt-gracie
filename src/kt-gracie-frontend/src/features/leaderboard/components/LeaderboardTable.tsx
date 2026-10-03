@@ -4,52 +4,50 @@ interface LeaderboardTableProps {
 	entries: LeaderboardEntry[];
 }
 
+function medal(rank: number): string {
+	if (rank === 1) return '🥇';
+	if (rank === 2) return '🥈';
+	if (rank === 3) return '🥉';
+	return `#${rank}`;
+}
+
 export default function LeaderboardTable({ entries }: LeaderboardTableProps) {
 	if (entries.length === 0) {
 		return (
-			<p className="text-center text-gray-500 py-12">
+			<p className="cityGlass px-6 py-12 text-center text-ink-muted">
 				No scores yet. Be the first to complete the quiz!
 			</p>
 		);
 	}
 
 	return (
-		<div className="overflow-x-auto rounded-xl shadow-lg">
-			<table className="w-full text-left bg-white">
-				<thead className="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white">
-					<tr>
-						<th className="px-6 py-4 font-semibold">Rank</th>
-						<th className="px-6 py-4 font-semibold">Player</th>
-						<th className="px-6 py-4 font-semibold">Score</th>
-						<th className="px-6 py-4 font-semibold">Date</th>
-					</tr>
-				</thead>
-				<tbody>
-					{entries.map((entry, i) => (
-						<tr
-							key={entry.principal}
-							className={i % 2 === 0 ? 'bg-white' : 'bg-indigo-50'}
-						>
-							<td className="px-6 py-4 font-bold text-indigo-600">
-								{entry.rank === 1
-									? '🥇'
-									: entry.rank === 2
-										? '🥈'
-										: entry.rank === 3
-											? '🥉'
-											: `#${entry.rank}`}
-							</td>
-							<td className="px-6 py-4 text-gray-800">{entry.displayName}</td>
-							<td className="px-6 py-4 font-semibold text-gray-900">
-								{entry.score}
-							</td>
-							<td className="px-6 py-4 text-gray-500 text-sm">
-								{entry.completedAt}
-							</td>
+		<div className="cityGlass overflow-hidden">
+			<div className="overflow-x-auto">
+				<table className="w-full text-left">
+					<thead className="bg-brand-500/10 text-xs font-bold uppercase tracking-wider text-ink-mid">
+						<tr>
+							<th className="px-6 py-3.5">Rank</th>
+							<th className="px-6 py-3.5">Player</th>
+							<th className="px-6 py-3.5">Score</th>
+							<th className="px-6 py-3.5">Date</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody className="divide-y divide-line-soft">
+						{entries.map((entry) => (
+							<tr key={entry.principal} className="transition-colors hover:bg-brand-500/5">
+								<td className="px-6 py-4 text-lg font-bold text-brand-600">
+									{medal(entry.rank)}
+								</td>
+								<td className="px-6 py-4 font-semibold text-ink-deep">
+									{entry.displayName}
+								</td>
+								<td className="px-6 py-4 font-black text-ink-deep">{entry.score}</td>
+								<td className="px-6 py-4 text-sm text-ink-muted">{entry.completedAt}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 }

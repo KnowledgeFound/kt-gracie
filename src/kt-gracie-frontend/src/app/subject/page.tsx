@@ -9,6 +9,7 @@ import {
 	Loader2,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CityShell, PageTitle } from '@/features/city';
 import {
 	useSubjects,
 	useCreateSubject,
@@ -25,7 +26,6 @@ const fade = {
 };
 
 export default function SubjectPage() {
-	const navigate = useNavigate();
 	const [showForm, setShowForm] = useState(false);
 	const [selected, setSelected] = useState<Subject | null>(null);
 
@@ -33,7 +33,6 @@ export default function SubjectPage() {
 	const { data: subjects, isLoading, isError, error } = useSubjects();
 	const createMutation = useCreateSubject();
 
-	console.log('subbjects', subjects);
 	// ── Handlers ──────────────────────────────────────────────────────────────
 	function handleCreate(input: CreateSubjectInput) {
 		createMutation.mutate(input, {
@@ -43,35 +42,26 @@ export default function SubjectPage() {
 
 	// ── Render ────────────────────────────────────────────────────────────────
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-brand-50 via-surface-page to-quiz-50">
-			<div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-				{/* ── Header ── */}
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-3">
-						<button
-							onClick={() => navigate(-1)}
-							className="p-2 rounded-full hover:bg-brand-100 text-ink-muted hover:text-ink-deep transition-colors"
-							aria-label="Go back"
-						>
-							<ArrowLeft className="w-4 h-4" />
-						</button>
-						<div>
-							<h1 className="text-2xl font-bold text-ink-deep">Subjects</h1>
-							<p className="text-sm text-ink-muted">
-								{subjects
-									? `${subjects?.length} subject${subjects?.length !== 1 ? 's' : ''}`
-									: 'Loading…'}
-							</p>
-						</div>
-					</div>
-
-					{!showForm && !selected && (
-						<Button size="md" onClick={() => setShowForm(true)}>
-							<Plus className="w-4 h-4 mr-1.5" />
-							New Subject
-						</Button>
-					)}
-				</div>
+		<CityShell>
+			<div className="space-y-6">
+				<PageTitle
+					icon={BookOpen}
+					kicker="Browse"
+					title="Subjects"
+					sub={
+						subjects
+							? `${subjects.length} subject${subjects.length !== 1 ? 's' : ''}`
+							: 'Loading…'
+					}
+					action={
+						!showForm && !selected ? (
+							<Button size="md" onClick={() => setShowForm(true)}>
+								<Plus className="w-4 h-4 mr-1.5" />
+								New Subject
+							</Button>
+						) : undefined
+					}
+				/>
 
 				<AnimatePresence mode="wait">
 					{/* ── Create form ── */}
@@ -123,7 +113,7 @@ export default function SubjectPage() {
 
 							{/* Empty state */}
 							{!isLoading && !isError && subjects?.length === 0 && (
-								<div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+								<div className="cityGlass flex flex-col items-center justify-center py-20 gap-4 text-center">
 									<div className="w-16 h-16 rounded-2xl bg-brand-50 flex items-center justify-center">
 										<BookOpen className="w-8 h-8 text-brand-400" />
 									</div>
@@ -154,7 +144,7 @@ export default function SubjectPage() {
 					)}
 				</AnimatePresence>
 			</div>
-		</div>
+		</CityShell>
 	);
 }
 
@@ -173,7 +163,8 @@ function SubjectDetail({
 			{/* Back */}
 			<button
 				onClick={onBack}
-				className="flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink-deep transition-colors"
+				className="flex items-center gap-1.5 text-sm font-semibold transition-opacity hover:opacity-80"
+				style={{ color: 'var(--hero-sub)' }}
 			>
 				<ArrowLeft className="w-4 h-4" />
 				All Subjects

@@ -1313,8 +1313,9 @@
   bottom: var(--gg-dock-bottom);
   z-index: 5;
   display: flex;
-  /* Bubble aligns to her head; margin-top drops it to her mouth */
-  align-items: flex-start;
+  /* The bubble is pinned by its *bottom* (see .gracieGuide__bubbleWrap) so a
+     long line grows upward and never runs off the bottom of the screen. */
+  align-items: flex-end;
   gap: 14px;
   /* Never block hovers/clicks on the city blocks underneath */
   pointer-events: none;
@@ -1348,7 +1349,7 @@
 .gracieGuide--docked {
   transform: none;
   opacity: 1;
-  --gg-h: clamp(280px, 42vh, 460px);
+  --gg-h: clamp(320px, 52vh, 580px);
 }
 
 /* Bigger, easier-to-read bubble while she has the whole screen. */
@@ -1447,7 +1448,8 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  margin-top: calc(var(--gg-h) * 0.3);
+  /* Bottom of the bubble sits at her chest; text stacks up from there. */
+  margin-bottom: calc(var(--gg-h) * 0.45);
   margin-left: -50px;
 }
 
@@ -1456,7 +1458,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-width: clamp(200px, 22vw, 320px);
+  max-width: clamp(220px, 26vw, 380px);
   padding: 12px 18px 14px;
   background: #ffffff;
   color: #1f2937;
@@ -1638,4 +1640,146 @@
     transform: translate(var(--gg-center-x), var(--gg-center-y));
     opacity: 1;
   }
+}
+
+/* ═══ Content pages: leaderboard, subjects, settings (CityShell) ═════════════
+   The city's painted sky as a fixed backdrop, washed lighter (or darker, on
+   the ruined sky) so cards and text read on top; the map's header pinned to
+   the top; content scrolls underneath. */
+
+.cityShell {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  --hero-ink: rgb(var(--ink-deep));
+  --hero-sub: rgb(var(--ink-mid));
+  --hero-kicker: rgb(var(--brand-600));
+}
+
+.cityShell__bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--city-sky, #d7f1ff) url('/assets/city/background.png')
+    center / cover no-repeat;
+}
+
+.cityShell__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
+}
+
+.cityShell--corrupt .cityShell__bg,
+.cityShell--destroyed .cityShell__bg {
+  background-image: url('/assets/corrupted-city/corrupted-background.png');
+}
+
+.cityShell--corrupt .cityShell__bg::after,
+.cityShell--destroyed .cityShell__bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 14, 26, 0.3) 0%,
+    rgba(8, 14, 26, 0.55) 100%
+  );
+}
+
+.cityShell--corrupt,
+.cityShell--destroyed {
+  --hero-ink: #ffffff;
+  --hero-sub: rgba(255, 255, 255, 0.82);
+  --hero-kicker: rgba(255, 255, 255, 0.78);
+}
+
+[data-theme='dark'] .cityShell__bg {
+  filter: brightness(0.55) saturate(0.85);
+}
+
+[data-theme='dark'] .cityShell__bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(5, 10, 20, 0.3) 0%,
+    rgba(5, 10, 20, 0.55) 100%
+  );
+}
+
+/* The header is absolute on the map; here the page scrolls, so pin it. */
+.cityShell .cityHeader {
+  position: fixed;
+}
+
+.cityShell__content {
+  position: relative;
+  z-index: 1;
+  padding-top: clamp(88px, 12vh, 116px);
+  padding-bottom: 72px;
+}
+
+/* Frosted card, the same glass as the progress widget on the map. */
+.cityGlass {
+  background: rgb(var(--surface-card) / 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(15, 40, 70, 0.12);
+}
+
+[data-theme='dark'] .cityGlass {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Page heading, in the voice of the map's "Protect your City" block. */
+.pageTitle {
+  margin-bottom: 22px;
+}
+
+.pageTitle__kicker {
+  margin: 0 0 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hero-kicker);
+}
+
+.pageTitle__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--hero-ink);
+  text-shadow: 0 2px 14px rgba(255, 255, 255, 0.35);
+}
+
+.cityShell--corrupt .pageTitle__title,
+.cityShell--destroyed .pageTitle__title {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.pageTitle__icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  color: rgb(var(--brand-500));
+}
+
+.cityShell--corrupt .pageTitle__icon,
+.cityShell--destroyed .pageTitle__icon {
+  color: rgb(var(--brand-300));
+}
+
+.pageTitle__sub {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: var(--hero-sub);
 }
