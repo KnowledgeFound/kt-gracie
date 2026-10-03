@@ -81,6 +81,7 @@ export async function getAllModules(): Promise<Module[]> {
                 ktReward: getMaxNumberOfKtTokens(knowledgeUnit),
                 assessments: knowledgeUnit.assessments.map((assessment) => ({
                     id: assessment.id,
+                    kuId: knowledgeUnit.id,
                     type: assessment.quiz ? AssessmentType.QUIZ : (assessment.flashcard ? AssessmentType.FLASHCARD : AssessmentType.CHAT_QA),
                     title: assessment.quiz ? knowledgeUnit.topic + " Quiz #" + assessment.sequenceNo : (assessment.flashcard ? knowledgeUnit.topic + " Flashcard #" + assessment.sequenceNo : "Assessment"),
                     description: assessment.quiz ? getQuizDescription(knowledgeUnit.topic,assessment.ktMax) : (assessment.flashcard ? getFlashCardDescription(knowledgeUnit.topic,assessment.ktMax) : getGeneralDescription() ), 
@@ -103,6 +104,7 @@ export async function getAllModules(): Promise<Module[]> {
                 module.assessments.push(
                     {
                         id: teaching.id,
+                        kuId: knowledgeUnit.id,
                         type: AssessmentType.TEACHING,
                         title: teaching.topic,
                         description: teaching.content.description,
@@ -125,6 +127,7 @@ export async function getAllModules(): Promise<Module[]> {
             module.assessments.push(
                 {
                     id:knowledgeUnit.summary.id,
+                    kuId: knowledgeUnit.id,
                     type: AssessmentType.SUMMARY,
                     title: knowledgeUnit.topic + " Summary Section",
                     description: "Explore additional Content on " + knowledgeUnit.topic,

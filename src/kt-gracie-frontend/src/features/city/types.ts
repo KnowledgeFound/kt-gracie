@@ -34,6 +34,7 @@ export type AssessmentStatus = 'completed' | 'in_progress' | 'available' | 'lock
 export interface ModuleAssessment {
 	id: number;
 	title: string;
+	kuId: string;
 	/**
 	 * Resolve with `useReadingLevel().t`. Hand-written copy is leveled; text
 	 * that comes straight from the corpus is a plain string.

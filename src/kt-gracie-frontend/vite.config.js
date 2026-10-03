@@ -25,7 +25,10 @@ export default defineConfig({
     // stylesheet would be blocked by COEP.
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
+      // credentialless, not require-corp: lesson videos are streamed from
+      // media.knowledgefound.org, which sends no CORS/CORP headers. See the
+      // matching note in public/.ic-assets.json5.
+      "Cross-Origin-Embedder-Policy": "credentialless",
     },
     proxy: {
       "/api": {

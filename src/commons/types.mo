@@ -93,6 +93,7 @@ module Types{
         ktMax: Nat; // Knowledge Token max score for this teaching
         duration: Nat; // Duration in minutes
         sequenceNo: Nat;
+        knowledgeUnitId: Text;
     };
 
     public type Content = {
@@ -100,7 +101,7 @@ module Types{
         contentType: Enums.ContentType;
         url: Text;
         description: Text;
-        detailedDesciption: Text;
+        detailedDescription: Text;
     };
 
     public type SummarySection = {
@@ -122,6 +123,7 @@ module Types{
         duration: Nat; // Duration in minutes
         difficulty: Enums.Difficulty;
         sequenceNo: Nat;
+        knowledgeUnitId: Text;
     };
 
     public type Quiz = {

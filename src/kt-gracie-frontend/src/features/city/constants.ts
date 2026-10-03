@@ -56,6 +56,7 @@ function makeAssessments(base: string): ModuleAssessment[] {
 		{
 			id: 1,
 			title: `Foundations of ${base}`,
+			kuId: "KU_001",
 			description: leveled(
 				`The big ideas of ${topic}: what the main words mean and how it works.`,
 				`Core definitions, key principles and the anatomy of ${topic}.`,
@@ -76,6 +77,7 @@ function makeAssessments(base: string): ModuleAssessment[] {
 		{
 			id: 2,
 			title: `Prevention & Integrity`,
+			kuId: "KU_001",
 			description: leveled(
 				'How people who speak up are kept safe, what must be shared openly, and the rules for doing the right thing.',
 				'Whistleblower protection, disclosure obligations and ethics frameworks.',
@@ -96,6 +98,7 @@ function makeAssessments(base: string): ModuleAssessment[] {
 		{
 			id: 3,
 			title: `Enforcement & Compliance`,
+			kuId: "KU_001",
 			description: leveled(
 				`The laws about ${topic}, what breaks them, how countries help each other, and how groups follow the rules.`,
 				`Law, offences, mutual legal assistance and compliance in ${topic}.`,
@@ -115,6 +118,7 @@ function makeAssessments(base: string): ModuleAssessment[] {
 		{
 			id: 4,
 			title: `International Cooperation`,
+			kuId: "KU_001",
 			description: leveled(
 				'How countries work together, the agreements they sign, and how stolen money is returned.',
 				'Cross-border enforcement, treaties and asset repatriation.',
@@ -373,7 +377,7 @@ export const modules: Module[] = [
 		audience: 'Government & Public Sector',
 		image: policy_img,
 		icon: Target,
-		block: 'leftDown',
+		block: 'central',
 		lessons: 8,
 		ktReward:400,
 		level: 'Beginner',
@@ -443,7 +447,7 @@ export const modules: Module[] = [
 		audience: 'Young People & Communities',
 		icon: Users,
 		image: youth_led_img,
-		block: 'central',
+		block: 'leftDown',
 		lessons: 8,
 		ktReward:400,
 		level: 'Beginner',

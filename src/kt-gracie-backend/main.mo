@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-09-29T00:30:00Z";
+    lastUpdated = "2026-10-03T15:50:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -134,7 +134,13 @@ persistent actor Main {
             id = 1;
             sourceType = #ARTICLE;
             detail = "What is Corruption?";
-            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+            url = ?("https://grace.unodc.org/grace/uploads/documents/academics/Anti-Corruption_Module_1_What_Is_Corruption_and_Why_Should_We_Care.pdf");
+          },
+          {
+            id = 2;
+            sourceType = #ARTICLE;
+            detail = "University Module series on Anti-Corruption";
+            url = ?("https://grace.unodc.org/grace/academia/module-series-on-anti-corruption.html?lf_id=");
           }
         ];
         teachings = [
@@ -149,10 +155,76 @@ persistent actor Main {
             content = {
               name = "What is Corruption?";
               contentType = #VIDEO;
-              url = "https://www.unodc.org/corruption/en/learn/what-is-corruption.html";
-              description = "An article by the United Nations Office on Drugs and Crime (UNODC) that provides a comprehensive overview of corruption, its forms, and its impact on society.";
-              detailedDesciption = "";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Introduction__The_Scale_of_Decay.mp4";
+              detailedDescription = "In this introductory video, students will gain a foundational understanding of corruption as one of 
+              the central global challenges of the 21st century. The lesson begins by examining baseline meanings of corruption 
+              rooted in decay, debasement, and departure from integrity, then explores how international legal frameworks like 
+              the **United Nations Convention against Corruption (UNCAC)** criminalise specific offences—such as bribery, 
+              embezzlement, trading in influence, abuse of functions, illicit enrichment, and money-laundering—rather 
+              than applying a single restrictive definition. Students will compare classic public-office definitions, 
+              such as the World Bank's \"use of public office for private gain,\" with broader frameworks covering the 
+              private sector, such as Transparency International's \"abuse of entrusted power for private gain.\" 
+              Finally, the video breaks down the scales and typologies of corrupt behaviour, helping students differentiate 
+              between **petty corruption**, **grand corruption**, and systemic **state capture**.";
+              description = "This video provides an overview of corruption, its definitions, and its impact on society.";
             };
+            knowledgeUnitId = "KU-001";
+          },
+          {
+            id = 2;
+            topic = "The Root Causes: How Philosophy, Economics and Politics Explain Corruption";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 30; // Duration in minutes
+            keywords = ["Anti-Corruption", "definition", "Introduction to Corruption", "philosophy", "economics", "politics"];
+            sequenceNo = 2;
+            content = {
+              name = "The Root Causes: How Philosophy, Economics and Politics Explain Corruption";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_1__Root_Causes_of_Corruption.mp4";
+              description = "This video explores the root causes of corruption through the lenses of philosophy, economics, and politics, providing students with a multidisciplinary understanding of why corruption occurs and how it can be addressed.";
+              detailedDescription = "In this sub-module, students examine how different academic disciplines analyze the root 
+              causes and motivations behind corruption. They begin with moral and philosophical views, studying classical 
+              thinkers like Plato and Machiavelli who viewed corruption as a personal character vice and a loss of civic virtue 
+              where self-interest displaces the common good. Moving to political science, the lesson illustrates how corrupt 
+              practices erode political institutions, electoral processes, and democratic legitimacy by creating influence markets 
+              where private wealth buys political access. Through an economic lens, students explore rational choice models 
+              where actors weigh expected benefits against costs, the role of moral costs, and Susan Rose-Ackerman's focus on 
+              redesigning institutional incentive structures. Students then examine the cultural debate between local informal 
+              norms, such as gift-giving, and universal standards of integrity, while learning how elites can co-opt cultural 
+              arguments to shield self-serving acts. Finally, the institutionalist perspective shifts the analytical focus from 
+              punishing individual bad apples to reforming bad barrels—the distorted institutional setups that cause organizations 
+              to deviate from their proper public purpose.";
+            };
+            knowledgeUnitId = "KU-001";
+          },
+          {
+            id = 3;
+            topic = "Corruption in Real Life: Global Consequences and Measuring the Damage";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 30; // Duration in minutes
+            keywords = ["Anti-Corruption", "definition", "philosophy", "Consequences of Corruption", "Damage"];
+            sequenceNo = 4;
+            content = {
+              name = "Corruption in Real Life: Global Consequences and Measuring the Damage";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_2__System_Corrupted.mp4";
+              description = "This video explores the root causes of corruption through the lenses of philosophy, economics, and politics, providing students with a multidisciplinary understanding of why corruption occurs and how it can be addressed.";
+              detailedDescription = "In Part 3, students explore the tangible consequences of corruption and the tools researchers use 
+              to measure its prevalence across society. The lesson begins by assessing corruption's 
+              global impact on the Sustainable Development Goals—specifically SDG 16—and demonstrates 
+              how corrupt practices drive massive economic losses, worsen poverty and inequality, 
+              degrade public services, and trigger dangerous infrastructure failures. Students also 
+              examine how corruption fuels broader security threats, including organized crime, 
+              human rights violations, and environmental destruction. The video then transitions 
+              to measurement methodologies, comparing direct evidence-based approaches—such as official 
+              crime statistics and personal bribery surveys—with indirect composite indices like the 
+              Corruption Perceptions Index and the Index of Public Integrity. Finally, students learn about 
+              innovative detection strategies, including experimental bribery games, public expenditure tracking 
+              studies, and crowdsourced reporting platforms that allow citizens to expose corrupt acts in real time.";
+            };
+            knowledgeUnitId = "KU-001";
           }
         ];
         assessments = [
@@ -163,52 +235,121 @@ persistent actor Main {
             ktMax = 10;
             duration = 30; // Duration in minutes
             difficulty = #EASY;
-            sequenceNo = 2;
+            sequenceNo = 3;
+            knowledgeUnitId = "KU-001";
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;
               questions = [
                 {
-                  questionText = "What is the definition of corruption?";
-                  options = ["Abuse of power for personal gain", "Honest behavior", "Transparency in government", "Accountability in public office"];
-                  correctAnswerIndex = 0;
-                  hint = ?("Think about the misuse of authority for personal benefit.");
-                },
-                {
-                  questionText = "Which term describes offering money or gifts to influence the decision of an official?";
-                  options = ["Whistleblowing", "Bribery", "Auditing", "Lobbying"];
+                  questionText = "Moral & Philosophical View: In classical moral thought, how was corruption primarily understood at the individual level?";
+                  options = [
+                    "As a purely technical administrative error",
+                    "As a trait of character or personal vice, such as greed or self-indulgence",
+                    "As an optimal market equilibrium between supply and demand",
+                    "As a statutory offense under international maritime law"
+                  ];
                   correctAnswerIndex = 1;
-                  hint = ?("Consider an illicit payment made under the table to secure a favorable outcome.");
+                  hint = ?"Think about classical concepts of personal virtue and moral vices like greed, disloyalty, or self-indulgence.";
                 },
                 {
-                  questionText = "What is nepotism in a workplace or government setting?";
-                  options = ["Hiring based strictly on merit", "Favoring relatives or friends regardless of qualifications", "Outsourcing work to external contractors", "Conducting anonymous performance reviews"];
+                  questionText = "Moral & Philosophical View: How did Ancient Athenians view the trial of Socrates regarding the charge of \"corrupting the youth\"?";
+                  options = [
+                    "As a financial embezzlement case",
+                    "As a departure from fidelity to Athenian traditions and customs",
+                    "As a breach of international trade conventions",
+                    "As an attempt to bribe political referees"
+                  ];
                   correctAnswerIndex = 1;
-                  hint = ?("It comes from the Latin word for 'nephew' and refers to family bias.");
+                  hint = ?"Arlene Saxonhouse notes that virtue for Athenians was defined by fidelity to their own traditions and customs.";
                 },
                 {
-                  questionText = "What is embezzlement?";
-                  options = ["Stealing or misappropriating funds entrusted to your care", "Refusing to pay annual property taxes", "Failing to disclose political donations", "Accidentally misplacing government records"];
-                  correctAnswerIndex = 0;
-                  hint = ?("Focus on the violation of trust involving company or public money.");
-                },
-                {
-                  questionText = "What is the main purpose of an independent anti-corruption agency?";
-                  options = ["To manage national budget allocations", "To promote international trade partnerships", "To investigate and prevent corrupt practices without political interference", "To oversee municipal elections exclusively"];
-                  correctAnswerIndex = 2;
-                  hint = ?("Their core role is oversight, investigation, and enforcement free from outside control.");
-                },
-                {
-                  questionText = "A government official uses insider knowledge to buy property before a highway route is announced. This is an example of what?";
-                  options = ["Conflict of interest", "Freedom of information", "Public stewardship", "Civil disobedience"];
-                  correctAnswerIndex = 0;
-                  hint = ?("It occurs when personal interests collide with an official duty to the public.");
-                },
-                {
-                  questionText = "What role does a 'whistleblower' play in combating corruption?";
-                  options = ["Enforcing penalties on behalf of the judiciary", "Exposing illegal or unethical practices within an organization", "Drafting anti-bribery legislation", "Defending accused officials in court"];
+                  questionText = "Political Science View: How does political corruption undermine electoral processes and state institutions? [8]";
+                  options = [
+                    "By ensuring merit-based appointment of civil servants",
+                    "By creating improper influence through vote-buying, election-rigging, and campaign debt paybacks",
+                    "By eliminating market distortions across economic sectors",
+                    "By enforcing political equality across all social groups"
+                  ];
                   correctAnswerIndex = 1;
-                  hint = ?("They bring hidden misconduct into the light from the inside.");
+                  hint = ?"Think about how political debts and undisclosed campaign financing alter democratic accountability [8].";
+                },
+                {
+                  questionText = "Political Science View: According to Karl-Heinz Nassmacher, what fundamentally distinguishes a democracy from a plutocracy? [8][9]";
+                  options = [
+                    "Democracy is based on equal participation by the multitude, while plutocracy is dominated by the riches of an affluent minority",
+                    "Democracy relies on market pricing, while plutocracy relies on central state planning",
+                    "Democracy excludes private sector actors entirely",
+                    "Democracy relies on perception indices, while plutocracy relies on experience surveys"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Consider how allocating political influence based on wealth alters equal democratic representation [8][9].";
+                },
+                {
+                  questionText = "Economic View: According to Gary Becker's 1968 economic framework, why does an individual choose to engage in corrupt conduct? [10]";
+                  options = [
+                    "Because their basic human motivation is fundamentally different from non-criminals",
+                    "Because the expected utility or benefit exceeds the cost and utility of alternative lawful activities",
+                    "Because they lack any rational understanding of financial risk",
+                    "Because cultural norms compel them to obey authority"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Rational choice models weigh expected benefits against penalties and the probability of being caught [10].";
+                },
+                {
+                  questionText = "Economic View: In economic models of corruption, what is meant by \"moral costs\"? [12]";
+                  options = [
+                    "Official fines imposed by a court of law",
+                    "The internal loss of utility experienced when a person compromises their personal or organizational values",
+                    "The financial cost of hiring external anti-corruption auditors",
+                    "The legal fees required to file a lawsuit"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Moral costs reflect internalized ethical beliefs factored into an actor's cost-benefit calculation [12].";
+                },
+                {
+                  questionText = "Cultural View: How do scholars attentive to cultural dimensions define culture in anti-corruption literature? [14]";
+                  options = [
+                    "As formal statutory codes written by legislators",
+                    "As the dominant beliefs, attitudes, and behaviors in a given society",
+                    "As a country's annual gross domestic product",
+                    "As the literacy rate of civil servants"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Focus on how collective social habits, affective ties, and traditions shape community norms [14].";
+                },
+                {
+                  questionText = "Cultural View: What risk do scholars like Rose-Ackerman and Palifka highlight regarding cultural explanations of corruption?";
+                  options = [
+                    "That cultural arguments can be co-opted by self-serving elites to excuse corrupt enrichment",
+                    "That cultural studies eliminate petty bribery entirely",
+                    "That cultural perspectives force all nations to adopt identical laws",
+                    "That cultural values prevent market transactions"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Be vigilant when elites use \"tradition\" or \"culture\" to shield private gain from accountability [14].";
+                },
+                {
+                  questionText = "Institutionalist Approach: What core conceptual shift is advocated by the institutionalist approach to corruption? [7][15]";
+                  options = [
+                    "Shifting focus from \"bad apples\" (individual misbehavior) to \"bad barrels\" (distorted institutional setups)",
+                    "Shifting focus from statutory law to dictionary definitions",
+                    "Focusing exclusively on petty bribery while ignoring grand corruption",
+                    "Replacing civil servants with automated tools"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Look at how institutional arrangements cause systems to deviate from their proper public purpose [7][15].";
+                },
+                {
+                  questionText = "Institutionalist Approach: How do Levitsky and Ziblatt illustrate state capture using the sports referee analogy? [16]";
+                  options = [
+                    "Referees penalizing corrupt players immediately",
+                    "Political elites colluding with neutral institutions (\"referees\") to cheat and rewrite the rules of the game",
+                    "Corporations building stadiums using public funds",
+                    "Teams competing in a transparent, open market"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Imagine players controlling decision-makers so that the rules are permanently rigged in their favor [16].";
                 }
               ];
             };
@@ -222,35 +363,61 @@ persistent actor Main {
             ktMax = 10;
             duration = 30;
             difficulty = #EASY;
-            sequenceNo = 3;
+            sequenceNo = 5;
+            knowledgeUnitId = "KU-001";
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;
               questions = [
                 {
-                  front = "What is corruption?";
-                  back = "Corruption is the abuse of entrusted power for private gain.";
-                  hint = ?("Think about the misuse of power for personal benefit.");
+                  front = "Sustainable Development Goal 16 (SDG 16): Which specific SDG explicitly focuses on building \"Peace, Justice and Strong Institutions\" and contains targets to substantially reduce corruption?";
+                  back = "SDG 16 Targets 16.4, 16.5, and 16.6 specifically call for reducing all forms of corruption, recovering stolen assets, and developing transparent institutions.";
+                  hint = ?("Think of the UN goal focused on peace, justice, and effective institutions.");
                 },
                 {
-                  front = "What is bribery?";
-                  back = "Bribery is offering, giving, receiving, or soliciting something of value to influence the actions of an official.";
-                  hint = ?("It involves something of value exchanged to influence an official's actions.");
+                  front = "Global Economic Cost of Bribery: According to a report by the International Monetary Fund (IMF), what is the estimated annual global cost of bribery alone?";
+                  back = "$1.5 to $2 trillion per year, representing a total economic loss of approximately 2% of global GDP.";
+                  hint = ?("It equals roughly 2% of total global gross domestic product.");
                 },
                 {
-                  front = "What is nepotism?";
-                  back = "Nepotism is favoritism granted to relatives or friends, often by giving them jobs.";
-                  hint = ?("Think of favoritism toward family members or close friends.");
+                  front = "Infrastructure Failures: How can corruption in the construction and permitting sectors directly threaten human lives?";
+                  back = "By bypassing building permit laws and using compromised construction materials (such as \"weakened cement\"), leading to fatal building collapses during earthquakes or structural failures.";
+                  hint = ?("Consider the 2018 Genoa bridge collapse or the 2017 Mexico City earthquake investigations.");
                 },
                 {
-                  front = "What is embezzlement?";
-                  back = "Embezzlement is the theft or misappropriation of funds placed in one's trust or belonging to one's employer.";
-                  hint = ?("It is the misuse or theft of money entrusted to someone.");
+                  front = "Conflict & Atrocity Crimes: How do transitional justice mechanisms (such as Truth and Reconciliation Commissions) view the role of corruption in armed conflicts?";
+                  back = "As a primary destabilizing factor and a fundamental \"driver of conflict\" that degrades state capacity and leads to severe human rights violations[4].";
+                  hint = ?("Look at findings from the Sierra Leone, Liberia, and Tunisia truth commissions.");
                 },
                 {
-                  front = "What is the role of an independent anti-corruption agency?";
-                  back = "Its role is to investigate and prevent corruption without political interference.";
-                  hint = ?("Focus on investigating and preventing corruption independently.");
+                  front = "Direct Methods of Measurement: What defines \"direct methods\" of measuring corruption, and what are two primary examples?";
+                  back = "Standardized procedures that gather evidence-based data on actual experiences of corruption[5]. Key examples include official crime statistics and experience-based sample surveys[5][6].";
+                  hint = ?("These focus on actual personal encounters and objective statistics rather than subjective opinions.");
+                },
+                {
+                  front = "Limitations of Indirect Methods: What is the primary methodological criticism of indirect or perception-based corruption surveys?";
+                  back = "They gauge subjective opinions and perceptions rather than actual occurrences, which can create vast discrepancies when compared to experience data and can be heavily skewed by media coverage[7][8].";
+                  hint = ?("They measure what people think or feel is happening rather than direct personal encounters.");
+                },
+                {
+                  front = "Corruption Perceptions Index (CPI): What is Transparency International's CPI, and how is its score calculated?";
+                  back = "It is a composite index (\"survey of surveys\") that combines 13 different data sources from 12 organizations to rank countries by perceived levels of public sector corruption[9].";
+                  hint = ?("It ranks countries globally by aggregating multiple expert assessments and perception surveys.");
+                },
+                {
+                  front = "Index of Public Integrity (IPI): How does the Index of Public Integrity (IPI) evaluate control of corruption without relying on perception surveys?";
+                  back = "By evaluating six objective proxy indicators: judicial independence, administrative burden, trade openness, budget transparency, e-citizenship, and freedom of the press[10].";
+                  hint = ?("It uses actionable risk assessments and objective structural proxies like press freedom and judicial independence.");
+                },
+                {
+                  front = "Innovative & Field Measurement: What are two innovative or experimental approaches used by modern researchers to observe corrupt behavior?";
+                  back = "Experimental \"bribery games\" in lab/field settings[11] and Public Expenditure Tracking Surveys (PETS) that detect missing public funds in government programs[11][12].";
+                  hint = ?("One uses economic lab simulations, while the other tracks whether public funds actually reach local schools or clinics.");
+                },
+                {
+                  front = "Crowdsourced Bribery Reporting: What is \"I Paid a Bribe.com\", and how does it contribute to corruption measurement?";
+                  back = "An Internet-based crowdsourced reporting platform originating in India where ordinary citizens self-report real-time qualitative and quantitative details of everyday bribes paid[11].";
+                  hint = ?("A citizen-driven platform started in India to document daily micro-extortion and bribery encounters.");
                 }
               ];
             };
@@ -259,61 +426,60 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
-          sequenceNo = 4;
+          sequenceNo = 6;
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            url = "https://notebooklm.link.google/JURYwGa3MRuA";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            url = "https://notebooklm.link.google/RrwXc07Fff2E";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            url = "https://notebooklm.link.google/QbRkpAmQsYCp";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };  
         };
       },
       {
         id = "KU-002";
-        topic = "Policy";
+        topic = "UN Convention Against Corruption";
         difficulty = #EASY;
         prerequisites = [];
-        audience = "Government & Public Sector";
+        audience = "Government Officials & Policy Makers";
         level = BEGINNER;
         learningObjectives = [
-          "Understand the policy development cycle.",
-          "Map stakeholders and their influence.",
-          "Apply evidence-based approaches to policy.",
-          "Draft and evaluate policy briefs.",
-          "Navigate public consultation processes."
+          "Understand the key principles and provisions of UNCAC.",
+          "Identify the obligations of state parties under UNCAC.",
+          "Analyze case studies of UNCAC implementation.",
+          "Evaluate the effectiveness of anti-corruption measures under UNCAC."
         ];
         expectations = [
-          "Policy fundamentals and cycles",
-          "Stakeholder engagement strategies",
-          "Evidence-based policy tools",
-          "Writing effective policy briefs",
+          "UNCAC principles and enforcement",
+          "State party obligations",
+          "Case studies of UNCAC implementation",
+          "Evaluation of anti-corruption measures"
         ];
         image = "policy_img";
-        description = "Explore the world of policy-making, including how policies are developed, implemented, and evaluated.";
+        description = "This knowledge unit provides an overview of the United Nations Convention Against Corruption (UNCAC), its key principles, and the obligations of state parties. It introduces learners to the international legal framework for combating corruption and the mechanisms for monitoring and evaluating anti-corruption measures.";
         icon = "Target";
-        block = "leftDown";
+        block = "central";
         duration = "2 hours";
         sources = [
           {
             id = 1;
             sourceType = #ARTICLE;
-            detail = "What is Corruption?";
-            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+            detail = "UN convention against Corruption (UNCAC)";
+            url = ?("https://www.unodc.org/documents/brussels/UN_Convention_Against_Corruption.pdf");
           }
         ];
         teachings = [];
@@ -323,25 +489,25 @@ persistent actor Main {
           id = 1;
           sequenceNo = 1;
           inforgraphic = ?{
-            name = "Corruption Overview";
+            name = "Anti-Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
+            url = "#";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           slideDeck = ?{
-            name = "Understanding Corruption";
+            name = "Understanding Anti-Corruption";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
+            url = "#";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           podcast = ?{
-            name = "The Corruption Podcast";
+            name = "The Anti-Corruption Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
+            url = "#";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };  
         };
       },
@@ -368,7 +534,7 @@ persistent actor Main {
         image = "youth_led_img";
         description = "Discover the power of youth-led initiatives and how young people are driving change in their communities.";
         icon = "Users";
-        block = "central";
+        block = "leftDown";
         duration = "2 hours";
         sources = [
           {
@@ -380,9 +546,33 @@ persistent actor Main {
         ];
         teachings = [
           {
+            id = 0;
+            topic = "Welcome to the Youth Led Module!";
+            difficulty = #EASY;
+            knowledgeUnitId = "KU-003";
+            keywords = [
+              "Culture of Integrity",
+              "Three Elements of Corruption",
+              "UNCAC",
+              "GRACE Initiative",
+              "Offence Classifications"
+            ];
+            content = {
+              name = "Welcome to the Youth Led Module!";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Youth-led%20Intro.mp4";
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the YouthLed module";
+            };
+            ktMax = 10;
+            duration = 10;
+            sequenceNo = 0;
+          },
+          {
             id = 1;
             topic = "The Architect's blue print";
             difficulty = #EASY;
+            knowledgeUnitId = "KU-003";
             keywords = [
               "Culture of Integrity",
               "Three Elements of Corruption",
@@ -393,8 +583,8 @@ persistent actor Main {
             content = {
               name = "The Architect's blue print";
               contentType = #VIDEO;
-              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-              detailedDesciption = "The core message of The Architect's Blueprint is that tackling corruption 
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Introduction__The_Architect_s_Blueprint.mp4";
+              detailedDescription = "The core message of The Architect's Blueprint is that tackling corruption 
               requires a structured, strategic, and informed methodology rather than isolated efforts, positioning young people as key 
               architects of transparent, ethical, and accountable institutions. Through this content, students are expected to gain a 
               thorough understanding of international legal frameworks like the United Nations Convention against Corruption, while 
@@ -413,6 +603,7 @@ persistent actor Main {
             id = 2;
             topic = "Youth Led Toolkit II - Steps 1 through 5";
             difficulty = #NORMAL;
+            knowledgeUnitId = "KU-003";
             keywords = [
               "Culture of Integrity",
               "Three Elements of Corruption",
@@ -423,8 +614,8 @@ persistent actor Main {
             content = {
               name = "Youth Led Toolkit II - Steps 1 through 5";
               contentType = #VIDEO;
-              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-              detailedDesciption = "The core message of Building a Youth-Led Anti-Corruption Initiative is that laying a solid, well-researched foundation 
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_1__Building_a_Youth-Led_Anti-Corruption_Initiative.mp4";
+              detailedDescription = "The core message of Building a Youth-Led Anti-Corruption Initiative is that laying a solid, well-researched foundation 
               is essential for young advocates before launching civic integrity projects. The content focuses on the foundational five steps of the 
               UNODC YouthLED Toolkit, teaching students how to first educate themselves on global legal frameworks like the United Nations Convention 
               against Corruption and recognize distinct acts such as bribery, embezzlement, and abuse of functions. Learners are expected to analyze 
@@ -442,6 +633,7 @@ persistent actor Main {
             id = 3;
             topic = "Youth Led Toolkit III - Steps 6 through 10";
             difficulty = #NORMAL;
+            knowledgeUnitId = "KU-003";
             keywords = [
               "Culture of Integrity",
               "Three Elements of Corruption",
@@ -452,8 +644,13 @@ persistent actor Main {
             content = {
               name = "Youth Led Toolkit III - Steps 6 through 10";
               contentType = #VIDEO;
-              url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-              detailedDesciption = "This video will take you into more detail on the YouthLed steps 6 through 10";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_2_The_Implementation_Pipeline__Building_an_Anti-Corruption_Ecosys.mp4";
+              detailedDescription = "The core message of **The Implementation Pipeline: Building an Anti-Corruption Ecosystem** focuses on guiding young advocates through 
+              the practical transition from an anti-corruption concept to safe, inclusive, and effective real-world action. Students are expected to learn how to 
+              **identify and engage strategic allies**, embed **human rights and inclusive design**—such as gender sensitivity and disability accessibility—into their projects, 
+              and navigate sensitive environments by prioritizing **personal safety, whistle-blower protections, and risk management**. Additionally, the content equips learners to 
+              **educate and mobilize their communities**, execute concrete initiatives like civic monitoring or integrity clubs, and systematically **measure and evaluate their 
+              impact** to foster a lasting culture of transparency and accountability.";
               description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
             };
             ktMax = 10;
@@ -471,6 +668,7 @@ persistent actor Main {
             duration = 15;
             difficulty = #EASY;
             sequenceNo = 3;
+            knowledgeUnitId = "KU-003";
             quiz = ?{
               id = 1;
               assessmentType = #QUIZ;
@@ -597,6 +795,7 @@ persistent actor Main {
             duration = 15;
             difficulty = #EASY;
             sequenceNo = 5;
+            knowledgeUnitId = "KU-003";
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;
@@ -664,21 +863,21 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://notebooklm.link.google/A0J8if9BCDbL";
             description = "Youth-Led Anti-Corruption Action Guide Inforgraphic";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           slideDeck = ?{
             name = "Youth-Led Anti-Corruption Action Guide Slide Deck";
             contentType = #SLIDEDECK;
             url = "https://notebooklm.link.google/5Qy09Xg0a4nb";
             description = "Youth-Led Anti-Corruption Action Guide Slide Deck";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           podcast = ?{
             name = "Youth-Led Anti-Corruption Action Guide Podcast";
             contentType = #PODCAST;
             url = "https://notebooklm.link.google/sUf9D347Cf6q";
             description = "Youth-Led Anti-Corruption Action Guide Podcast";
-            detailedDesciption = "";
+            detailedDescription = "";
           };  
         };
       },
@@ -726,21 +925,21 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
             url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };  
         };
       },
@@ -788,21 +987,21 @@ persistent actor Main {
             contentType = #INFORGRAPHIC;
             url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
             url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
             url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
-            detailedDesciption = "";
+            detailedDescription = "";
           };  
         };
       }

@@ -22,14 +22,28 @@
             // in this canister would remove that dependency, at the cost of
             // ~229MB of asset storage and the cycles that implies — worth a
             // decision before mainnet, not assumed here.
-            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' blob: https://icp0.io https://*.icp0.io https://icp-api.io http://127.0.0.1:4943 http://localhost:4943 http://*.localhost:4943 https://huggingface.co https://*.huggingface.co https://*.hf.co; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self';",
+            //
+            // Lesson videos are MP4 files on media.knowledgefound.org, played in
+            // a <video> tag, so media-src must name that host (it is not covered
+            // by default-src 'self'). frame-src covers the YouTube and Google
+            // Drive embeds a lesson section can carry.
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; child-src 'self' blob:; frame-src 'self' blob: https://www.youtube-nocookie.com https://www.youtube.com https://drive.google.com; media-src 'self' blob: https://media.knowledgefound.org; connect-src 'self' blob: https://icp0.io https://*.icp0.io https://icp-api.io http://127.0.0.1:4943 http://localhost:4943 http://*.localhost:4943 https://huggingface.co https://*.huggingface.co https://*.hf.co; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self';",
 
             // wllama's multi-threaded build needs SharedArrayBuffer, which the
             // browser only exposes on a cross-origin-isolated page. Without
             // these it falls back to a single thread and runs about three times
             // slower. Mirrored in vite.config.js for the dev server.
+            //
+            // `credentialless` rather than `require-corp`: the lesson videos come
+            // from media.knowledgefound.org, which sends neither CORS nor
+            // Cross-Origin-Resource-Policy headers, and require-corp blocks any
+            // cross-origin resource that does not opt in. credentialless loads
+            // such resources without cookies instead, and still isolates the
+            // page in Chrome, Edge and Firefox. Safari does not know
+            // credentialless and so is not isolated — the model runs
+            // single-threaded there, but the videos play.
             "Cross-Origin-Opener-Policy": "same-origin",
-            "Cross-Origin-Embedder-Policy": "require-corp"
+            "Cross-Origin-Embedder-Policy": "credentialless"
         }
     },
 ]

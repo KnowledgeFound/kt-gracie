@@ -34,7 +34,7 @@ function summaryFixture(overrides: Partial<SummarySection> = {}): SummarySection
         contentType,
         url,
         description: `About ${name}`,
-        detailedDesciption: "",
+        detailedDescription: "",
     });
 
     return {
@@ -112,7 +112,7 @@ describe("SummaryScreen", () => {
                     contentType: ContentType.INFORGRAPHIC,
                     url: "javascript:alert(1)",
                     description: "",
-                    detailedDesciption: "",
+                    detailedDescription: "",
                 },
             }),
         );
