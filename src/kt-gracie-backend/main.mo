@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-03T12:51:00Z";
+    lastUpdated = "2026-10-03T15:50:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -546,6 +546,29 @@ persistent actor Main {
         ];
         teachings = [
           {
+            id = 0;
+            topic = "Welcome to the Youth Led Module!";
+            difficulty = #EASY;
+            knowledgeUnitId = "KU-003";
+            keywords = [
+              "Culture of Integrity",
+              "Three Elements of Corruption",
+              "UNCAC",
+              "GRACE Initiative",
+              "Offence Classifications"
+            ];
+            content = {
+              name = "Welcome to the Youth Led Module!";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Youth-led%20Intro.mp4";
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the YouthLed module";
+            };
+            ktMax = 10;
+            duration = 10;
+            sequenceNo = 0;
+          },
+          {
             id = 1;
             topic = "The Architect's blue print";
             difficulty = #EASY;
@@ -622,7 +645,12 @@ persistent actor Main {
               name = "Youth Led Toolkit III - Steps 6 through 10";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_2_The_Implementation_Pipeline__Building_an_Anti-Corruption_Ecosys.mp4";
-              detailedDescription = "This video will take you into more detail on the YouthLed steps 6 through 10";
+              detailedDescription = "The core message of **The Implementation Pipeline: Building an Anti-Corruption Ecosystem** focuses on guiding young advocates through 
+              the practical transition from an anti-corruption concept to safe, inclusive, and effective real-world action. Students are expected to learn how to 
+              **identify and engage strategic allies**, embed **human rights and inclusive design**—such as gender sensitivity and disability accessibility—into their projects, 
+              and navigate sensitive environments by prioritizing **personal safety, whistle-blower protections, and risk management**. Additionally, the content equips learners to 
+              **educate and mobilize their communities**, execute concrete initiatives like civic monitoring or integrity clubs, and systematically **measure and evaluate their 
+              impact** to foster a lasting culture of transparency and accountability.";
               description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
             };
             ktMax = 10;

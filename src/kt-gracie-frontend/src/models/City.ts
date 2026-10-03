@@ -49,7 +49,7 @@ export class City {
     }
 
     private recalculateHealth(): void {
-        this.health = (0.5 * this.contentScore) + (0.5 * this.finalAssessmentScore);
+        this.health = (this.contentScore) + (this.finalAssessmentScore);
     }
 
     public getCityState(): CityState {
