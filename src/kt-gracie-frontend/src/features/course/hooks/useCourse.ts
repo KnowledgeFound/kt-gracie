@@ -19,7 +19,7 @@ import {
 } from '@/services/progressContainerService';
 import { createProgress } from '@/services/progressService';
 import type { CourseScreen, LessonSection } from '../types';
-import { toQuizQuestion } from '../utils';
+import { nextLessonStep, toQuizQuestion } from '../utils';
 
 /** Activity kinds the course can run, in the order the corpus sequences them. */
 const PLAYABLE = new Set<AssessmentType>([
@@ -403,15 +403,18 @@ export function useCourse(moduleId?: string) {
 			return; // compulsory video not finished yet
 		}
 		// Moving on counts as having done the section you are moving on from.
-		if (current) {
-			saveCompletedSections(
-				completedSections.includes(current.id)
-					? completedSections
-					: [...completedSections, current.id],
-			);
-		}
-		if (sectionIndex < sections.length - 1) {
-			goToSection(sectionIndex + 1);
+		const done =
+			current && !completedSections.includes(current.id)
+				? [...completedSections, current.id]
+				: completedSections;
+		if (current) saveCompletedSections(done);
+
+		// Next section; from the last one, back to anything skipped via the
+		// outline. Only when every section is done does the lesson finish —
+		// the button only reads "Finish lesson" then (see isFinalLessonStep).
+		const next = nextLessonStep(sections, done, sectionIndex);
+		if (next !== null) {
+			goToSection(next);
 			return;
 		}
 		finishTeaching(activity);

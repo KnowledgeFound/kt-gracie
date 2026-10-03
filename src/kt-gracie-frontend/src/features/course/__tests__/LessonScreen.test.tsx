@@ -62,7 +62,6 @@ function renderLesson(sections: LessonSection[], overrides: Partial<LessonScreen
         onContinue: vi.fn(),
         onActivity: vi.fn(),
         onAsk: vi.fn(),
-        isLastSection: false,
         watched: [],
         onWatched: vi.fn(),
         completedSections: [],
@@ -87,40 +86,72 @@ describe("LessonScreen completion toggle", () => {
         expect(row.className).toContain("justify-end");
     });
 
-    it("keeps the toggle at the foot of a text section", () => {
+    it("has no toggle on a text section — Continue marks it done", () => {
         renderLesson([textSection]);
 
-        expect(screen.getByText("Section completed")).toBeTruthy();
+        expect(screen.queryByRole("switch")).toBeNull();
+        expect(screen.queryByText("Section completed")).toBeNull();
         expect(screen.queryByText("Video completed")).toBeNull();
     });
 
-    it("reports the section's state and reports a flip once", () => {
+    it("has no toggle on an embed section, but keeps the link out to the file", () => {
+        renderLesson([embedSection]);
+
+        expect(screen.queryByRole("switch")).toBeNull();
+        expect(screen.getByText(/Open in Drive/)).toBeTruthy();
+    });
+
+    it("reports the video section's state and reports a flip once", () => {
         const onToggleComplete = vi.fn();
-        renderLesson([textSection], { completedSections: ["s1"], onToggleComplete });
+        renderLesson([videoSection], { completedSections: ["video"], onToggleComplete });
 
         const toggle = screen.getByRole("switch");
         expect(toggle.getAttribute("aria-checked")).toBe("true");
 
         toggle.click();
         expect(onToggleComplete).toHaveBeenCalledTimes(1);
-        expect(onToggleComplete).toHaveBeenCalledWith("s1");
-    });
-
-    it("puts the toggle beside the viewer on an embed section", () => {
-        renderLesson([embedSection]);
-
-        const row = screen.getByText("Section completed").parentElement!;
-        expect(within(row).getByRole("switch")).toBeTruthy();
-        // Alongside the link out to the file, not stranded at the bottom.
-        expect(within(row.parentElement!).getByText(/Open in Drive/)).toBeTruthy();
+        expect(onToggleComplete).toHaveBeenCalledWith("video");
     });
 
     it.each([
-        ["video", videoSection],
-        ["text", textSection],
-        ["embed", embedSection],
-    ])("offers exactly one toggle on a %s section", (_kind, section) => {
+        ["video", videoSection, 1],
+        ["text", textSection, 0],
+        ["embed", embedSection, 0],
+    ])("offers %i toggle(s) on a %s section", (_kind, section, count) => {
         renderLesson([section as LessonSection]);
-        expect(screen.getAllByRole("switch")).toHaveLength(1);
+        expect(screen.queryAllByRole("switch")).toHaveLength(count as number);
+    });
+});
+
+describe("LessonScreen continue button", () => {
+    afterEach(cleanup);
+
+    const three: LessonSection[] = [
+        textSection,
+        { ...textSection, id: "s2", title: "Two" },
+        { ...textSection, id: "s3", title: "Three" },
+    ];
+
+    it("reads Continue on a middle section", () => {
+        renderLesson(three, { sectionIndex: 1, completedSections: ["s1"] });
+        expect(screen.getByText("Continue")).toBeTruthy();
+        expect(screen.queryByText("Finish lesson")).toBeNull();
+    });
+
+    it("reads Continue on the last section while earlier ones are still to do", () => {
+        // Jumped straight to the end via the outline: sections 1 and 2 untouched.
+        renderLesson(three, { sectionIndex: 2, completedSections: [] });
+        expect(screen.getByText("Continue")).toBeTruthy();
+        expect(screen.queryByText("Finish lesson")).toBeNull();
+    });
+
+    it("reads Finish lesson on the last section once every other one is done", () => {
+        renderLesson(three, { sectionIndex: 2, completedSections: ["s1", "s2"] });
+        expect(screen.getByText("Finish lesson")).toBeTruthy();
+    });
+
+    it("does not need the last section itself to be ticked first", () => {
+        renderLesson(three, { sectionIndex: 2, completedSections: ["s1", "s2", "s3"] });
+        expect(screen.getByText("Finish lesson")).toBeTruthy();
     });
 });

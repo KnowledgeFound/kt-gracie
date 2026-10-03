@@ -1,6 +1,6 @@
 import type { Module, ModuleAssessment } from '@/features/city/types';
 import type { LessonSection } from '@/features/course/types';
-import { youtubeId } from '@/features/course/youtube';
+import { videoKind } from '@/features/course/video';
 import { getCorpus } from './corpusService';
 
 type RawTeaching = { id: number; sections?: LessonSection[] };
@@ -26,10 +26,11 @@ async function authoredSections(kuId: string, teachingId: number): Promise<Lesso
 export async function getLessonSections(module: Module, teaching: ModuleAssessment): Promise<LessonSection[]> {
 	const authored = await authoredSections(module.kuId, teaching.id);
 	const sourceUrl = teaching.content?.url;
-	const isVideo = youtubeId(sourceUrl) !== null;
+	// YouTube link or a hosted media file (the corpus now links MP4s directly).
+    const isVideo = videoKind(sourceUrl, teaching.content?.contentType) !== null;
 
 	if (authored.length > 0) {
-		// A YouTube source that no section embeds becomes a compulsory first section.
+		// A video source that no section embeds becomes a compulsory first section.
 		if (isVideo && !authored.some((s) => s.video)) {
 			return [videoSection(teaching), ...authored];
 		}

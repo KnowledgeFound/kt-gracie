@@ -17,8 +17,8 @@ import type { LessonSection } from '../types';
 import Markdown from '../Markdown';
 import VideoPlayer from './VideoPlayer';
 import ReadAloudPill from './ReadAloudPill';
-import { markdownToSpeech } from '../utils';
-import { youtubeId } from '../youtube';
+import { isFinalLessonStep, markdownToSpeech } from '../utils';
+import { videoKind } from '../video';
 import { driveEmbedUrl, driveFileId } from '../drive';
 
 interface LessonScreenProps {
@@ -32,7 +32,6 @@ interface LessonScreenProps {
 	onContinue: () => void;
 	onActivity: (i: number) => void;
 	onAsk: () => void;
-	isLastSection: boolean;
 	/** Section ids whose compulsory video is already finished. */
 	watched: string[];
 	onWatched: (sectionId: string) => void;
@@ -55,7 +54,6 @@ export default function LessonScreen({
 	onContinue,
 	onActivity,
 	onAsk,
-	isLastSection,
 	watched,
 	onWatched,
 	completedSections,
@@ -79,11 +77,12 @@ export default function LessonScreen({
 		? completedSections.includes(section.id)
 		: false;
 	const showSource =
-		!!teaching.content?.url && !youtubeId(teaching.content.url);
-	// A video or an embed shows the toggle beside itself; anything else has
-	// nothing to sit next to, so it falls back to the foot of the card.
-	const hasEmbed = !!section?.embed && !!driveFileId(section.embed.url);
-	const togglesWithMedia = !!section?.video || hasEmbed;
+		!!teaching.content?.url &&
+		videoKind(teaching.content.url, teaching.content.contentType) === null;
+	// "Finish lesson" only once every other section is done; until then the
+	// button reads "Continue" and moves to the next section (or back to one
+	// that was skipped).
+	const finishing = isFinalLessonStep(sections, completedSections, sectionIndex);
 	const toggle = (s: Sheet) => setSheet((cur) => (cur === s ? null : s));
 
 	if (!section) return null;
@@ -122,8 +121,9 @@ export default function LessonScreen({
 								watched={watched.includes(section.id) || isDone(teaching)}
 								onWatched={() => onWatched(section.id)}
 							/>
-							{/* Sits with the video rather than under the text below it:
-							    the thing being marked done here is the watching. */}
+							{/* Only a video section carries a toggle — the thing being marked
+							    done here is the watching. Text and embed sections are done
+							    by pressing Continue. */}
 							<div className="mb-6 flex items-center justify-end gap-3">
 								<span className="text-sm font-medium text-ink-deep">
 									Video completed
@@ -148,29 +148,14 @@ export default function LessonScreen({
 									loading="lazy"
 								/>
 							</div>
-							<div className="flex justify-between gap-2 items-center mt-2">
-								<a
-									href={section.embed.url}
-									target="_blank"
-									rel="noreferrer"
-									className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
-								>
-									<FileText className="size-4" /> Open in Drive
-								</a>
-								{/* A video section carries its own toggle, up beside the player. */}
-								{!section.video && (
-									<div className="flex items-center justify-between gap-4">
-										<span className="font-medium text-ink-deep">
-											Section completed
-										</span>
-										<CompleteToggle
-											checked={sectionComplete}
-											label={`Mark "${section.title}" as completed`}
-											onChange={() => onToggleComplete(section.id)}
-										/>
-									</div>
-								)}
-							</div>
+							<a
+								href={section.embed.url}
+								target="_blank"
+								rel="noreferrer"
+								className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
+							>
+								<FileText className="size-4" /> Open in Drive
+							</a>
 						</div>
 					)}
 					<Markdown source={section.markdown} />
@@ -195,18 +180,6 @@ export default function LessonScreen({
 								)} */}
 							</div>
 						</>
-					)}
-
-					{/* Plain text: no player or viewer to sit beside, so it goes here. */}
-					{!togglesWithMedia && (
-						<div className="flex items-center justify-between gap-4">
-							<span className="font-medium text-ink-deep">Section completed</span>
-							<CompleteToggle
-								checked={sectionComplete}
-								label={`Mark "${section.title}" as completed`}
-								onChange={() => onToggleComplete(section.id)}
-							/>
-						</div>
 					)}
 				</motion.article>
 			</AnimatePresence>
@@ -309,7 +282,7 @@ export default function LessonScreen({
 						title={blocked ? 'Watch the video to the end first' : undefined}
 						className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-gradient-to-r from-brand-500 to-brand-700 text-white text-sm font-semibold shadow disabled:opacity-50 disabled:cursor-not-allowed"
 					>
-						{isLastSection ? 'Finish lesson' : 'Continue'}{' '}
+						{finishing ? 'Finish lesson' : 'Continue'}{' '}
 						<ArrowRight className="size-3" />
 					</button>
 				</div>

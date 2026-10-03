@@ -129,7 +129,6 @@ export default function CoursePage() {
 							onContinue={course.continueLesson}
 							onActivity={course.goToActivity}
 							onAsk={() => setChatOpen(true)}
-							isLastSection={course.sectionIndex >= course.sections.length - 1}
 							watched={course.watched}
 							onWatched={course.markWatched}
 							completedSections={course.completedSections}

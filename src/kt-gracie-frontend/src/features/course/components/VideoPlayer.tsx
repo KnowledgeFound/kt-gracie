@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, ExternalLink, Lock } from 'lucide-react';
+import type { SyntheticEvent } from 'react';
+import { CheckCircle2, Lock } from 'lucide-react';
 import {
+	WATCHED_FRACTION,
 	isWatchedMessage,
 	parsePlayerMessage,
 	playerHandshake,
 	youtubeEmbedUrl,
 	youtubeId,
-	youtubeWatchUrl,
 } from '../youtube';
+import { videoFileSrc, videoKind } from '../video';
 
-/** Seconds before the manual "I've watched it" fallback appears (embeds can be blocked). */
+/** Seconds before the manual "I have watched it" fallback appears (embeds can be blocked). */
 const FALLBACK_AFTER_S = 20;
 /** How often to re-offer the handshake until the player answers. */
 const HANDSHAKE_EVERY_MS = 500;
@@ -24,13 +26,17 @@ interface VideoPlayerProps {
 }
 
 /**
- * YouTube embed. A compulsory video reports back when playback reaches the
- * end (over the embed's postMessage channel, no external script), which
- * unlocks Continue. If the embed is blocked or the player never answers, a
- * fallback button and a link out to YouTube keep the learner moving.
+ * Lesson video. A YouTube link is embedded and reports back when playback
+ * reaches the end (over the embed's postMessage channel, no external script);
+ * a hosted media file plays in the browser's own `<video>` tag and reports the
+ * same way through its `ended` / `timeupdate` events. Either unlocks Continue
+ * on a compulsory video. If the embed is blocked, the file will not load, or
+ * the player never answers, a fallback button keeps the learner moving.
  */
 export default function VideoPlayer({ url, required, watched, onWatched }: VideoPlayerProps) {
-	const id = youtubeId(url);
+	const kind = videoKind(url);
+	const id = kind === 'youtube' ? youtubeId(url) : null;
+	const fileSrc = kind === 'file' ? videoFileSrc(url) : null;
 	const frame = useRef<HTMLIFrameElement>(null);
 	const [waited, setWaited] = useState(false);
 
@@ -38,6 +44,14 @@ export default function VideoPlayer({ url, required, watched, onWatched }: Video
 	const watchedRef = useRef(onWatched);
 	watchedRef.current = onWatched;
 
+	// Fallback for both players: after a while, let the learner vouch for it.
+	useEffect(() => {
+		if (!kind) return;
+		const fallback = setTimeout(() => setWaited(true), FALLBACK_AFTER_S * 1000);
+		return () => clearTimeout(fallback);
+	}, [kind, url]);
+
+	// YouTube only: the embed has to be asked before it reports anything.
 	useEffect(() => {
 		if (!id) return;
 
@@ -67,29 +81,51 @@ export default function VideoPlayer({ url, required, watched, onWatched }: Video
 		playerHandshake().forEach(post);
 
 		const giveUp = setTimeout(stopHandshake, HANDSHAKE_FOR_MS);
-		const fallback = setTimeout(() => setWaited(true), FALLBACK_AFTER_S * 1000);
 
 		return () => {
 			window.removeEventListener('message', onMessage);
 			stopHandshake();
 			clearTimeout(giveUp);
-			clearTimeout(fallback);
 		};
 	}, [id]);
 
-	if (!id) return null;
+	if (!kind) return null;
+
+	// Same "close enough to the end" rule as the YouTube embed.
+	const onTimeUpdate = (e: SyntheticEvent<HTMLVideoElement>) => {
+		const v = e.currentTarget;
+		if (!watched && v.duration > 0 && v.currentTime / v.duration >= WATCHED_FRACTION) {
+			onWatched();
+		}
+	};
 
 	return (
 		<div className="mb-6">
 			<div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black">
-				<iframe
-					ref={frame}
-					src={youtubeEmbedUrl(id)}
-					title="Lesson video"
-					className="absolute inset-0 w-full h-full"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-					allowFullScreen
-				/>
+				{id ? (
+					<iframe
+						ref={frame}
+						src={youtubeEmbedUrl(id)}
+						title="Lesson video"
+						className="absolute inset-0 w-full h-full"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+						allowFullScreen
+					/>
+				) : (
+					<video
+						key={fileSrc ?? url}
+						src={fileSrc ?? undefined}
+						title="Lesson video"
+						controls
+						playsInline
+						preload="metadata"
+						className="absolute inset-0 w-full h-full"
+						onEnded={() => {
+							if (!watched) onWatched();
+						}}
+						onTimeUpdate={onTimeUpdate}
+					/>
+				)}
 			</div>
 
 			<div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
@@ -113,14 +149,6 @@ export default function VideoPlayer({ url, required, watched, onWatched }: Video
 							I have watched it
 						</button>
 					)}
-					{/* <a
-						href={youtubeWatchUrl(id)}
-						target="_blank"
-						rel="noreferrer"
-						className="inline-flex items-center gap-1.5 text-ink-muted hover:text-brand-600 hover:underline"
-					>
-						<ExternalLink className="size-4" /> Watch on YouTube
-					</a> */}
 				</span>
 			</div>
 		</div>
