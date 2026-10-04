@@ -130,8 +130,8 @@ export default function HealthModal({ open, onClose, health }: HealthModalProps)
 	const streak         = 5; // Consult Leo about this
 	const quizzes        = ProgressContainer.getNumberOfQuizzesCompleted();
 	const highScore      = ProgressContainer.getTotalScore();
-	const assessmentScore = city?.getFinalAssessmentScore() ?? 0;
-	const contentScore = city?.getContentScore() ?? 0;
+	const assessmentScore = Math.round(city?.getFinalAssessmentScore() ?? 0);
+	const contentScore = Math.round(city?.getContentScore() ?? 0);
 
 	// Below this the modal adds a nudge to play — a friendly one.
 	const needsNudge = pct < 45;
