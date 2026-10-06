@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-03T15:50:00Z";
+    lastUpdated = "2026-10-06T22:23:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -145,6 +145,25 @@ persistent actor Main {
         ];
         teachings = [
           {
+            id = 0;
+            topic = "Welcome to the Anti-Corruption Module!";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 30; // Duration in minutes
+            keywords = [
+              "Anti-Corruption", "definition", "Introduction to Corruption", 
+            ];
+            sequenceNo = 1;
+            content = {
+              name = "Welcome to the Anti-Corruption Module!";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/anti_corruption_intro.mp4";
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the Anti-Corruption module";
+            };
+            knowledgeUnitId = "KU-001";
+          },
+          {
             id = 1;
             topic = "What is Corruption?";
             ktMax = 10;
@@ -172,7 +191,7 @@ persistent actor Main {
           },
           {
             id = 2;
-            topic = "The Root Causes: How Philosophy, Economics and Politics Explain Corruption";
+            topic = "Why Do People Cheat the System? 5 Angles on Corruption";
             ktMax = 10;
             difficulty = #EASY;
             duration = 30; // Duration in minutes
@@ -181,7 +200,7 @@ persistent actor Main {
             content = {
               name = "The Root Causes: How Philosophy, Economics and Politics Explain Corruption";
               contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_1__Root_Causes_of_Corruption.mp4";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_1_The_Corruption_Glitch__Debugging_the_System.mp4";
               description = "This video explores the root causes of corruption through the lenses of philosophy, economics, and politics, providing students with a multidisciplinary understanding of why corruption occurs and how it can be addressed.";
               detailedDescription = "In this sub-module, students examine how different academic disciplines analyze the root 
               causes and motivations behind corruption. They begin with moral and philosophical views, studying classical 
@@ -209,7 +228,7 @@ persistent actor Main {
             content = {
               name = "Corruption in Real Life: Global Consequences and Measuring the Damage";
               contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_2__System_Corrupted.mp4";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_2_The_Glitch_in_the_System.mp4";
               description = "This video explores the root causes of corruption through the lenses of philosophy, economics, and politics, providing students with a multidisciplinary understanding of why corruption occurs and how it can be addressed.";
               detailedDescription = "In Part 3, students explore the tangible consequences of corruption and the tools researchers use 
               to measure its prevalence across society. The lesson begins by assessing corruption's 
@@ -242,116 +261,115 @@ persistent actor Main {
               assessmentType = #QUIZ;
               questions = [
                 {
-                  questionText = "Moral & Philosophical View: In classical moral thought, how was corruption primarily understood at the individual level?";
+                  questionText = "Moral Vibe Check: Back in the day, how did classical moral philosophers actually define corruption on a personal level?";
                   options = [
-                    "As a purely technical administrative error",
-                    "As a trait of character or personal vice, such as greed or self-indulgence",
-                    "As an optimal market equilibrium between supply and demand",
-                    "As a statutory offense under international maritime law"
+                    "As a boring clerical error in tax paperwork",
+                    "As an optimal market equilibrium where supply meets demand",
+                    "As a character flaw or personal vice, like extreme greed or selling out",
+                    "As a technical violation of maritime shipping regulations"
                   ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Think about classical concepts of personal virtue and moral vices like greed, disloyalty, or self-indulgence.";
+                  correctAnswerIndex = 2;
+                  hint = ?"Think about old-school virtues and personal vices like greed or selling out your morals.";
                 },
                 {
-                  questionText = "Moral & Philosophical View: How did Ancient Athenians view the trial of Socrates regarding the charge of \"corrupting the youth\"?";
+                  questionText = "Ancient Drama: When Athens put Socrates on trial for supposedly 'corrupting the youth,' what were they actually mad about?";
                   options = [
-                    "As a financial embezzlement case",
-                    "As a departure from fidelity to Athenian traditions and customs",
-                    "As a breach of international trade conventions",
-                    "As an attempt to bribe political referees"
+                    "Him ghosting the city council group chat",
+                    "Him going rogue and disrespecting traditional Athenian customs and beliefs",
+                    "Him running a multi-level marketing scheme",
+                    "Him hacking the local olive oil supply chain"
                   ];
                   correctAnswerIndex = 1;
-                  hint = ?"Arlene Saxonhouse notes that virtue for Athenians was defined by fidelity to their own traditions and customs.";
+                  hint = ?"For the Athenians, virtue meant staying totally loyal to traditional community customs.";
                 },
                 {
-                  questionText = "Political Science View: How does political corruption undermine electoral processes and state institutions? [8]";
+                  questionText = "Politica & Power: How does shady political corruption completely wreck free elections and government institutions?";
                   options = [
-                    "By ensuring merit-based appointment of civil servants",
-                    "By creating improper influence through vote-buying, election-rigging, and campaign debt paybacks",
-                    "By eliminating market distortions across economic sectors",
-                    "By enforcing political equality across all social groups"
+                    "By totally automating government tasks using AI",
+                    "By creating zero market distortions or economic bubbles",
+                    "By guaranteeing that only hyper-qualified civil servants get hired",
+                    "By rigging elections, buying votes, and paying back shady campaign backers"
                   ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Think about how political debts and undisclosed campaign financing alter democratic accountability [8].";
+                  correctAnswerIndex = 3;
+                  hint = ?"Think about how secret campaign debt and rigged rules destroy democratic fairness.";
                 },
                 {
-                  questionText = "Political Science View: According to Karl-Heinz Nassmacher, what fundamentally distinguishes a democracy from a plutocracy? [8][9]";
+                  questionText = "Democracy vs. Plutocracy: According to political scientist Karl-Heinz Nassmacher, what's the core difference between a democracy and a plutocracy?";
                   options = [
-                    "Democracy is based on equal participation by the multitude, while plutocracy is dominated by the riches of an affluent minority",
-                    "Democracy relies on market pricing, while plutocracy relies on central state planning",
-                    "Democracy excludes private sector actors entirely",
-                    "Democracy relies on perception indices, while plutocracy relies on experience surveys"
+                    "Democracy is powered by equal participation of everyday people, while plutocracy is run by filthy rich elites",
+                    "Democracy relies entirely on stock market trends, while plutocracy uses central command planning",
+                    "Democracy bans private companies from existing, while plutocracy relies on them",
+                    "Democracy uses vibes-based surveys, while plutocracy uses hard data"
                   ];
                   correctAnswerIndex = 0;
-                  hint = ?"Consider how allocating political influence based on wealth alters equal democratic representation [8][9].";
+                  hint = ?"Consider how letting extreme wealth buy political power completely ruins equal representation.";
                 },
                 {
-                  questionText = "Economic View: According to Gary Becker's 1968 economic framework, why does an individual choose to engage in corrupt conduct? [10]";
+                  questionText = "The Economics Hustle: According to economist Gary Becker's 1968 rational choice model, why do people actually decide to do shady, corrupt stuff?";
                   options = [
-                    "Because their basic human motivation is fundamentally different from non-criminals",
-                    "Because the expected utility or benefit exceeds the cost and utility of alternative lawful activities",
-                    "Because they lack any rational understanding of financial risk",
-                    "Because cultural norms compel them to obey authority"
+                    "Because they have a totally different biological brain structure than law-abiding folks",
+                    "Because they are forced by ancient cultural traditions to break laws",
+                    "Because the expected payout or benefit feels higher than the risk of getting caught and punished",
+                    "Because they have zero comprehension of basic math or financial risk"
                   ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Rational choice models weigh expected benefits against penalties and the probability of being caught [10].";
+                  correctAnswerIndex = 2;
+                  hint = ?"Rational choice theory is all about weighing the bag against the penalty.";
                 },
                 {
-                  questionText = "Economic View: In economic models of corruption, what is meant by \"moral costs\"? [12]";
+                  questionText = "The Guilt Tax: In economic models of corruption, what does the term 'moral costs' actually refer to?";
                   options = [
-                    "Official fines imposed by a court of law",
-                    "The internal loss of utility experienced when a person compromises their personal or organizational values",
-                    "The financial cost of hiring external anti-corruption auditors",
-                    "The legal fees required to file a lawsuit"
-                  ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Moral costs reflect internalized ethical beliefs factored into an actor's cost-benefit calculation [12].";
-                },
-                {
-                  questionText = "Cultural View: How do scholars attentive to cultural dimensions define culture in anti-corruption literature? [14]";
-                  options = [
-                    "As formal statutory codes written by legislators",
-                    "As the dominant beliefs, attitudes, and behaviors in a given society",
-                    "As a country's annual gross domestic product",
-                    "As the literacy rate of civil servants"
-                  ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Focus on how collective social habits, affective ties, and traditions shape community norms [14].";
-                },
-                {
-                  questionText = "Cultural View: What risk do scholars like Rose-Ackerman and Palifka highlight regarding cultural explanations of corruption?";
-                  options = [
-                    "That cultural arguments can be co-opted by self-serving elites to excuse corrupt enrichment",
-                    "That cultural studies eliminate petty bribery entirely",
-                    "That cultural perspectives force all nations to adopt identical laws",
-                    "That cultural values prevent market transactions"
+                    "The internal cringe and guilt you feel when you betray your own values or ethics",
+                    "The actual legal fines handed down by a judge in court",
+                    "The expensive fees you pay to hire external compliance auditors",
+                    "The lawyer fees needed to file a civil lawsuit"
                   ];
                   correctAnswerIndex = 0;
-                  hint = ?"Be vigilant when elites use \"tradition\" or \"culture\" to shield private gain from accountability [14].";
+                  hint = ?"Think about the psychological toll of going against your own moral compass.";
                 },
                 {
-                  questionText = "Institutionalist Approach: What core conceptual shift is advocated by the institutionalist approach to corruption? [7][15]";
+                  questionText = "Culture Check: How do researchers studying anti-corruption define 'culture' in their studies?";
                   options = [
-                    "Shifting focus from \"bad apples\" (individual misbehavior) to \"bad barrels\" (distorted institutional setups)",
-                    "Shifting focus from statutory law to dictionary definitions",
-                    "Focusing exclusively on petty bribery while ignoring grand corruption",
-                    "Replacing civil servants with automated tools"
+                    "As the official legal code written down by government lawmakers",
+                    "As a nation's total gross domestic product (GDP)",
+                    "As the average literacy rate of government workers",
+                    "As the dominant shared beliefs, attitudes, and everyday behaviors of a society"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Focus on collective social habits, community traditions, and shared norms.";
+                },
+                {
+                  questionText = "The Culture Trap: What major warning do anti-corruption experts like Rose-Ackerman and Palifka give about blaming everything on 'culture'?";
+                  options = [
+                    "That powerful elites can easily weaponize 'culture' as an excuse to get away with corruption",
+                    "That studying culture will completely eliminate petty bribery overnight",
+                    "That cultural perspectives force every single country to pass identical laws",
+                    "That cultural values make online shopping impossible"
                   ];
                   correctAnswerIndex = 0;
-                  hint = ?"Look at how institutional arrangements cause systems to deviate from their proper public purpose [7][15].";
+                  hint = ?"Watch out when wealthy elites use 'tradition' as a shield to protect their stolen gains.";
                 },
                 {
-                  questionText = "Institutionalist Approach: How do Levitsky and Ziblatt illustrate state capture using the sports referee analogy? [16]";
+                  questionText = "System Failure: What is the main mindset shift that institutionalists recommend when analyzing corruption?";
                   options = [
-                    "Referees penalizing corrupt players immediately",
-                    "Political elites colluding with neutral institutions (\"referees\") to cheat and rewrite the rules of the game",
-                    "Corporations building stadiums using public funds",
-                    "Teams competing in a transparent, open market"
+                    "Switching focus entirely to dictionary definitions of legal terms",
+                    "Replacing all government workers with automated chatbots",
+                    "Shifting the focus from individual 'bad apples' to broken, rigged systems ('bad barrels')",
+                    "Ignoring big corporate corruption and only focusing on small street bribes"
                   ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Imagine players controlling decision-makers so that the rules are permanently rigged in their favor [16].";
-                }
-              ];
+                  correctAnswerIndex = 2;
+                  hint = ?"It's less about a rogue individual and more about systemic setup flaws.";
+                },
+                {
+                  questionText = "Rigged Referees: How do political scientists Steven Levitsky and Daniel Ziblatt explain state capture using a sports referee analogy?";
+                  options = [
+                    "Referees immediately kicking out any players who try to cheat",
+                    "Corporations chipping in to fund public sports stadiums",
+                    "Independent teams competing in a totally fair, transparent open market",
+                    "Corrupt politicians colluding with neutral referees to rig the game and rewrite the rulebook in their favor"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Imagine the players literally controlling the refs so the rules always favor them."
+              }];
             };
             flashcard = null;
           },
@@ -368,56 +386,56 @@ persistent actor Main {
             flashcard = ?{
               id = 1;
               assessmentType = #FLASHCARD;
-              questions = [
+             questions = [
                 {
-                  front = "Sustainable Development Goal 16 (SDG 16): Which specific SDG explicitly focuses on building \"Peace, Justice and Strong Institutions\" and contains targets to substantially reduce corruption?";
-                  back = "SDG 16 Targets 16.4, 16.5, and 16.6 specifically call for reducing all forms of corruption, recovering stolen assets, and developing transparent institutions.";
-                  hint = ?("Think of the UN goal focused on peace, justice, and effective institutions.");
+                  front = "What is SDG 16, and why should you care about it?";
+                  back = "SDG 16 is the UN's goal for 'Peace, Justice and Strong Institutions.' It includes targets 16.4, 16.5, and 16.6, which specifically aim to cut down corruption, recover stolen assets, and build transparent institutions. Basically, it's the global promise to make governments actually accountable.";
+                  hint = ?("Think of the UN goal that's all about peace, justice, and institutions that actually work.");
                 },
                 {
-                  front = "Global Economic Cost of Bribery: According to a report by the International Monetary Fund (IMF), what is the estimated annual global cost of bribery alone?";
-                  back = "$1.5 to $2 trillion per year, representing a total economic loss of approximately 2% of global GDP.";
-                  hint = ?("It equals roughly 2% of total global gross domestic product.");
+                  front = "How much does bribery cost the world every year?";
+                  back = "According to the IMF, bribery alone costs an estimated $1.5 to $2 trillion per year. That's about 2% of the entire global GDP — gone.";
+                  hint = ?("It's roughly 2% of the world's total economic output.");
                 },
                 {
-                  front = "Infrastructure Failures: How can corruption in the construction and permitting sectors directly threaten human lives?";
-                  back = "By bypassing building permit laws and using compromised construction materials (such as \"weakened cement\"), leading to fatal building collapses during earthquakes or structural failures.";
-                  hint = ?("Consider the 2018 Genoa bridge collapse or the 2017 Mexico City earthquake investigations.");
+                  front = "How can corruption literally kill people? Think of what happens when buildings collapse or bridges fall.";
+                  back = "When builders bribe their way past safety inspections or use cheap, weakened materials, buildings can collapse. Think of the 2018 Genoa bridge collapse or buildings that crumbled in the 2017 Mexico City earthquake. Corruption isn't just about money — it's about lives.";
+                  hint = ?("Think about bridges falling or buildings collapsing during earthquakes.");
                 },
                 {
-                  front = "Conflict & Atrocity Crimes: How do transitional justice mechanisms (such as Truth and Reconciliation Commissions) view the role of corruption in armed conflicts?";
-                  back = "As a primary destabilizing factor and a fundamental \"driver of conflict\" that degrades state capacity and leads to severe human rights violations[4].";
-                  hint = ?("Look at findings from the Sierra Leone, Liberia, and Tunisia truth commissions.");
+                  front = "What do truth commissions say about corruption's role in wars and conflicts?";
+                  back = "Truth and Reconciliation Commissions in places like Sierra Leone, Liberia, and Tunisia found that corruption is a major driver of conflict. It weakens the state, fuels instability, and leads to serious human rights abuses.";
+                  hint = ?("Look at what countries recovering from civil war have concluded.");
                 },
                 {
-                  front = "Direct Methods of Measurement: What defines \"direct methods\" of measuring corruption, and what are two primary examples?";
-                  back = "Standardized procedures that gather evidence-based data on actual experiences of corruption[5]. Key examples include official crime statistics and experience-based sample surveys[5][6].";
-                  hint = ?("These focus on actual personal encounters and objective statistics rather than subjective opinions.");
+                  front = "What are 'direct methods' of measuring corruption?";
+                  back = "Direct methods collect hard evidence of corruption — like official crime stats or surveys that ask people about their actual experiences with bribery. No opinions, just facts.";
+                  hint = ?("These focus on real experiences and actual crime data, not what people think is happening.")  ;
                 },
                 {
-                  front = "Limitations of Indirect Methods: What is the primary methodological criticism of indirect or perception-based corruption surveys?";
-                  back = "They gauge subjective opinions and perceptions rather than actual occurrences, which can create vast discrepancies when compared to experience data and can be heavily skewed by media coverage[7][8].";
-                  hint = ?("They measure what people think or feel is happening rather than direct personal encounters.");
+                  front = "Why are perception-based corruption surveys often criticized?";
+                  back = "They measure what people think or feel is happening, not what's actually happening. That means they can be wildly inaccurate, especially when media coverage blows things out of proportion.";
+                  hint = ?("They capture vibes, not reality.");
                 },
                 {
-                  front = "Corruption Perceptions Index (CPI): What is Transparency International's CPI, and how is its score calculated?";
-                  back = "It is a composite index (\"survey of surveys\") that combines 13 different data sources from 12 organizations to rank countries by perceived levels of public sector corruption[9].";
-                  hint = ?("It ranks countries globally by aggregating multiple expert assessments and perception surveys.");
+                  front = "What is Transparency International's Corruption Perceptions Index (CPI)?";
+                  back = "It's a 'survey of surveys' — a composite index that pulls together 13 data sources from 12 organizations to rank countries by how corrupt people perceive their public sector to be. It's the most well-known corruption ranking out there.";
+                  hint = ?("It ranks countries globally by combining expert assessments and perception surveys.");
                 },
                 {
-                  front = "Index of Public Integrity (IPI): How does the Index of Public Integrity (IPI) evaluate control of corruption without relying on perception surveys?";
-                  back = "By evaluating six objective proxy indicators: judicial independence, administrative burden, trade openness, budget transparency, e-citizenship, and freedom of the press[10].";
-                  hint = ?("It uses actionable risk assessments and objective structural proxies like press freedom and judicial independence.");
+                  front = "How does the Index of Public Integrity (IPI) measure corruption without asking people's opinions?";
+                  back = "The IPI uses six objective indicators: judicial independence, administrative burden, trade openness, budget transparency, e-citizenship, and freedom of the press. It's about structural risks, not feelings.";
+                  hint = ?("It looks at things like press freedom and judicial independence instead of surveys.");
                 },
                 {
-                  front = "Innovative & Field Measurement: What are two innovative or experimental approaches used by modern researchers to observe corrupt behavior?";
-                  back = "Experimental \"bribery games\" in lab/field settings[11] and Public Expenditure Tracking Surveys (PETS) that detect missing public funds in government programs[11][12].";
-                  hint = ?("One uses economic lab simulations, while the other tracks whether public funds actually reach local schools or clinics.");
+                  front = "What are some creative ways researchers actually observe corrupt behavior?";
+                  back = "Two big ones: 'bribery games' — lab or field experiments where people simulate corrupt deals — and Public Expenditure Tracking Surveys (PETS), which follow public money to see if it actually reaches schools or clinics or gets stolen along the way.";
+                  hint = ?("One is like a game, the other tracks whether money actually arrives where it's supposed to.");
                 },
                 {
-                  front = "Crowdsourced Bribery Reporting: What is \"I Paid a Bribe.com\", and how does it contribute to corruption measurement?";
-                  back = "An Internet-based crowdsourced reporting platform originating in India where ordinary citizens self-report real-time qualitative and quantitative details of everyday bribes paid[11].";
-                  hint = ?("A citizen-driven platform started in India to document daily micro-extortion and bribery encounters.");
+                  front = "What is 'I Paid a Bribe.com' and why does it matter?";
+                  back = "It's a crowdsourced website that started in India where regular people anonymously report bribes they've had to pay. It gives real-time, ground-level data on everyday corruption — the kind that never makes headlines.";
+                  hint = ?("It's a citizen-run platform from India where people share their own bribery stories.");
                 }
               ];
             };
@@ -430,21 +448,21 @@ persistent actor Main {
           inforgraphic = ?{
             name = "Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "https://notebooklm.link.google/JURYwGa3MRuA";
+            url = "https://notebooklm.link.google/y9y4TeApMOSI";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Corruption";
             contentType = #SLIDEDECK;
-            url = "https://notebooklm.link.google/RrwXc07Fff2E";
+            url = "https://notebooklm.link.google/dZhKhAb3I8wJ";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           podcast = ?{
             name = "The Corruption Podcast";
             contentType = #PODCAST;
-            url = "https://notebooklm.link.google/QbRkpAmQsYCp";
+            url = "https://notebooklm.link.google/ryimAgw6fnf9";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
             detailedDescription = "";
           };  
