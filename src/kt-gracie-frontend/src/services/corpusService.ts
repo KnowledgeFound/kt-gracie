@@ -12,6 +12,7 @@ import { withLeveledCopy } from "./mappers/readingLevelMapper";
 let allModules : Module [] = [];
 let numberOfModules: number = 0;
 let numberOfAssessments: number = 0;
+let updateAvailable: boolean = false;
 
 export async function getCorpus(): Promise<Corpus> {
     const persistedCorpus = getPersistedCorpus();
@@ -24,6 +25,9 @@ export async function getCorpus(): Promise<Corpus> {
         return persistedCorpus;
 
     console.log("New Corpus mapped");
+    console.log("Update avaialable");
+
+    updateAvailable = true;
 
     numberOfAssessments = normalizedCorpus.numberOfAssessments;
     numberOfModules = normalizedCorpus.numberOfModules;
@@ -51,10 +55,9 @@ export function getPersistedCorpus(): Corpus {
 
 export async function getAllModules(): Promise<Module[]> {
 
-    // remove when we go to Prod
-    // if(allModules.length > 0)
-    //     return allModules;
-    
+    if(!updateAvailable)
+        return allModules;
+
     const corpus = await getCorpus();
     let modules: Module[] = [];
 
@@ -154,6 +157,8 @@ export async function getAllModules(): Promise<Module[]> {
     }
 
     allModules = modules;
+
+    updateAvailable = false;
 
     return modules;
 }

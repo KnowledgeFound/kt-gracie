@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-06T22:23:00Z";
+    lastUpdated = "2026-10-13T00:51:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -149,7 +149,7 @@ persistent actor Main {
             topic = "Welcome to the Anti-Corruption Module!";
             ktMax = 10;
             difficulty = #EASY;
-            duration = 30; // Duration in minutes
+            duration = 2; // Duration in minutes
             keywords = [
               "Anti-Corruption", "definition", "Introduction to Corruption", 
             ];
@@ -249,7 +249,7 @@ persistent actor Main {
         assessments = [
           {
             id = 1;
-            maxScore = 5;
+            maxScore = 10;
             pointScore = 1; // how much each answer to a question is worth
             ktMax = 10;
             duration = 30; // Duration in minutes
@@ -375,7 +375,7 @@ persistent actor Main {
           },
           {
             id = 2;
-            maxScore = 5;
+            maxScore = 10;
             pointScore = 1; // how much each answer to a question is worth
             quiz = null;
             ktMax = 10;
@@ -500,8 +500,294 @@ persistent actor Main {
             url = ?("https://www.unodc.org/documents/brussels/UN_Convention_Against_Corruption.pdf");
           }
         ];
-        teachings = [];
-        assessments = [];
+        teachings = [
+          {
+            id = 0;
+            topic = "Welcome to the UN Convention Against Corruption Module!";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 2; // Duration in minutes
+            keywords = [
+              "Anti-Corruption", "definition", "Introduction to Corruption", 
+            ];
+            sequenceNo = 1;
+            content = {
+              name = "Welcome to the UN Convention Against Corruption Module!";
+              contentType = #VIDEO;
+              url = ""; // update later
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the UN Convention Against Corruption module";
+            };
+            knowledgeUnitId = "KU-002";
+          },
+          {
+            id = 1;
+            topic = "What is the UN Convention Against Corruption?";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 30; // Duration in minutes
+            keywords = ["corruption", "definition", "UN Convention Against Corruption", "UNCAC", "international legal framework"];
+            sequenceNo = 1;
+            content = {
+              name = "What is the UN Convention Against Corruption?";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Introduction__The_Scale_of_Decay.mp4";
+              description = "An introduction to the UN Convention Against Corruption, its key principles, and the obligations of state parties.";
+              detailedDescription = "The core message of this introductory module is that corruption is a global threat that 
+              undermines democratic institutions, distorts markets, erodes public trust, and disproportionately harms vulnerable 
+              communities by diverting vital public resources. Students are expected to learn the foundational purposes of the 
+              United Nations Convention Against Corruption, focusing on how international legal standards promote integrity, 
+              facilitate cross-border cooperation, and strengthen preventive measures. Furthermore, learners will master key legal 
+              terminology established in Chapter I of the treaty—including precise definitions of public officials, foreign public 
+              officials, property, and proceeds of crime—providing them with the essential knowledge required to understand how global 
+              governance protects public wealth and upholds the rule of law.";
+            };
+            knowledgeUnitId = "KU-002";
+          },
+          {
+            id = 2;
+            topic = "Stopping Corruption &amp; Defining Corrupt Acts";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 30; // Duration in minutes
+            keywords = ["corruption", "definition", "UN Convention Against Corruption", "UNCAC", "international legal framework"];
+            sequenceNo = 2;
+            content = {
+              name = "Stopping Corruption &amp; Defining Corrupt Acts";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_1_The_Corruption_Glitch__Debugging_the_System.mp4";
+              description = "This video explores the different acts of Corruption";
+              detailedDescription = "The core message of this module is that effective anti-corruption strategies require a dual approach: building 
+              proactive, transparent safeguards to stop corrupt practices before they occur, and establishing clear legal frameworks to criminalise and 
+              prosecute corrupt acts. Students are expected to learn the fundamental preventive measures set out in Chapter II of the United Nations 
+              Convention Against Corruption, including merit-based public recruitment, transparent procurement systems, codes of conduct for public 
+              officials, and robust financial oversight. Additionally, learners will gain a comprehensive understanding of the core criminal offenses 
+              established in Chapter III, such as active and passive bribery, embezzlement, trading in influence, abuse of functions, illicit enrichment, 
+              and money-laundering, while recognizing the crucial role of legal protections for whistleblowers and citizens who report corruption in good faith.";
+            };
+            knowledgeUnitId = "KU-002";
+          },
+          {
+            id = 3;
+            topic = "Global Cooperation, Asset Recovery &amp; Youth Action";
+            ktMax = 10;
+            difficulty = #EASY;
+            duration = 30; // Duration in minutes
+            keywords = ["corruption", "definition", "UN Convention Against Corruption", "UNCAC", "international legal framework"];
+            sequenceNo = 4;
+            content = {
+              name = "Global Cooperation, Asset Recovery &amp; Youth Action";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_2_The_Glitch_in_the_System.mp4";
+              description = "This video explores the global cooperation, asset recovery and youth action in fighting corruption.";
+              detailedDescription = "The core message of this module is that defeating international corruption requires strong cross-
+              border partnerships to ensure criminals cannot hide stolen wealth abroad, alongside active civic engagement from informed 
+              citizens. Students are expected to learn the primary mechanisms of international cooperation established in Chapter IV 
+              of the United Nations Convention Against Corruption, including extradition, mutual legal assistance for gathering evidence, 
+              and joint cross-border law enforcement investigations. Additionally, learners will explore the fundamental principles of 
+              asset recovery under Chapter V, discovering how illicitly transferred funds are traced, frozen, and returned to original 
+              countries to support public rehabilitation and development, while understanding how Article 13 empowers young people 
+              and civil society through public transparency, access to information, and anti-corruption education.";
+            };
+            knowledgeUnitId = "KU-002";
+          }
+        ];
+        assessments = [
+          {
+            id = 1;
+            maxScore = 10;
+            pointScore = 1; // how much each answer to a question is worth
+            ktMax = 10;
+            duration = 30; // Duration in minutes
+            difficulty = #EASY;
+            sequenceNo = 3;
+            knowledgeUnitId = "KU-002";
+            quiz = ?{
+              id = 1;
+              assessmentType = #QUIZ;
+              questions = [
+                {
+                  questionText = "Under Article 7 of the UNCAC, what core principles should governments follow when hiring and promoting civil servants?";
+                  options = [
+                    "Family connections and personal recommendations",
+                    "Seniority based strictly on age",
+                    "Merit, efficiency, transparency, and objective aptitude criteria",
+                    "Political party loyalty and campaign donations",
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Focus on fair, open hiring standards based on skills rather than favors.";
+                },
+                {
+                  questionText = "Which principles does Article 9 of the UNCAC require for public procurement systems when governments buy goods or services?";
+                  options = [
+                    "Secret negotiations behind closed doors",
+                    "Direct awarding of contracts without public notice",
+                    "Exclusive preference for foreign corporations",
+                    "Transparency, competition, and objective decision-making criteria",
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Think about how open competition and clear rules stop corrupt deal-making.";
+                },
+                {
+                  questionText = "To prevent private sector corruption under Article 12, what practice does the UNCAC explicitly require countries to ban?";
+                  options = [
+                    "Maintaining off-the-books accounts and using false bookkeeping documents",
+                    "Hiring independent financial auditors",
+                    "Publishing annual profit and loss statements",
+                    "Offering competitive salaries to executive staff",
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Look for sneaky accounting tricks used to hide secret transactions or bribes.";
+                },
+                {
+                  questionText = "How does Article 15 of the UNCAC define bribery involving national public officials?";
+                  options = [
+                    "Any legal contribution made to a political campaign during election season",
+                    "Only transactions involving foreign diplomatic personnel",
+                    "Both promising/giving (active) and soliciting/accepting (passive) an undue advantage to influence official actions",
+                    "Only when cash is physically handed over inside a government building",
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Bribery covers both sides of the deal—offering a perk or asking for one to influence a duty.";
+                },
+                {
+                  questionText = "What constitutes embezzlement or misappropriation by a public official under Article 17 of the UNCAC?";
+                  options = [
+                    "Failing to attend mandatory workplace training sessions",
+                    "Expressing personal political views outside of working hours",
+                    "Investing personal savings in foreign stock markets",
+                    "The diversion or theft of public or private funds or property entrusted to an official",
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Think of an official stealing or redirecting funds that were placed in their care for work.";
+                },
+                {
+                  questionText = "What defines the crime of 'trading in influence' under Article 18 of the UNCAC?";
+                  options = [
+                    "Selling government-owned property through an open public auction",
+                    "Abusing real or supposed influence over a public authority to get an undue advantage in exchange for a benefit",
+                    "Trading stocks on a public stock exchange using published news reports",
+                    "Advocating publicly for new environmental legislation",
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"This happens when someone sells their special access or influence over officials for a bribe.";
+                },
+                {
+                  questionText = "What is 'abuse of functions' as established in Article 19 of the UNCAC?";
+                  options = [
+                    "An official intentionally performing or failing to perform an act in violation of laws to gain an undue advantage",
+                    "Taking an extended lunch break without supervisor approval",
+                    "Resigning from a civil service position to take a private sector job",
+                    "Publishing academic research that criticizes public policy",
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"It occurs when an official deliberately breaks the rules on the job to get an improper benefit.";
+                },
+                {
+                  questionText = "According to Article 20 of the UNCAC, what is 'illicit enrichment'?";
+                  options = [
+                    "Earning compound interest on a standard bank savings account",
+                    "Receiving an official salary increase approved by parliament",
+                    "Inheriting documented family property with full tax compliance",
+                    "A significant increase in a public official's assets that cannot be reasonably explained relative to their lawful income",
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Focus on when an official suddenly becomes way wealthier than their legal salary explains.";
+                },
+                {
+                  questionText = "Under Article 23 of the UNCAC, what is the primary objective of money-laundering offences?";
+                  options = [
+                    "Transferring legal salary into a local credit union account",
+                    "Converting or concealing property derived from crime to disguise its illegal origin",
+                    "Paying international customs tariffs electronically",
+                    "Exchanging cash for foreign currency at an airport kiosk",
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Consider how criminals try to make 'dirty' crime money look like clean, legal income.";
+                },
+                {
+                  questionText = "How does Article 33 of the UNCAC protect whistleblowers (reporting persons)?";
+                  options = [
+                    "By offering total immunity for any past crimes they may have committed",
+                    "By paying them a direct percentage of all recovered corrupt funds",
+                    "By providing legal protection against unjustified treatment when reporting corruption in good faith and on reasonable grounds",
+                    "By requiring them to post their findings publicly on social media",
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Think about keeping people safe from retaliation when they speak up in good faith.";
+                },
+              ];
+            };
+            flashcard = null;
+          },
+          {
+            id = 2;
+            maxScore = 10;
+            pointScore = 1; // how much each answer to a question is worth
+            quiz = null;
+            ktMax = 10;
+            duration = 30;
+            difficulty = #EASY;
+            sequenceNo = 5;
+            knowledgeUnitId = "KU-002";
+            flashcard = ?{
+              id = 1;
+              assessmentType = #FLASHCARD;
+             questions = [
+                {
+                  front = "What is Extradition under Article 44 of the UNCAC?";
+                  back = "Extradition is the formal legal process where one country surrenders a suspect or convicted offender to another country so they can face trial or serve a sentence for corruption offences.";
+                  hint = ?("Think about moving a criminal suspect across international borders to stand trial.");
+                },
+                {
+                  front = "How does Mutual Legal Assistance (MLA) work under Article 46 of the UNCAC?";
+                  back = "Mutual Legal Assistance allows countries to request and share legal help across borders, such as taking witness statements, gathering evidence, serving court documents, and freezing illicit financial accounts.";
+                  hint = ?("Focus on how law enforcement agencies from different countries share evidence and official information.");
+                },
+                {
+                  front = "What is a 'Joint Investigation' as encouraged by Article 49 of the UNCAC?";
+                  back = "A joint investigation is an agreement where law enforcement authorities from two or more countries establish a combined team to investigate complex, cross-border corruption cases together.";
+                  hint = ?("Imagine law enforcement officers from different nations teaming up on the same case.");
+                },
+                {
+                  front = "Why is Asset Recovery described as a 'fundamental principle' in Chapter V (Article 51) of the UNCAC?";
+                  back = "Chapter V establishes that returning stolen public assets to their country of origin is a core obligation, ensuring stolen wealth cannot be safely hidden abroad.";
+                  hint = ?("Think about sending stolen national wealth back to the citizens it was taken from.");
+                },
+                {
+                  front = "According to Article 52 of the UNCAC, how must financial institutions handle high-value accounts?";
+                  back = "Banks must verify customer identities, identify beneficial owners, and conduct enhanced scrutiny on accounts held by prominent public officials (PEPs) to spot suspicious transfers of illicit funds.";
+                  hint = ?("Consider how banks double-check high-profile accounts to spot hidden or suspicious wealth.");
+                },
+                {
+                  front = "What measures does Article 53 of the UNCAC require for the direct recovery of stolen property?";
+                  back = "Article 53 requires countries to enable foreign States to initiate civil lawsuits in their courts to establish ownership of stolen property or claim compensation for damage caused by corruption.";
+                  hint = ?("Think about one government taking legal action directly in a foreign court to reclaim its property.");
+                },
+                {
+                  front = "What is the rule for returning confiscated public funds under Article 57 of the UNCAC?";
+                  back = "Confiscated funds—especially embezzled public wealth—must be returned to the requesting State or prior legitimate owners so the resources can support national development and public services.";
+                  hint = ?("Focus on how reclaimed stolen funds are returned to benefit public services and community recovery.");
+                },
+                {
+                  front = "How does Article 13 of the UNCAC involve civil society and young citizens in anti-corruption efforts?";
+                  back = "Article 13 mandates that governments actively promote the participation of non-governmental organizations, community groups, and citizens by boosting transparency and encouraging public monitoring.";
+                  hint = ?("Think about the role of ordinary citizens, youth groups, and NGOs in keeping governments accountable.");
+                },
+                {
+                  front = "What does Article 13 of the UNCAC specify regarding anti-corruption education?";
+                  back = "Article 13 directs States to conduct public awareness campaigns and integrate anti-corruption education into school and university curricula to foster a culture of integrity.";
+                  hint = ?("Consider how learning about honesty and ethics in school or university helps prevent corrupt behavior.");
+                },
+                {
+                  front = "Why is protecting access to public information crucial under Article 13 of the UNCAC?";
+                  back = "Protecting the freedom to seek, receive, publish, and report information empowers citizens and journalists to expose corrupt activities and hold public officials accountable.";
+                  hint = ?("Focus on how open government records and free reporting keep corrupt acts from staying hidden.");
+                }
+              ];
+            };
+          }
+        ];
         tokenReward = 10;
         summary = {
           id = 1;
@@ -509,21 +795,21 @@ persistent actor Main {
           inforgraphic = ?{
             name = "Anti-Corruption Overview";
             contentType = #INFORGRAPHIC;
-            url = "#";
+            url = "https://notebooklm.link.google/B2vOEpygMJtp";
             description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           slideDeck = ?{
             name = "Understanding Anti-Corruption";
             contentType = #SLIDEDECK;
-            url = "#";
+            url = "https://notebooklm.link.google/mKZ5sz9LSvUa";
             description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
             detailedDescription = "";
           };
           podcast = ?{
             name = "The Anti-Corruption Podcast";
             contentType = #PODCAST;
-            url = "#";
+            url = "https://notebooklm.link.google/BjTpHYA1eWdK";
             description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
             detailedDescription = "";
           };  
@@ -583,7 +869,7 @@ persistent actor Main {
               description = "Welcome message from GRACIE to the YouthLed module";
             };
             ktMax = 10;
-            duration = 10;
+            duration = 2;
             sequenceNo = 0;
           },
           {
@@ -679,7 +965,7 @@ persistent actor Main {
         assessments = [
           {
             id = 1;
-            maxScore = 5;
+            maxScore = 10;
             pointScore = 1;
             flashcard = null;
             ktMax = 10;
@@ -806,7 +1092,7 @@ persistent actor Main {
           },
           {
             id = 2;
-            maxScore = 5;
+            maxScore = 10;
             pointScore = 1;
             quiz = null;
             ktMax = 10;
