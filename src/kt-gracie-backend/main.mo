@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-13T00:51:00Z";
+    lastUpdated = "2026-10-14T00:51:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -531,7 +531,7 @@ persistent actor Main {
             content = {
               name = "What is the UN Convention Against Corruption?";
               contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Introduction__The_Scale_of_Decay.mp4";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit2/Introduction_The_Ultimate_Anti-Cheat_Understanding_UNCAC.mp4";
               description = "An introduction to the UN Convention Against Corruption, its key principles, and the obligations of state parties.";
               detailedDescription = "The core message of this introductory module is that corruption is a global threat that 
               undermines democratic institutions, distorts markets, erodes public trust, and disproportionately harms vulnerable 
@@ -546,16 +546,16 @@ persistent actor Main {
           },
           {
             id = 2;
-            topic = "Stopping Corruption &amp; Defining Corrupt Acts";
+            topic = "Stopping Corruption and Defining Corrupt Acts";
             ktMax = 10;
             difficulty = #EASY;
             duration = 30; // Duration in minutes
             keywords = ["corruption", "definition", "UN Convention Against Corruption", "UNCAC", "international legal framework"];
             sequenceNo = 2;
             content = {
-              name = "Stopping Corruption &amp; Defining Corrupt Acts";
+              name = "Stopping Corruption and Defining Corrupt Acts";
               contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_1_The_Corruption_Glitch__Debugging_the_System.mp4";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit2/Submodule_1_The_Multiplayer_City-Builder__Understanding_UNCAC.mp4";
               description = "This video explores the different acts of Corruption";
               detailedDescription = "The core message of this module is that effective anti-corruption strategies require a dual approach: building 
               proactive, transparent safeguards to stop corrupt practices before they occur, and establishing clear legal frameworks to criminalise and 
@@ -569,16 +569,16 @@ persistent actor Main {
           },
           {
             id = 3;
-            topic = "Global Cooperation, Asset Recovery &amp; Youth Action";
+            topic = "Global Cooperation, Asset Recovery and Youth Action";
             ktMax = 10;
             difficulty = #EASY;
             duration = 30; // Duration in minutes
             keywords = ["corruption", "definition", "UN Convention Against Corruption", "UNCAC", "international legal framework"];
             sequenceNo = 4;
             content = {
-              name = "Global Cooperation, Asset Recovery &amp; Youth Action";
+              name = "Global Cooperation, Asset Recovery and Youth Action";
               contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit1/Submodule_2_The_Glitch_in_the_System.mp4";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit2/submodule_2_Leveling_Up_Global_Justice.mp4";
               description = "This video explores the global cooperation, asset recovery and youth action in fighting corruption.";
               detailedDescription = "The core message of this module is that defeating international corruption requires strong cross-
               border partnerships to ensure criminals cannot hide stolen wealth abroad, alongside active civic engagement from informed 
@@ -791,7 +791,7 @@ persistent actor Main {
         tokenReward = 10;
         summary = {
           id = 1;
-          sequenceNo = 1;
+          sequenceNo = 6;
           inforgraphic = ?{
             name = "Anti-Corruption Overview";
             contentType = #INFORGRAPHIC;

@@ -55,7 +55,7 @@ export function getPersistedCorpus(): Corpus {
 
 export async function getAllModules(): Promise<Module[]> {
 
-    if(!updateAvailable)
+    if(updateAvailable == false && allModules.length > 0)
         return allModules;
 
     const corpus = await getCorpus();
