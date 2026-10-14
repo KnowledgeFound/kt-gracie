@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-14T00:51:00Z";
+    lastUpdated = "2026-10-15T00:51:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -514,7 +514,7 @@ persistent actor Main {
             content = {
               name = "Welcome to the UN Convention Against Corruption Module!";
               contentType = #VIDEO;
-              url = ""; // update later
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit2/UNCAC%20Intro.mp4"; // update later
               detailedDescription = "A welcome message from GRACIE";
               description = "Welcome message from GRACIE to the UN Convention Against Corruption module";
             };
