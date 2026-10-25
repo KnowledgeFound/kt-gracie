@@ -58,7 +58,7 @@ export function addProgressToContainer(progress: Progress): void {
     const existingIndex = progressContainer.arr_progress.findIndex(p => p.knowledgeUnitID === progress.knowledgeUnitID);
 
     if (existingIndex !== -1) {
-        // Update existing progress
+        console.log(`Updating existing progress for knowledgeUnitID: ${progress.knowledgeUnitID}`);
         progressContainer.arr_progress[existingIndex] = progress;
     } else {
         // Add new progress

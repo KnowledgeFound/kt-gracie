@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-24T02:45:00Z";
+    lastUpdated = "2026-10-25T01:59:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -1269,7 +1269,7 @@ persistent actor Main {
             knowledgeUnitId = "KU-004";
           },
           {
-            id = 3;
+            id = 4;
             topic = "Code4Integrity Hackathons";
             difficulty = #EASY;
             keywords = [
@@ -1473,7 +1473,7 @@ persistent actor Main {
           "Track progress using meaningful indicators, reliable data, and regular reviews."
         ];
         image = "community_img";
-        description = "Connect with others and learn about the importance of community engagement and development.";
+        description = "Learn how to meaningfully engage youth in anti-corruption policy and initiatives, ensuring their voices are heard and their contributions valued.";
         icon = "Globe";
         block = "rightDown";
         duration = "2 hours";
@@ -1485,12 +1485,220 @@ persistent actor Main {
             url = ?("https://grace.unodc.org/grace/en/youth-empowerment/policy-guide-for-national-anti-corruption-authorities-on-meaningful-youth-engagement-in-anti-corruption-work.html");
           }
         ];
-        teachings = [];
-        assessments = [];
+        teachings = [
+          {
+            id = 0;
+            topic = "Welcome to the Youth Engagement in Anti-Corruption Policy Module!";
+            difficulty = #EASY;
+            knowledgeUnitId = "KU-005";
+            keywords = [
+              "youth engagement",
+              "anti-corruption policy",
+              "policy guide",
+              "youth empowerment"
+            ];
+            content = {
+              name = "Welcome to the Youth Engagement in Anti-Corruption Policy Module!";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Policy%20Intro.mp4";
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the Youth Engagement in Anti-Corruption Policy module";
+            };
+            ktMax = 10;
+            duration = 2;
+            sequenceNo = 0;
+          },
+          {
+            id = 1;
+            topic = "Introduction to Youth Engagement in Anti-Corruption Policy";
+            difficulty = #EASY;
+            keywords = [
+              "youth engagement",
+              "anti-corruption policy",
+              "policy guide",
+              "youth empowerment"
+            ];
+            content = {
+              name = "Introduction to Youth Engagement in Anti-Corruption Policy";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Introduction__Unlocking_Co-Op_Mode__Youth_Against_The_Glitch.mp4";
+              description = "Explore the importance of youth engagement in anti-corruption policy and how it can strengthen integrity initiatives.";
+              detailedDescription = "Introduction: Unlocking Co-Op Mode: Youth Against The Glitch explains how corruption acts like a systemic glitch 
+              that breaks the rules of fairness, draining vital resources away from communities, schools, and essential public services. It explores 
+              why tackling this challenge cannot be left to adult officials alone, introducing viewers to the concept of Co-Op Mode—a 
+              collaborative partnership between young people and anti-corruption authorities. The video breaks down the three essential ways youth can 
+              actively take part in fixing these glitches: speaking up with their **voice** to advocate for fair treatment, offering their insight 
+              into issues affecting their generation, and taking direct action through peer-led initiatives and creative community solutions. 
+              Ultimately, it emphasizes that young people have the power, perspective, and responsibility to team up with leaders and help build a 
+              more transparent, just society.";
+            }; 
+            ktMax = 10;
+            duration = 15;
+            sequenceNo = 1;
+            knowledgeUnitId = "KU-005";
+          },
+          {
+            id = 2;
+            topic = "The Core idea behind Youth Engagement in Anti-Corruption Policy";
+            difficulty = #EASY;
+            keywords = [
+              "youth engagement",
+              "anti-corruption policy",
+              "policy guide",
+              "youth empowerment"
+            ];
+            content = {
+              name = "The Core idea behind Youth Engagement in Anti-Corruption Policy";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Submodule_1__Level_Up%21_Fighting_Corruption_in_Co-Op_Mode.mp4";
+              description = "Explore how young people and anti-corruption authorities can team up to tackle corruption and build a fairer world.";
+              detailedDescription = "This video focuses on how young people and anti-corruption authorities can team up to tackle corruption and build a fairer world. 
+              It breaks down the three powerful ways youth contribute to the mission: speaking up with their voice through constructive dialogue, sharing valuable 
+              insights and everyday experiences to shape policies, and taking direct action by leading projects and awareness campaigns. The video explores the vital 
+              difference between genuine, meaningful engagement and tokenism, explaining why real teamwork requires diverse voices, supportive environments, shared 
+              leadership across generations, quality participation, and true empowerment. Finally, it outlines the key areas where young people make a real difference—from 
+              prevention and public education to creative outreach, policymaking, and supporting justice—showing viewers that when communities unlock 
+              co-op mode, integrity wins.";
+            };
+            ktMax = 10;
+            duration = 15;
+            sequenceNo = 2;
+            knowledgeUnitId = "KU-005";
+          }
+        ];
+        assessments = [
+          {
+            id = 1;
+            maxScore = 10;
+            pointScore = 1;
+            flashcard = null;
+            ktMax = 10;
+            duration = 15;
+            difficulty = #EASY;
+            sequenceNo = 3;
+            knowledgeUnitId = "KU-005";
+            quiz = ?{
+              id = 1;
+              assessmentType = #QUIZ;
+              questions = [
+                {
+                  questionText = "What operational age range does the policy guide adopt when defining youth in anti-corruption work?";
+                  options = [
+                    "12 to 24 years old",
+                    "18 to 35 years old",
+                    "15 to 30 years old",
+                    "10 to 18 years old"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Consider the extended definition that accommodates diverse transitions into adulthood.";
+                },
+                {
+                  questionText = "Which form of youth contribution involves collecting grassroots data, feedback, and lived experiences to inform anti-corruption strategies?";
+                  options = [
+                    "Insight",
+                    "Voice",
+                    "Action",
+                    "Oversight"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Think about knowledge-gathering and evidence that informs policy design.";
+                },
+                {
+                  questionText = "In what way is youth 'Voice' distinct from other contribution types within anti-corruption initiatives?";
+                  options = [
+                    "It requires young people to run enforcement investigations independently",
+                    "It centers on constructive dialogue, advocacy, and expressing viewpoints in decision-making spaces",
+                    "It focuses solely on financial auditing and data analytics",
+                    "It restricts youth participation to silent observation at conferences"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Focus on dialogue, perspectives, and representation.";
+                },
+                {
+                  questionText = "A youth group designs and executes a community-level awareness roadshow on public integrity. Which form of contribution does this demonstrate?";
+                  options = [
+                    "Voice",
+                    "Insight",
+                    "Coordination",
+                    "Action"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"This involves actively implementing, leading, or delivering an initiative.";
+                },
+                {
+                  questionText = "Which of the following defines tokenism in youth engagement programmes?";
+                  options = [
+                    "Superficial or decorative involvement where young people have no genuine influence on decisions",
+                    "Providing young people with dedicated budgets and mentorship",
+                    "Ensuring marginalized youth from rural areas have equal representation",
+                    "Allowing youth to lead institutional monitoring and evaluation"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Reflect on symbolic participation without real voice or structural power.";
+                },
+                {
+                  questionText = "Which of the five core themes focuses on dismantling financial, legal, and social barriers to ensure all young people can participate safely?";
+                  options = [
+                    "Youth empowerment",
+                    "Quality youth participation",
+                    "Engagement-enabling environment",
+                    "Intergenerational collaboration"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Look for the theme that creates supportive, secure conditions and removes institutional obstacles.";
+                },
+                {
+                  questionText = "How is 'Intergenerational Collaboration' best described within the meaningful engagement framework?";
+                  options = [
+                    "Replacing all senior personnel with younger activists under 25",
+                    "Limiting youth to observing meetings led entirely by senior officials",
+                    "A mutual partnership where experienced professionals and youth share power, knowledge, and perspectives",
+                    "Requiring youth to undergo a probationary period before their opinions are recorded"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"It is a two-way street combining institutional experience with fresh youth perspectives.";
+                },
+                {
+                  questionText = "Ensuring that youth contributions lead to tangible capability development, agency, and leadership skills relates to which core theme?";
+                  options = [
+                    "Engagement-enabling environment",
+                    "Diversity and inclusion",
+                    "Intergenerational collaboration",
+                    "Youth empowerment"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Think about building lasting competencies, autonomy, and leadership capacity.";
+                },
+                {
+                  questionText = "How can youth meaningfully contribute to an anti-corruption authority's 'Prevention' function?";
+                  options = [
+                    "By identifying corruption vulnerabilities in public services like school admissions or licensing through youth audits",
+                    "By issuing formal judicial subpoenas and arrest warrants to suspect entities",
+                    "By managing national fiscal budgets without oversight",
+                    "By serving as armed tactical support during anti-corruption raids"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Prevention centers on identifying systemic loopholes and improving processes before corruption occurs.";
+                },
+                {
+                  questionText = "In what way can young people support an authority's 'Public Outreach and Awareness-Raising' area?";
+                  options = [
+                    "By conducting internal disciplinary trials for public servants",
+                    "By drafting confidential intergovernmental treaties",
+                    "By translating complex integrity messages into creative, peer-led digital campaigns and community events",
+                    "By serving as the sole legal counsel during prosecution hearings"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Consider their strengths in peer communication, relatable storytelling, and digital media.";
+                }
+              ];
+            };
+          }
+        ];
         tokenReward = 10;
         summary = {
           id = 1;
-          sequenceNo = 1;
+          sequenceNo = 4;
           inforgraphic = ?{
             name = "Youth Engagement in Anti-Corruption Policy Infographic";
             contentType = #INFORGRAPHIC;

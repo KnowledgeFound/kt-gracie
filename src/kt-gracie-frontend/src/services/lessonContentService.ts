@@ -42,7 +42,7 @@ export async function getLessonSections(module: Module, teaching: ModuleAssessme
 		`# ${teaching.title}`,
 		'',
 		String(teaching.content?.detailedDescription || module.description),
-		...(objectives.length ? ['', '**In this lesson you will:**', '', ...objectives.map((o) => `- ${o}`)] : []),
+		// ...(objectives.length ? ['', '**In this lesson you will:**', '', ...objectives.map((o) => `- ${o}`)] : []),
 		//...(sourceUrl && !isVideo ? ['', `Read more: [${teaching.content?.name}](${sourceUrl})`] : []),
 	];
 	const overview: LessonSection = { id: 'overview', title: teaching.title, markdown: lines.join('\n') };
