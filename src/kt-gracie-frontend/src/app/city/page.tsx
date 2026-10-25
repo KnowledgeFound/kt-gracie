@@ -32,10 +32,11 @@ import {
 } from '@/services/progressContainerService';
 import { getAllModules } from '@/services/corpusService';
 import { createProgress } from '@/services/progressService';
-import { SubProgress, SubProgressTeaching } from '@/types/user';
+import { Progress, SubProgress, SubProgressTeaching } from '@/types/user';
 import { AssessmentType } from '@/ENUMS/enums';
 import { createCity, getCityFromLocalStorage, saveCityToLocalStorage } from '@/services/cityService';
 import { setLocalStorage } from '@/commons/utilts';
+import { KnowledgeUnit } from '@/types/types';
 
 /**
  * Top-level city page.
@@ -115,85 +116,37 @@ export default function CityScene() {
 					refreshCity();
 				}
 
-				//console.log(corpus);
-
 				const progressContainer = getProgressContainer();
-
 				
 				// create new progress container if it doesn't exist, and create a progress object for each Knowledge Unit
 				if(progressContainer == null) {
 					createAndPersistProgressContainer();
 
 					corpus.knowledgeUnits.forEach((knowledgeUnit) => {
-						let arr_subProgress: SubProgress[] = [];
-
-						knowledgeUnit.assessments.forEach((assessment) => {
-							if (assessment.quiz != null) {
-								arr_subProgress.push({
-									assessmentID: assessment.id,
-									assessmentType: AssessmentType.QUIZ,
-									score: 0,
-									pointScore: assessment.pointScore,
-									maxScore: assessment.quiz.questions.length,
-									completed: false,
-									ktMax: assessment.ktMax,
-									ktEarned: 0,
-								});
-							} else if (assessment.flashcard != null) {
-								arr_subProgress.push({
-									assessmentID: assessment.id,
-									assessmentType: AssessmentType.FLASHCARD,
-									score: 0,
-									pointScore: assessment.pointScore,
-									maxScore: assessment.flashcard.cards.length,
-									completed: false,
-									ktMax: assessment.ktMax,
-									ktEarned: 0,
-								});
-							}
-						});
-
-						let arr_subProgressTeachings: SubProgressTeaching[] = [];
-
-						knowledgeUnit.teachings.forEach((teaching) => {
-							arr_subProgressTeachings.push({
-								teachingID: teaching.id,
-								topic: teaching.topic,
-								difficulty: teaching.difficulty,
-								completed: false,
-								ktMax: teaching.ktMax,
-								ktEarned: 0,
-							});
-						});
-
-						// create a progress object for each Knowledge Unit
-						const progress = createProgress(
-							knowledgeUnit.id,
-							arr_subProgress,
-							arr_subProgressTeachings,
-						);
-
-						addProgressToContainer(progress);
+						addProgressToContainer(createProgressObjectFromKnowledgeUnit(knowledgeUnit));
 					});
+
+					return;
 				}
-				else if(progressContainer != null && progressContainer.arr_progress.length > 0) {
+				
+				corpus.knowledgeUnits.forEach((knowledgeUnit) => {
 
-					//console.log("Progress container exists, checking for new assessments and teachings...");
+					const localProgress = getProgressFromContainer(knowledgeUnit.id);
 
-					corpus.knowledgeUnits.forEach((knowledgeUnit) => {
-
-						const localProgress = getProgressFromContainer(knowledgeUnit.id);
-
-						//console.log("Checking: ", knowledgeUnit.id, " for updates...");
+					if(localProgress == null)
+					{
+						addProgressToContainer(createProgressObjectFromKnowledgeUnit(knowledgeUnit));
+					}
+					else{
 
 						knowledgeUnit.assessments.forEach((assessment) => {
-							
-							if(localProgress?.subProgress.find(sub => sub.assessmentID == assessment.id) == undefined)
+						
+							if((localProgress.subProgress.find(sub => sub.assessmentID == assessment.id) == undefined))
 							{
 								//console.log("Adding assessment: ",assessment.id," to progress object KUID: ", localProgress?.knowledgeUnitID);
 								
 								if (assessment.quiz != null) {
-									localProgress?.subProgress.push({
+									localProgress.subProgress.push({
 										assessmentID: assessment.id,
 										assessmentType: AssessmentType.QUIZ,
 										score: 0,
@@ -204,7 +157,7 @@ export default function CityScene() {
 										ktEarned: 0,
 									});
 								} else if (assessment.flashcard != null) {
-									localProgress?.subProgress.push({
+									localProgress.subProgress.push({
 										assessmentID: assessment.id,
 										assessmentType: AssessmentType.FLASHCARD,
 										score: 0,
@@ -221,11 +174,11 @@ export default function CityScene() {
 
 						knowledgeUnit.teachings.forEach((teaching) => {
 
-							if(localProgress?.subProgressTeachings.find(sub => sub.teachingID == teaching.id) == undefined)
+							if(localProgress.subProgressTeachings.find(sub => sub.teachingID == teaching.id) == undefined)
 							{
 								//console.log("Adding teaching: ",teaching.id," to progress object KUID: ", localProgress?.knowledgeUnitID);
 
-								localProgress?.subProgressTeachings.push({
+								localProgress.subProgressTeachings.push({
 									teachingID: teaching.id,
 									topic: teaching.topic,
 									difficulty: teaching.difficulty,
@@ -235,25 +188,69 @@ export default function CityScene() {
 								});
 							}
 						});
-						
-						// console.log("Saving updated progress container to local storage...");
-						// console.log("Progress container: ", progressContainer);
-						// console.log("Local progress: ", localProgress);
-						addProgressToContainer(localProgress!);
-					});
-				}
-				else{
-					console.error("Failed to load progress container: consider deleting the local storage and refreshing the page.");
-				}
+					
+						addProgressToContainer(localProgress)
+					}
+				});
 
 				//refreshCity();
 			} catch (err) {
-				console.error('Failed to load Corpus');
+				console.error('Failed to load Corpus', err);
 			}
 		}
 
 		fetchCorpus();
 	}, []);
+
+	function createProgressObjectFromKnowledgeUnit(knowledgeUnit: KnowledgeUnit) : Progress
+	{
+		let arr_subProgress: SubProgress[] = [];
+
+		knowledgeUnit.assessments.forEach((assessment) => {
+			if (assessment.quiz != null) {
+				arr_subProgress.push({
+					assessmentID: assessment.id,
+					assessmentType: AssessmentType.QUIZ,
+					score: 0,
+					pointScore: assessment.pointScore,
+					maxScore: assessment.quiz.questions.length,
+					completed: false,
+					ktMax: assessment.ktMax,
+					ktEarned: 0,
+				});
+			} else if (assessment.flashcard != null) {
+				arr_subProgress.push({
+					assessmentID: assessment.id,
+					assessmentType: AssessmentType.FLASHCARD,
+					score: 0,
+					pointScore: assessment.pointScore,
+					maxScore: assessment.flashcard.cards.length,
+					completed: false,
+					ktMax: assessment.ktMax,
+					ktEarned: 0,
+				});
+			}
+		});
+
+		let arr_subProgressTeachings: SubProgressTeaching[] = [];
+
+		knowledgeUnit.teachings.forEach((teaching) => {
+			arr_subProgressTeachings.push({
+				teachingID: teaching.id,
+				topic: teaching.topic,
+				difficulty: teaching.difficulty,
+				completed: false,
+				ktMax: teaching.ktMax,
+				ktEarned: 0,
+			});
+		});
+
+		return createProgress(
+			knowledgeUnit.id,
+			arr_subProgress,
+			arr_subProgressTeachings,
+		);
+	}
 
 	return (
 		<div

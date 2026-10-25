@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-25T01:59:00Z";
+    lastUpdated = "2026-10-25T23:24:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -1187,7 +1187,7 @@ persistent actor Main {
       },
       {
         id = "KU-004";
-        topic = "Digital Innovation and Social Entreprenuership";
+        topic = "Digital Innovation and Social Entrepreneurship";
         difficulty = #EASY;
         prerequisites = [];
         level = BEGINNER;
@@ -1242,7 +1242,7 @@ persistent actor Main {
           },
           {
             id = 1;
-            topic = "Digital Innovation and Social Entrepreneurship";
+            topic = "Introduction to Digital Innovation and Social Entrepreneurship";
             difficulty = #EASY;
             keywords = [
               "digital innovation",
@@ -1251,7 +1251,7 @@ persistent actor Main {
               "digital ethics"
             ];
             content = {
-              name = "Digital Innovation and Social Entrepreneurship";
+              name = "Introduction to Digital Innovation and Social Entrepreneurship";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Level_Up_Your_World__The_GRACE_Initiative.mp4";
               description = "Explore digital innovation and social entrepreneurship through the UNODC GRACE Initiative.";
@@ -1259,9 +1259,7 @@ persistent actor Main {
               and **investing in young people's interest in using technology to strengthen business integrity** and 
               combat corruption. Through initiatives such as the **GRACE Initiative** and regional **Coding4Integrity** 
               youth anti-corruption hackathons, the UNODC leverages technology and entrepreneurial problem-solving to engage young 
-              innovators directly in developing integrity solutions. However, because the sources in your notebook contain only article 
-              and event titles, they do not provide comprehensive definitions or formal institutional frameworks detailing how the 
-              UNODC formally defines these terms.";
+              innovators directly in developing integrity solutions.";
             };
             ktMax = 10;
             duration = 15;
@@ -1269,7 +1267,7 @@ persistent actor Main {
             knowledgeUnitId = "KU-004";
           },
           {
-            id = 4;
+            id = 3;
             topic = "Code4Integrity Hackathons";
             difficulty = #EASY;
             keywords = [
@@ -1281,7 +1279,7 @@ persistent actor Main {
             content = {
               name = "Code4Interity Hackathons";
               contentType = #VIDEO;
-              url = "https://mediaadminkf@media.knowledgefound.org/media.knowledgefound.org/gracie/video/KnowledgeUnit4/Coding4Integrity__The_Glitch_Fixers.mp4";
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Coding4Integrity__The_Glitch_Fixers.mp4";
               description = "Explore the Code4Integrity Hackathons and how they empower youth to develop technology-driven solutions for integrity and social change.";
               detailedDescription = "Sponsored by the **UN Office on Drugs and Crime (UNODC)**, the **Coding4Integrity Hackathons** are a global competition series bringing 
               together young developers and innovators to tackle corruption using technology. With editions held across regions such as Brazil, Mexico, Hong Kong, and 
