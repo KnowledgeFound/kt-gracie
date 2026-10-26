@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-15T00:51:00Z";
+    lastUpdated = "2026-10-25T23:24:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -1187,20 +1187,19 @@ persistent actor Main {
       },
       {
         id = "KU-004";
-        topic = "Digital Innovation";
+        topic = "Digital Innovation and Social Entrepreneurship";
         difficulty = #EASY;
         prerequisites = [];
         level = BEGINNER;
         audience = "Tech & Civil Society";
         learningObjectives = [
-          "Understand AI, open data and civic tech.",
-          "Apply digital ethics principles.",
-          "Build technology-enabled solutions.",
-          "Evaluate digital transformation strategies.",
-          "Navigate data privacy regulations."
+          "Explore emerging technologies and their societal impacts.",
+          "Understand digital ethics and governance.",
+          "Learn about civic technology applications.",
+          "Develop skills for digital innovation and social entrepreneurship."
         ];
         expectations = [
-          "Emerging technologies overview",
+          "Understanding digital Innovation and Social Entrepreneurship",
           "AI & Society impacts",
           "Digital ethics and governance",
           "Civic technology applications",
@@ -1209,66 +1208,270 @@ persistent actor Main {
         description = "Delve into digital innovation and learn about the latest technologies and trends shaping our future.";
         icon = "Lightbulb";
         block = "rightUp";
-        duration = "2 hours";
+        duration = "1 hours";
         sources = [
           {
             id = 1;
             sourceType = #ARTICLE;
-            detail = "What is Corruption?";
-            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+            detail = "DIGITAL INNOVATION & SOCIAL ENTREPRENEURSHIP";
+            url = ?("https://grace.unodc.org/grace/en/youth-empowerment/digital-innovation.html");
           }
         ];
-        teachings = [];
-        assessments = [];
+        teachings = [
+          {
+            id = 0;
+            topic = "Welcome to the Digital Innovation and Social Entrepreneurship Module!";
+            difficulty = #EASY;
+            knowledgeUnitId = "KU-004";
+            keywords = [
+              "digital innovation",
+              "social entrepreneurship",
+              "civic technology",
+              "digital ethics"
+            ];
+            content = {
+              name = "Welcome to the Digital Innovation and Social Entrepreneurship Module!";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Digital%20innovation%20Intro.mp4";
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the Digital Innovation and Social Entrepreneurship module";
+            };
+            ktMax = 10;
+            duration = 2;
+            sequenceNo = 0;
+          },
+          {
+            id = 1;
+            topic = "Introduction to Digital Innovation and Social Entrepreneurship";
+            difficulty = #EASY;
+            keywords = [
+              "digital innovation",
+              "social entrepreneurship",
+              "civic technology",
+              "digital ethics"
+            ];
+            content = {
+              name = "Introduction to Digital Innovation and Social Entrepreneurship";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Level_Up_Your_World__The_GRACE_Initiative.mp4";
+              description = "Explore digital innovation and social entrepreneurship through the UNODC GRACE Initiative.";
+              detailedDescription = "**Digital innovation** and **Social entrepreneurship** are framed around **youth empowerment** 
+              and **investing in young people's interest in using technology to strengthen business integrity** and 
+              combat corruption. Through initiatives such as the **GRACE Initiative** and regional **Coding4Integrity** 
+              youth anti-corruption hackathons, the UNODC leverages technology and entrepreneurial problem-solving to engage young 
+              innovators directly in developing integrity solutions.";
+            };
+            ktMax = 10;
+            duration = 15;
+            sequenceNo = 1;
+            knowledgeUnitId = "KU-004";
+          },
+          {
+            id = 3;
+            topic = "Code4Integrity Hackathons";
+            difficulty = #EASY;
+            keywords = [
+              "digital innovation",
+              "social entrepreneurship",
+              "civic technology",
+              "digital ethics"
+            ];
+            content = {
+              name = "Code4Interity Hackathons";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Coding4Integrity__The_Glitch_Fixers.mp4";
+              description = "Explore the Code4Integrity Hackathons and how they empower youth to develop technology-driven solutions for integrity and social change.";
+              detailedDescription = "Sponsored by the **UN Office on Drugs and Crime (UNODC)**, the **Coding4Integrity Hackathons** are a global competition series bringing 
+              together young developers and innovators to tackle corruption using technology. With editions held across regions such as Brazil, Mexico, Hong Kong, and 
+              South Africa, the initiative channels youth technical enthusiasm into strengthening business integrity and accountability. Competing across specialised 
+              focus areas such as Artificial Intelligence and Decentralised Commerce, participants take on the core objective of developing creative digital tools that 
+              advance anti-corruption education, transparency, and public integrity.";
+            };
+            ktMax = 10;
+            duration = 15;
+            sequenceNo = 2;
+            knowledgeUnitId = "KU-004";
+          }
+        ];
+        assessments = [
+          {
+            id = 1;
+            maxScore = 10;
+            pointScore = 1;
+            flashcard = null;
+            ktMax = 10;
+            duration = 15;
+            difficulty = #EASY;
+            sequenceNo = 3;
+            knowledgeUnitId = "KU-004";
+            quiz = ?{
+              id = 1;
+              assessmentType = #QUIZ;
+              questions = [
+                {
+                  questionText = "What is a primary goal of the UNODC GRACE Initiative?";
+                  options = [
+                    "To build international sports arenas and fund youth athletic leagues",
+                    "To empower youth through ethics, education, and technology to promote integrity",
+                    "To replace traditional school curricula with mandatory standardized legal exams",
+                    "To develop commercial video games focused strictly on private enterprise"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Focus on the combination of education, youth engagement, and ethical technology.";
+                },
+                {
+                  questionText = "How is social entrepreneurship best defined in the context of civic innovation?";
+                  options = [
+                    "Launching a strictly profit-driven enterprise to maximize shareholder returns",
+                    "Posting viral promotional content on social media platforms for brand awareness",
+                    "Establishing ventures or projects that create innovative solutions to community and social challenges",
+                    "Operating exclusively within traditional government bureaucracies to enforce regulations"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Think about combining entrepreneurial methods with a focus on solving social problems.";
+                },
+                {
+                  questionText = "In what way can digital technology effectively combat corruption and promote accountability?";
+                  options = [
+                    "By restricting public access to institutional data and centralizing records",
+                    "By replacing public open-source software with proprietary, encrypted offline databases",
+                    "By deploying transparent digital tools, open data platforms, and public tracking systems",
+                    "By automating high-volume marketing communications to obscure public spending"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Consider tools that increase visibility, open data access, and public oversight.";
+                },
+                {
+                  questionText = "What takes place during a GRACE-sponsored youth hackathon?";
+                  options = [
+                    "Collaborative teams design technology-driven solutions to tackle real-world integrity and social issues",
+                    "Participants compete to gain unauthorized access to secure financial networks",
+                    "Individual developers race against time to maximize typing speed and accuracy",
+                    "Esports teams compete in commercial multi-player gaming tournaments for cash prizes"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Look for a collaborative event focused on solving real civic and ethical challenges using tech.";
+                },
+                {
+                  questionText = "What does institutional transparency mean in governance and community decision-making?";
+                  options = [
+                    "Conducting strategic planning exclusively through closed-door executive sessions",
+                    "Publishing clear, accessible information so citizens can observe and understand official actions",
+                    "Restricting public documentation to simplified summaries without supporting financial records",
+                    "Mandating physical architectural changes to government facilities"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Focus on open access to information and clear visibility into decisions.";
+                },
+                {
+                  questionText = "Which educational approaches are utilized by the GRACE Initiative to engage younger audiences effectively?";
+                  options = [
+                    "Exclusive reliance on dense legal codes and academic research monographs",
+                    "Rote memorization drills and high-stakes standardized testing protocols",
+                    "Interactive digital media, storybooks, and gamified learning platforms",
+                    "Mandatory evening lectures delivered by senior anti-corruption compliance officers"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Think about engaging, creative, and interactive tools designed for modern learners.";
+                },
+                {
+                  questionText = "Which of the following represents a digital innovation aimed at enhancing civic fairness?";
+                  options = [
+                    "A social media filter designed to alter photo aesthetics",
+                    "An automated script that generates repetitive promotional messages online",
+                    "A competitive gaming mechanism that rewards evasive strategy",
+                    "A secure public reporting mobile application for tracking and logging public service delivery issues"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Identify the option that directly connects digital tools with civic accountability and reporting.";
+                },
+                {
+                  questionText = "What is a major social benefit of fostering youth-led social entrepreneurship?";
+                  options = [
+                    "It addresses pressing community needs through sustainable and creative problem-solving",
+                    "It guarantees immediate commercial profitability for early-stage ventures",
+                    "It discourages formal academic education in favor of rapid venture creation",
+                    "It focuses venture capital exclusively on automated financial trading tools"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Consider how young founders create practical solutions tailored to community needs.";
+                },
+                {
+                  questionText = "How does the GRACE Initiative support real-world youth action beyond conventional classroom instruction?";
+                  options = [
+                    "By offering targeted youth grants, facilitating global dialogues, and backing community action projects",
+                    "By mandating additional study hours in specialized legal theory",
+                    "By sponsoring regional athletic tournaments and sports leagues",
+                    "By distributing hardware devices without educational context or program support"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Look for proactive support mechanisms like seed funding, dialogue platforms, and project sponsorship.";
+                },
+                {
+                  questionText = "In the context of the UNODC, what does the acronym GRACE represent?";
+                  options = [
+                    "Global Research and Cultural Engagement Initiative",
+                    "Government Rules and Community Enforcement Project",
+                    "Global Resource for Anti-Corruption Education and Youth Empowerment",
+                    "Green Resources and Climate Action for Educational Systems"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Remember the dual emphasis on anti-corruption education and youth empowerment.";
+                }
+              ];
+            };
+          }
+        ];
         tokenReward = 10;
         summary = {
           id = 1;
-          sequenceNo = 1;
+          sequenceNo = 4;
           inforgraphic = ?{
-            name = "Corruption Overview";
+            name = "Digital Innovation and Social Entrepreneurship Infographic";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
-            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            url = "https://notebooklm.link.google/9srKpvWytvgK";
+            description = "An infographic on digital innovation and social entrepreneurship.";
             detailedDescription = "";
           };
           slideDeck = ?{
-            name = "Understanding Corruption";
+            name = "Digital Innovation and Social Entrepreneurship Slide Deck";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
-            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            url = "https://notebooklm.link.google/w0RtvI9dNzCD";
+            description = "A slide deck on digital innovation and social entrepreneurship.";
             detailedDescription = "";
           };
           podcast = ?{
-            name = "The Corruption Podcast";
+            name = "Digital Innovation and Social Entrepreneurship Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
-            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            url = "https://notebooklm.link.google/mtOoQwoecE4h";
+            description = "A podcast on digital innovation and social entrepreneurship.";
             detailedDescription = "";
           };  
         };
       },
       {
         id = "KU-005";
-        topic = "Community"; 
+        topic = "Youth Engagement in Anti-Corruption Policy"; 
         difficulty = #EASY;
         prerequisites = [];
         audience = "Local Leaders & NGOs";
         level = BEGINNER;
         learningObjectives = [
-          "Understand community development principles.",
-          "Facilitate inclusive participation.",
-          "Design community monitoring systems.",
-          "Apply conflict-resolution techniques.",
-          "Build sustainable local coalitions."
+          "Explain youth participation and the 15 to 30 age range used in anti-corruption policy.",
+          "Explain how working with youth can help anti-corruption agencies overcome challenges.",
+          "Assess an agency's readiness using 13 key factors.",
+          "Design anti-corruption initiatives that link youth contributions to agency goals.",
+          "Create ongoing monitoring and learning plans to track youth participation and safety."
         ];
         expectations = [
-          "Emerging technologies overview",
-          "AI & Society impacts",
-          "Digital ethics and governance",
-          "Civic technology applications",
+          "Include youth voices and ideas across all five themes to avoid tokenism.",
+          "Use young people's digital skills and influence to strengthen anti-corruption work.",
+          "Provide funding, safeguarding, and formal youth structures before starting initiatives.",
+          "Use a four-step Theory of Change to help youth move from participants to co-leaders.",
+          "Track progress using meaningful indicators, reliable data, and regular reviews."
         ];
         image = "community_img";
-        description = "Connect with others and learn about the importance of community engagement and development.";
+        description = "Learn how to meaningfully engage youth in anti-corruption policy and initiatives, ensuring their voices are heard and their contributions valued.";
         icon = "Globe";
         block = "rightDown";
         duration = "2 hours";
@@ -1276,35 +1479,243 @@ persistent actor Main {
           {
             id = 1;
             sourceType = #ARTICLE;
-            detail = "What is Corruption?";
-            url = ?("https://www.unodc.org/corruption/en/learn/what-is-corruption.html");
+            detail = "POLICY GUIDE FOR NATIONAL ANTI-CORRUPTION AUTHORITIES ON MEANINGFUL YOUTH ENGAGEMENT IN ANTI-CORRUPTION WORK";
+            url = ?("https://grace.unodc.org/grace/en/youth-empowerment/policy-guide-for-national-anti-corruption-authorities-on-meaningful-youth-engagement-in-anti-corruption-work.html");
           }
         ];
-        teachings = [];
-        assessments = [];
+        teachings = [
+          {
+            id = 0;
+            topic = "Welcome to the Youth Engagement in Anti-Corruption Policy Module!";
+            difficulty = #EASY;
+            knowledgeUnitId = "KU-005";
+            keywords = [
+              "youth engagement",
+              "anti-corruption policy",
+              "policy guide",
+              "youth empowerment"
+            ];
+            content = {
+              name = "Welcome to the Youth Engagement in Anti-Corruption Policy Module!";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Policy%20Intro.mp4";
+              detailedDescription = "A welcome message from GRACIE";
+              description = "Welcome message from GRACIE to the Youth Engagement in Anti-Corruption Policy module";
+            };
+            ktMax = 10;
+            duration = 2;
+            sequenceNo = 0;
+          },
+          {
+            id = 1;
+            topic = "Introduction to Youth Engagement in Anti-Corruption Policy";
+            difficulty = #EASY;
+            keywords = [
+              "youth engagement",
+              "anti-corruption policy",
+              "policy guide",
+              "youth empowerment"
+            ];
+            content = {
+              name = "Introduction to Youth Engagement in Anti-Corruption Policy";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Introduction__Unlocking_Co-Op_Mode__Youth_Against_The_Glitch.mp4";
+              description = "Explore the importance of youth engagement in anti-corruption policy and how it can strengthen integrity initiatives.";
+              detailedDescription = "Introduction: Unlocking Co-Op Mode: Youth Against The Glitch explains how corruption acts like a systemic glitch 
+              that breaks the rules of fairness, draining vital resources away from communities, schools, and essential public services. It explores 
+              why tackling this challenge cannot be left to adult officials alone, introducing viewers to the concept of Co-Op Mode—a 
+              collaborative partnership between young people and anti-corruption authorities. The video breaks down the three essential ways youth can 
+              actively take part in fixing these glitches: speaking up with their **voice** to advocate for fair treatment, offering their insight 
+              into issues affecting their generation, and taking direct action through peer-led initiatives and creative community solutions. 
+              Ultimately, it emphasizes that young people have the power, perspective, and responsibility to team up with leaders and help build a 
+              more transparent, just society.";
+            }; 
+            ktMax = 10;
+            duration = 15;
+            sequenceNo = 1;
+            knowledgeUnitId = "KU-005";
+          },
+          {
+            id = 2;
+            topic = "The Core idea behind Youth Engagement in Anti-Corruption Policy";
+            difficulty = #EASY;
+            keywords = [
+              "youth engagement",
+              "anti-corruption policy",
+              "policy guide",
+              "youth empowerment"
+            ];
+            content = {
+              name = "The Core idea behind Youth Engagement in Anti-Corruption Policy";
+              contentType = #VIDEO;
+              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Submodule_1__Level_Up%21_Fighting_Corruption_in_Co-Op_Mode.mp4";
+              description = "Explore how young people and anti-corruption authorities can team up to tackle corruption and build a fairer world.";
+              detailedDescription = "This video focuses on how young people and anti-corruption authorities can team up to tackle corruption and build a fairer world. 
+              It breaks down the three powerful ways youth contribute to the mission: speaking up with their voice through constructive dialogue, sharing valuable 
+              insights and everyday experiences to shape policies, and taking direct action by leading projects and awareness campaigns. The video explores the vital 
+              difference between genuine, meaningful engagement and tokenism, explaining why real teamwork requires diverse voices, supportive environments, shared 
+              leadership across generations, quality participation, and true empowerment. Finally, it outlines the key areas where young people make a real difference—from 
+              prevention and public education to creative outreach, policymaking, and supporting justice—showing viewers that when communities unlock 
+              co-op mode, integrity wins.";
+            };
+            ktMax = 10;
+            duration = 15;
+            sequenceNo = 2;
+            knowledgeUnitId = "KU-005";
+          }
+        ];
+        assessments = [
+          {
+            id = 1;
+            maxScore = 10;
+            pointScore = 1;
+            flashcard = null;
+            ktMax = 10;
+            duration = 15;
+            difficulty = #EASY;
+            sequenceNo = 3;
+            knowledgeUnitId = "KU-005";
+            quiz = ?{
+              id = 1;
+              assessmentType = #QUIZ;
+              questions = [
+                {
+                  questionText = "What operational age range does the policy guide adopt when defining youth in anti-corruption work?";
+                  options = [
+                    "12 to 24 years old",
+                    "18 to 35 years old",
+                    "15 to 30 years old",
+                    "10 to 18 years old"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Consider the extended definition that accommodates diverse transitions into adulthood.";
+                },
+                {
+                  questionText = "Which form of youth contribution involves collecting grassroots data, feedback, and lived experiences to inform anti-corruption strategies?";
+                  options = [
+                    "Insight",
+                    "Voice",
+                    "Action",
+                    "Oversight"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Think about knowledge-gathering and evidence that informs policy design.";
+                },
+                {
+                  questionText = "In what way is youth 'Voice' distinct from other contribution types within anti-corruption initiatives?";
+                  options = [
+                    "It requires young people to run enforcement investigations independently",
+                    "It centers on constructive dialogue, advocacy, and expressing viewpoints in decision-making spaces",
+                    "It focuses solely on financial auditing and data analytics",
+                    "It restricts youth participation to silent observation at conferences"
+                  ];
+                  correctAnswerIndex = 1;
+                  hint = ?"Focus on dialogue, perspectives, and representation.";
+                },
+                {
+                  questionText = "A youth group designs and executes a community-level awareness roadshow on public integrity. Which form of contribution does this demonstrate?";
+                  options = [
+                    "Voice",
+                    "Insight",
+                    "Coordination",
+                    "Action"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"This involves actively implementing, leading, or delivering an initiative.";
+                },
+                {
+                  questionText = "Which of the following defines tokenism in youth engagement programmes?";
+                  options = [
+                    "Superficial or decorative involvement where young people have no genuine influence on decisions",
+                    "Providing young people with dedicated budgets and mentorship",
+                    "Ensuring marginalized youth from rural areas have equal representation",
+                    "Allowing youth to lead institutional monitoring and evaluation"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Reflect on symbolic participation without real voice or structural power.";
+                },
+                {
+                  questionText = "Which of the five core themes focuses on dismantling financial, legal, and social barriers to ensure all young people can participate safely?";
+                  options = [
+                    "Youth empowerment",
+                    "Quality youth participation",
+                    "Engagement-enabling environment",
+                    "Intergenerational collaboration"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Look for the theme that creates supportive, secure conditions and removes institutional obstacles.";
+                },
+                {
+                  questionText = "How is 'Intergenerational Collaboration' best described within the meaningful engagement framework?";
+                  options = [
+                    "Replacing all senior personnel with younger activists under 25",
+                    "Limiting youth to observing meetings led entirely by senior officials",
+                    "A mutual partnership where experienced professionals and youth share power, knowledge, and perspectives",
+                    "Requiring youth to undergo a probationary period before their opinions are recorded"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"It is a two-way street combining institutional experience with fresh youth perspectives.";
+                },
+                {
+                  questionText = "Ensuring that youth contributions lead to tangible capability development, agency, and leadership skills relates to which core theme?";
+                  options = [
+                    "Engagement-enabling environment",
+                    "Diversity and inclusion",
+                    "Intergenerational collaboration",
+                    "Youth empowerment"
+                  ];
+                  correctAnswerIndex = 3;
+                  hint = ?"Think about building lasting competencies, autonomy, and leadership capacity.";
+                },
+                {
+                  questionText = "How can youth meaningfully contribute to an anti-corruption authority's 'Prevention' function?";
+                  options = [
+                    "By identifying corruption vulnerabilities in public services like school admissions or licensing through youth audits",
+                    "By issuing formal judicial subpoenas and arrest warrants to suspect entities",
+                    "By managing national fiscal budgets without oversight",
+                    "By serving as armed tactical support during anti-corruption raids"
+                  ];
+                  correctAnswerIndex = 0;
+                  hint = ?"Prevention centers on identifying systemic loopholes and improving processes before corruption occurs.";
+                },
+                {
+                  questionText = "In what way can young people support an authority's 'Public Outreach and Awareness-Raising' area?";
+                  options = [
+                    "By conducting internal disciplinary trials for public servants",
+                    "By drafting confidential intergovernmental treaties",
+                    "By translating complex integrity messages into creative, peer-led digital campaigns and community events",
+                    "By serving as the sole legal counsel during prosecution hearings"
+                  ];
+                  correctAnswerIndex = 2;
+                  hint = ?"Consider their strengths in peer communication, relatable storytelling, and digital media.";
+                }
+              ];
+            };
+          }
+        ];
         tokenReward = 10;
         summary = {
           id = 1;
-          sequenceNo = 1;
+          sequenceNo = 4;
           inforgraphic = ?{
-            name = "Corruption Overview";
+            name = "Youth Engagement in Anti-Corruption Policy Infographic";
             contentType = #INFORGRAPHIC;
-            url = "https://www.unodc.org/documents/corruption/infographics/Corruption_Overview.png";
-            description = "An infographic by the United Nations Office on Drugs and Crime (UNODC) that provides a visual summary of corruption, its forms, and its impact on society.";
+            url = "https://notebooklm.link.google/wkVdqQgmMlAk";
+            description = "An infographic on Youth Engagement in Anti-Corruption Policy.";
             detailedDescription = "";
           };
           slideDeck = ?{
-            name = "Understanding Corruption";
+            name = "Youth Engagement in Anti-Corruption Policy Slide Deck";
             contentType = #SLIDEDECK;
-            url = "https://www.unodc.org/documents/corruption/slide_decks/Understanding_Corruption.pptx";
-            description = "A slide deck by the United Nations Office on Drugs and Crime (UNODC) that provides an educational overview of corruption, its forms, and its impact on society.";
+            url = "https://notebooklm.link.google/ddHDGD5O5dm7";
+            description = "A slide deck on youth engagement in anti-corruption policy.";
             detailedDescription = "";
           };
           podcast = ?{
-            name = "The Corruption Podcast";
+            name = "Youth Engagement in Anti-Corruption Policy Podcast";
             contentType = #PODCAST;
-            url = "https://www.unodc.org/podcasts/corruption_podcast.mp3";
-            description = "A podcast by the United Nations Office on Drugs and Crime (UNODC) that discusses various aspects of corruption, including its forms, impact, and prevention strategies.";
+            url = "https://notebooklm.link.google/Ynpq7ndo3W0g";
+            description = "A podcast on youth engagement in anti-corruption policy.";
             detailedDescription = "";
           };  
         };
