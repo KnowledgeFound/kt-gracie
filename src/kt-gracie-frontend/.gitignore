@@ -1,0 +1,6 @@
+# Red-team harness (issue #91): the persistent Chromium profile holds the
+# cached 229 MB model weights so repeat runs do not re-download them.
+safety/.browser-profile/
+
+# Screenshots from e2e/gracie-ai.spec.ts
+e2e/.screenshots/
