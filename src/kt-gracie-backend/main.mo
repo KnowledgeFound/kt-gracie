@@ -102,7 +102,7 @@ persistent actor Main {
     description = "Canonical schema for the GRACIE 1.0 anti-corruption Q&A corpus. This is the single source of truth for corpus structure (ADR: OKF rejected as canonical format, 2026-06-19; single canonical representation with no separate authoring layer, 2026-07-09). The corpus is stored in the ICP asset canister, served via the query path, and processed entirely client-side. The canister grading endpoint consumes the same records for its answer key. Schema is Candid-alignable: all types map directly to Motoko records, variants, and Nat.";
     typeOfObject = "object";
     additionalProperties = false;
-    lastUpdated = "2026-10-25T23:24:00Z";
+    lastUpdated = "2026-11-27T00:45:00Z";
     numberOfModules = 5;
     numberOfAssessments = 10; // 2 assessments per module, 5 modules;
     knowledgeUnits = [
@@ -817,7 +817,7 @@ persistent actor Main {
       },
       {
         id = "KU-003";
-        topic = "Youth Led";
+        topic = "YouthLED";
         difficulty = #NORMAL;
         prerequisites = [];
         audience = "Young People & Communities";
@@ -851,7 +851,7 @@ persistent actor Main {
         teachings = [
           {
             id = 0;
-            topic = "Welcome to the Youth Led Module!";
+            topic = "Welcome to the YouthLED Module!";
             difficulty = #EASY;
             knowledgeUnitId = "KU-003";
             keywords = [
@@ -862,11 +862,11 @@ persistent actor Main {
               "Offence Classifications"
             ];
             content = {
-              name = "Welcome to the Youth Led Module!";
+              name = "Welcome to the YouthLED Module!";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Youth-led%20Intro.mp4";
               detailedDescription = "A welcome message from GRACIE";
-              description = "Welcome message from GRACIE to the YouthLed module";
+              description = "Welcome message from GRACIE to the YouthLED module";
             };
             ktMax = 10;
             duration = 2;
@@ -897,7 +897,7 @@ persistent actor Main {
               local institutional vulnerabilities and power dynamics. Furthermore, students learn to integrate human rights, gender equality, 
               and inclusive design principles into civic initiatives, culminating in actionable strategies for planning, executing, and monitoring safe, 
               measurable community-level anti-corruption projects.";
-              description = "Short introduction into YouthLed Anti-Corruption initiatives";
+              description = "Short introduction into YouthLED Anti-Corruption initiatives";
             };
             ktMax = 10;
             duration = 10;
@@ -905,7 +905,7 @@ persistent actor Main {
           },
           {
             id = 2;
-            topic = "Youth Led Toolkit II - Steps 1 through 5";
+            topic = "YouthLED Toolkit II - Steps 1 through 5";
             difficulty = #NORMAL;
             knowledgeUnitId = "KU-003";
             keywords = [
@@ -916,7 +916,7 @@ persistent actor Main {
               "Offence Classifications"
             ];
             content = {
-              name = "Youth Led Toolkit II - Steps 1 through 5";
+              name = "YouthLED Toolkit II - Steps 1 through 5";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_1__Building_a_Youth-Led_Anti-Corruption_Initiative.mp4";
               detailedDescription = "The core message of Building a Youth-Led Anti-Corruption Initiative is that laying a solid, well-researched foundation 
@@ -927,7 +927,7 @@ persistent actor Main {
               conduct local political economy analyses and community interviews. Furthermore, students learn to utilize human-centered design thinking 
               to frame community problems, anticipate operational risks, and apply creative offline and digital communication methods to effectively 
               engage their peers.";
-              description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
+              description = "In depth video on YouthLED Toolkit - Steps 1 through 5";
             };
             ktMax = 10;
             duration = 10;
@@ -935,7 +935,7 @@ persistent actor Main {
           },
           {
             id = 3;
-            topic = "Youth Led Toolkit III - Steps 6 through 10";
+            topic = "YouthLED Toolkit III - Steps 6 through 10";
             difficulty = #NORMAL;
             knowledgeUnitId = "KU-003";
             keywords = [
@@ -946,7 +946,7 @@ persistent actor Main {
               "Offence Classifications"
             ];
             content = {
-              name = "Youth Led Toolkit III - Steps 6 through 10";
+              name = "YouthLED Toolkit III - Steps 6 through 10";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit3/Submodule_2_The_Implementation_Pipeline__Building_an_Anti-Corruption_Ecosys.mp4";
               detailedDescription = "The core message of **The Implementation Pipeline: Building an Anti-Corruption Ecosystem** focuses on guiding young advocates through 
@@ -955,7 +955,7 @@ persistent actor Main {
               and navigate sensitive environments by prioritizing **personal safety, whistle-blower protections, and risk management**. Additionally, the content equips learners to 
               **educate and mobilize their communities**, execute concrete initiatives like civic monitoring or integrity clubs, and systematically **measure and evaluate their 
               impact** to foster a lasting culture of transparency and accountability.";
-              description = "In depth video on Youth Led Toolkit - Steps 1 through 5";
+              description = "In depth video on YouthLED Toolkit - Steps 1 through 5";
             };
             ktMax = 10;
             duration = 10;
@@ -1187,22 +1187,18 @@ persistent actor Main {
       },
       {
         id = "KU-004";
-        topic = "Digital Innovation and Social Entrepreneurship";
+        topic = "AR-VR Co-Lab";
         difficulty = #EASY;
         prerequisites = [];
         level = BEGINNER;
         audience = "Tech & Civil Society";
         learningObjectives = [
-          "Explore emerging technologies and their societal impacts.",
-          "Understand digital ethics and governance.",
-          "Learn about civic technology applications.",
-          "Develop skills for digital innovation and social entrepreneurship."
+          "Explore emerging technologies like AR, VR, and AI.",
+          "Understand the societal impacts of digital innovation.",
         ];
         expectations = [
-          "Understanding digital Innovation and Social Entrepreneurship",
-          "AI & Society impacts",
-          "Digital ethics and governance",
-          "Civic technology applications",
+          "Explore emerging technologies like AR, VR, and AI.",
+          "Understand the societal impacts of digital innovation.",
         ];
         image = "digital_innovation_img";
         description = "Delve into digital innovation and learn about the latest technologies and trends shaping our future.";
@@ -1213,215 +1209,12 @@ persistent actor Main {
           {
             id = 1;
             sourceType = #ARTICLE;
-            detail = "DIGITAL INNOVATION & SOCIAL ENTREPRENEURSHIP";
-            url = ?("https://grace.unodc.org/grace/en/youth-empowerment/digital-innovation.html");
+            detail = "Immersive Education";
+            url = ?("https://immersiveeducation.org/");
           }
         ];
-        teachings = [
-          {
-            id = 0;
-            topic = "Welcome to the Digital Innovation and Social Entrepreneurship Module!";
-            difficulty = #EASY;
-            knowledgeUnitId = "KU-004";
-            keywords = [
-              "digital innovation",
-              "social entrepreneurship",
-              "civic technology",
-              "digital ethics"
-            ];
-            content = {
-              name = "Welcome to the Digital Innovation and Social Entrepreneurship Module!";
-              contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Digital%20innovation%20Intro.mp4";
-              detailedDescription = "A welcome message from GRACIE";
-              description = "Welcome message from GRACIE to the Digital Innovation and Social Entrepreneurship module";
-            };
-            ktMax = 10;
-            duration = 2;
-            sequenceNo = 0;
-          },
-          {
-            id = 1;
-            topic = "Introduction to Digital Innovation and Social Entrepreneurship";
-            difficulty = #EASY;
-            keywords = [
-              "digital innovation",
-              "social entrepreneurship",
-              "civic technology",
-              "digital ethics"
-            ];
-            content = {
-              name = "Introduction to Digital Innovation and Social Entrepreneurship";
-              contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Level_Up_Your_World__The_GRACE_Initiative.mp4";
-              description = "Explore digital innovation and social entrepreneurship through the UNODC GRACE Initiative.";
-              detailedDescription = "**Digital innovation** and **Social entrepreneurship** are framed around **youth empowerment** 
-              and **investing in young people's interest in using technology to strengthen business integrity** and 
-              combat corruption. Through initiatives such as the **GRACE Initiative** and regional **Coding4Integrity** 
-              youth anti-corruption hackathons, the UNODC leverages technology and entrepreneurial problem-solving to engage young 
-              innovators directly in developing integrity solutions.";
-            };
-            ktMax = 10;
-            duration = 15;
-            sequenceNo = 1;
-            knowledgeUnitId = "KU-004";
-          },
-          {
-            id = 3;
-            topic = "Code4Integrity Hackathons";
-            difficulty = #EASY;
-            keywords = [
-              "digital innovation",
-              "social entrepreneurship",
-              "civic technology",
-              "digital ethics"
-            ];
-            content = {
-              name = "Code4Interity Hackathons";
-              contentType = #VIDEO;
-              url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit4/Coding4Integrity__The_Glitch_Fixers.mp4";
-              description = "Explore the Code4Integrity Hackathons and how they empower youth to develop technology-driven solutions for integrity and social change.";
-              detailedDescription = "Sponsored by the **UN Office on Drugs and Crime (UNODC)**, the **Coding4Integrity Hackathons** are a global competition series bringing 
-              together young developers and innovators to tackle corruption using technology. With editions held across regions such as Brazil, Mexico, Hong Kong, and 
-              South Africa, the initiative channels youth technical enthusiasm into strengthening business integrity and accountability. Competing across specialised 
-              focus areas such as Artificial Intelligence and Decentralised Commerce, participants take on the core objective of developing creative digital tools that 
-              advance anti-corruption education, transparency, and public integrity.";
-            };
-            ktMax = 10;
-            duration = 15;
-            sequenceNo = 2;
-            knowledgeUnitId = "KU-004";
-          }
-        ];
-        assessments = [
-          {
-            id = 1;
-            maxScore = 10;
-            pointScore = 1;
-            flashcard = null;
-            ktMax = 10;
-            duration = 15;
-            difficulty = #EASY;
-            sequenceNo = 3;
-            knowledgeUnitId = "KU-004";
-            quiz = ?{
-              id = 1;
-              assessmentType = #QUIZ;
-              questions = [
-                {
-                  questionText = "What is a primary goal of the UNODC GRACE Initiative?";
-                  options = [
-                    "To build international sports arenas and fund youth athletic leagues",
-                    "To empower youth through ethics, education, and technology to promote integrity",
-                    "To replace traditional school curricula with mandatory standardized legal exams",
-                    "To develop commercial video games focused strictly on private enterprise"
-                  ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Focus on the combination of education, youth engagement, and ethical technology.";
-                },
-                {
-                  questionText = "How is social entrepreneurship best defined in the context of civic innovation?";
-                  options = [
-                    "Launching a strictly profit-driven enterprise to maximize shareholder returns",
-                    "Posting viral promotional content on social media platforms for brand awareness",
-                    "Establishing ventures or projects that create innovative solutions to community and social challenges",
-                    "Operating exclusively within traditional government bureaucracies to enforce regulations"
-                  ];
-                  correctAnswerIndex = 2;
-                  hint = ?"Think about combining entrepreneurial methods with a focus on solving social problems.";
-                },
-                {
-                  questionText = "In what way can digital technology effectively combat corruption and promote accountability?";
-                  options = [
-                    "By restricting public access to institutional data and centralizing records",
-                    "By replacing public open-source software with proprietary, encrypted offline databases",
-                    "By deploying transparent digital tools, open data platforms, and public tracking systems",
-                    "By automating high-volume marketing communications to obscure public spending"
-                  ];
-                  correctAnswerIndex = 2;
-                  hint = ?"Consider tools that increase visibility, open data access, and public oversight.";
-                },
-                {
-                  questionText = "What takes place during a GRACE-sponsored youth hackathon?";
-                  options = [
-                    "Collaborative teams design technology-driven solutions to tackle real-world integrity and social issues",
-                    "Participants compete to gain unauthorized access to secure financial networks",
-                    "Individual developers race against time to maximize typing speed and accuracy",
-                    "Esports teams compete in commercial multi-player gaming tournaments for cash prizes"
-                  ];
-                  correctAnswerIndex = 0;
-                  hint = ?"Look for a collaborative event focused on solving real civic and ethical challenges using tech.";
-                },
-                {
-                  questionText = "What does institutional transparency mean in governance and community decision-making?";
-                  options = [
-                    "Conducting strategic planning exclusively through closed-door executive sessions",
-                    "Publishing clear, accessible information so citizens can observe and understand official actions",
-                    "Restricting public documentation to simplified summaries without supporting financial records",
-                    "Mandating physical architectural changes to government facilities"
-                  ];
-                  correctAnswerIndex = 1;
-                  hint = ?"Focus on open access to information and clear visibility into decisions.";
-                },
-                {
-                  questionText = "Which educational approaches are utilized by the GRACE Initiative to engage younger audiences effectively?";
-                  options = [
-                    "Exclusive reliance on dense legal codes and academic research monographs",
-                    "Rote memorization drills and high-stakes standardized testing protocols",
-                    "Interactive digital media, storybooks, and gamified learning platforms",
-                    "Mandatory evening lectures delivered by senior anti-corruption compliance officers"
-                  ];
-                  correctAnswerIndex = 2;
-                  hint = ?"Think about engaging, creative, and interactive tools designed for modern learners.";
-                },
-                {
-                  questionText = "Which of the following represents a digital innovation aimed at enhancing civic fairness?";
-                  options = [
-                    "A social media filter designed to alter photo aesthetics",
-                    "An automated script that generates repetitive promotional messages online",
-                    "A competitive gaming mechanism that rewards evasive strategy",
-                    "A secure public reporting mobile application for tracking and logging public service delivery issues"
-                  ];
-                  correctAnswerIndex = 3;
-                  hint = ?"Identify the option that directly connects digital tools with civic accountability and reporting.";
-                },
-                {
-                  questionText = "What is a major social benefit of fostering youth-led social entrepreneurship?";
-                  options = [
-                    "It addresses pressing community needs through sustainable and creative problem-solving",
-                    "It guarantees immediate commercial profitability for early-stage ventures",
-                    "It discourages formal academic education in favor of rapid venture creation",
-                    "It focuses venture capital exclusively on automated financial trading tools"
-                  ];
-                  correctAnswerIndex = 0;
-                  hint = ?"Consider how young founders create practical solutions tailored to community needs.";
-                },
-                {
-                  questionText = "How does the GRACE Initiative support real-world youth action beyond conventional classroom instruction?";
-                  options = [
-                    "By offering targeted youth grants, facilitating global dialogues, and backing community action projects",
-                    "By mandating additional study hours in specialized legal theory",
-                    "By sponsoring regional athletic tournaments and sports leagues",
-                    "By distributing hardware devices without educational context or program support"
-                  ];
-                  correctAnswerIndex = 0;
-                  hint = ?"Look for proactive support mechanisms like seed funding, dialogue platforms, and project sponsorship.";
-                },
-                {
-                  questionText = "In the context of the UNODC, what does the acronym GRACE represent?";
-                  options = [
-                    "Global Research and Cultural Engagement Initiative",
-                    "Government Rules and Community Enforcement Project",
-                    "Global Resource for Anti-Corruption Education and Youth Empowerment",
-                    "Green Resources and Climate Action for Educational Systems"
-                  ];
-                  correctAnswerIndex = 2;
-                  hint = ?"Remember the dual emphasis on anti-corruption education and youth empowerment.";
-                }
-              ];
-            };
-          }
-        ];
+        teachings = [];
+        assessments = [];
         tokenReward = 10;
         summary = {
           id = 1;
@@ -1451,7 +1244,7 @@ persistent actor Main {
       },
       {
         id = "KU-005";
-        topic = "Youth Engagement in Anti-Corruption Policy"; 
+        topic = "Youth Engagement in Anti-Corruption Efforts"; 
         difficulty = #EASY;
         prerequisites = [];
         audience = "Local Leaders & NGOs";
@@ -1486,7 +1279,7 @@ persistent actor Main {
         teachings = [
           {
             id = 0;
-            topic = "Welcome to the Youth Engagement in Anti-Corruption Policy Module!";
+            topic = "Welcome to the Youth Engagement in Anti-Corruption Efforts Module!";
             difficulty = #EASY;
             knowledgeUnitId = "KU-005";
             keywords = [
@@ -1496,11 +1289,11 @@ persistent actor Main {
               "youth empowerment"
             ];
             content = {
-              name = "Welcome to the Youth Engagement in Anti-Corruption Policy Module!";
+              name = "Welcome to the Youth Engagement in Anti-Corruption Efforts Module!";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Policy%20Intro.mp4";
               detailedDescription = "A welcome message from GRACIE";
-              description = "Welcome message from GRACIE to the Youth Engagement in Anti-Corruption Policy module";
+              description = "Welcome message from GRACIE to the Youth Engagement in Anti-Corruption Efforts module";
             };
             ktMax = 10;
             duration = 2;
@@ -1508,7 +1301,7 @@ persistent actor Main {
           },
           {
             id = 1;
-            topic = "Introduction to Youth Engagement in Anti-Corruption Policy";
+            topic = "Introduction to Youth Engagement in Anti-Corruption Efforts";
             difficulty = #EASY;
             keywords = [
               "youth engagement",
@@ -1517,7 +1310,7 @@ persistent actor Main {
               "youth empowerment"
             ];
             content = {
-              name = "Introduction to Youth Engagement in Anti-Corruption Policy";
+              name = "Introduction to Youth Engagement in Anti-Corruption Efforts";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Introduction__Unlocking_Co-Op_Mode__Youth_Against_The_Glitch.mp4";
               description = "Explore the importance of youth engagement in anti-corruption policy and how it can strengthen integrity initiatives.";
@@ -1537,7 +1330,7 @@ persistent actor Main {
           },
           {
             id = 2;
-            topic = "The Core idea behind Youth Engagement in Anti-Corruption Policy";
+            topic = "The Core idea behind Youth Engagement in Anti-Corruption Efforts";
             difficulty = #EASY;
             keywords = [
               "youth engagement",
@@ -1546,7 +1339,7 @@ persistent actor Main {
               "youth empowerment"
             ];
             content = {
-              name = "The Core idea behind Youth Engagement in Anti-Corruption Policy";
+              name = "The Core idea behind Youth Engagement in Anti-Corruption Efforts";
               contentType = #VIDEO;
               url = "https://media.knowledgefound.org/gracie/video/KnowledgeUnit5/Submodule_1__Level_Up%21_Fighting_Corruption_in_Co-Op_Mode.mp4";
               description = "Explore how young people and anti-corruption authorities can team up to tackle corruption and build a fairer world.";
@@ -1698,21 +1491,21 @@ persistent actor Main {
           id = 1;
           sequenceNo = 4;
           inforgraphic = ?{
-            name = "Youth Engagement in Anti-Corruption Policy Infographic";
+            name = "Youth Engagement in Anti-Corruption Efforts Infographic";
             contentType = #INFORGRAPHIC;
             url = "https://notebooklm.link.google/wkVdqQgmMlAk";
-            description = "An infographic on Youth Engagement in Anti-Corruption Policy.";
+            description = "An infographic on Youth Engagement in Anti-Corruption Efforts.";
             detailedDescription = "";
           };
           slideDeck = ?{
-            name = "Youth Engagement in Anti-Corruption Policy Slide Deck";
+            name = "Youth Engagement in Anti-Corruption Efforts Slide Deck";
             contentType = #SLIDEDECK;
             url = "https://notebooklm.link.google/ddHDGD5O5dm7";
             description = "A slide deck on youth engagement in anti-corruption policy.";
             detailedDescription = "";
           };
           podcast = ?{
-            name = "Youth Engagement in Anti-Corruption Policy Podcast";
+            name = "Youth Engagement in Anti-Corruption Efforts Podcast";
             contentType = #PODCAST;
             url = "https://notebooklm.link.google/Ynpq7ndo3W0g";
             description = "A podcast on youth engagement in anti-corruption policy.";

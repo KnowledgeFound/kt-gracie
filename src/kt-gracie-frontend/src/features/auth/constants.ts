@@ -16,7 +16,7 @@ export const GENDER_LABELS: Record<string, string> = {
 export const REGION_LABELS: Record<string, string> = {
 	NORTHERN_AFRICA: 'Northern Africa',
 	EASTERN_AFRICA: 'Eastern Africa',
-	MIDDLE_AFRICA: 'Middle Africa',
+	CENTRAL_AFRICA: 'Central Africa',
 	SOUTHERN_AFRICA: 'Southern Africa',
 	WESTERN_AFRICA: 'Western Africa',
 	CARIBBEAN: 'Caribbean',
