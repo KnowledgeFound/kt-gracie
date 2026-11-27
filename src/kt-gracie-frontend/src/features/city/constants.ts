@@ -225,7 +225,7 @@ const BLOCK_LAYOUT: Record<
 		],
 		box: { left: -4, top: 10, width: 50, height: 50 },
 		float: 'float',
-		labelBias: { x: 0.42, y: 0.6 },
+		labelBias: { x: 0.5, y: 0.7 },
 	},
 	rightUp: {
 		src: '/assets/Vibrant-city/block-right-up.png',
@@ -243,7 +243,7 @@ const BLOCK_LAYOUT: Record<
 		],
 		box: { left: 54, top: 5, width: 50, height: 50 },
 		float: 'floatReverse',
-		labelBias: { x: 0.64, y: 0.4 },
+		labelBias: { x: 0.45, y: 0.61 },
 	},
 	central: {
 		src: '/assets/Vibrant-city/block-central.png',
@@ -256,6 +256,7 @@ const BLOCK_LAYOUT: Record<
 		smoke: [{ x: 0.47, y: 0.06, size: 0.1 }],
 		box: { left: 30, top: 30, width: 40, height: 40 },
 		float: 'floatSlow',
+		labelBias: { x: 0.5, y: 0.75 },
 		z: 2,
 	},
 	leftDown: {
@@ -274,8 +275,8 @@ const BLOCK_LAYOUT: Record<
 		box: { left: -10, top: 50, width: 50, height: 50 },
 		float: 'floatReverse',
 		// Gracie docks on this corner and her speech bubble covers the island's
-		// front edge, so this button sits on the upper-right plateau instead.
-		labelBias: { x: 0.75, y: 0.3 },
+		// front-left edge, so this pin sits on the front-right of the plateau.
+		labelBias: { x: 0.67, y: 0.53 },
 	},
 	rightDown: {
 		src: '/assets/Vibrant-city/block-right-down.png',
@@ -290,8 +291,7 @@ const BLOCK_LAYOUT: Record<
 		smoke: [{ x: 0.66, y: 0.16, size: 0.09 }],
 		box: { left: 60, top: 50, width: 50, height: 50 },
 		float: 'float',
-		labelBias: { x: 0.75, y: 0.4 },
-		// labelBias: { x: 0.58, y: 0.6 },
+		labelBias: { x: 0.5, y: 0.61 },
 	},
 };
 

@@ -249,9 +249,6 @@
   cursor: not-allowed;
 }
 
-.cityBlockItem--locked .cityBlock {
-  filter: grayscale(0.6);
-}
 
 
 .cityScene--hovering .cityBackground {
@@ -1232,6 +1229,9 @@
 .cityModuleAnchor {
   position: absolute;
   transform: translate(-50%, -50%);
+  /* Size to the pin, not to the space left in the stage — otherwise a pin
+     near the right edge gets squeezed and its name truncates. */
+  width: max-content;
   transition: opacity 0.35s ease, filter 0.35s ease;
 }
 
@@ -1793,4 +1793,263 @@
   margin: 6px 0 0;
   font-size: 0.95rem;
   color: var(--hero-sub);
+}
+
+/* --- District map pins: icon at rest, name pill on hover ---
+   At rest only the glowing marker (icon + progress ring) shows. Hover, keyboard
+   focus or an open drawer slides a pill out from behind it with the name,
+   lesson progress and an arrow. The pill is revealed with clip-path so the
+   marker itself never moves off its spot on the district. */
+
+/* Lift the hovered / open pin above its neighbours so its pill isn't covered. */
+.cityModuleAnchor:hover,
+.cityModuleAnchor:focus-within,
+.cityModuleAnchor:has(.cityPin--active) {
+  z-index: 5;
+}
+
+.cityPin {
+  --pin: 46px;
+  position: relative;
+  display: block;
+  width: var(--pin);
+  height: var(--pin);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cityPin:focus-visible {
+  outline: none;
+}
+
+.cityPin__marker {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--pin);
+  height: var(--pin);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid #fff;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 5px rgb(var(--brand-500) / 0.2),
+    0 0 22px rgb(var(--brand-500) / 0.6), 0 8px 18px rgba(8, 18, 40, 0.35);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Soft beacon pulse so the pins read as clickable. */
+.cityPin__marker::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid rgb(var(--brand-500) / 0.55);
+  animation: cityPin-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+.cityPin__ring {
+  width: 58px;
+  height: 58px;
+}
+
+.cityPin__icon {
+  width: 22px;
+  height: 22px;
+  color: rgb(var(--brand-600));
+  transition: color 0.2s ease;
+}
+
+.cityPin__lock {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #334155;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+/* The pill starts under the marker's centre and extends right (or left for
+   .cityPin--left), with padding so its text clears the marker. */
+.cityPin__pill {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: calc(var(--pin) / 2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 14px 0 calc(var(--pin) / 2 + 12px);
+  border-radius: 9999px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(8, 18, 40, 0.3);
+  transform: translateY(-50%);
+  clip-path: inset(0 100% 0 0 round 9999px);
+  opacity: 0;
+  pointer-events: none;
+  transition: clip-path 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+}
+
+.cityPin--left .cityPin__pill {
+  left: auto;
+  right: calc(var(--pin) / 2);
+  padding: 0 calc(var(--pin) / 2 + 12px) 0 16px;
+  clip-path: inset(0 0 0 100% round 9999px);
+}
+
+.cityPin__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.cityPin__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a3d5c;
+}
+
+.cityPin__meta {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(var(--brand-600));
+}
+
+.cityPin__arrow {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: rgb(var(--brand-500));
+  transition: transform 0.2s ease;
+}
+
+/* Open state */
+.cityPin:hover .cityPin__pill,
+.cityPin:focus-visible .cityPin__pill,
+.cityPin--active .cityPin__pill {
+  clip-path: inset(0 0 0 0 round 9999px);
+  opacity: 1;
+}
+
+.cityPin:hover .cityPin__marker,
+.cityPin:focus-visible .cityPin__marker,
+.cityPin--active .cityPin__marker {
+  transform: scale(1.08);
+  background: rgb(var(--brand-500));
+  box-shadow: 0 0 0 6px rgb(var(--brand-500) / 0.3),
+    0 0 28px rgb(var(--brand-500) / 0.75), 0 10px 22px rgba(8, 18, 40, 0.45);
+}
+
+.cityPin:hover .cityPin__icon,
+.cityPin:focus-visible .cityPin__icon,
+.cityPin--active .cityPin__icon {
+  color: #fff;
+}
+
+.cityPin:hover .cityPin__arrow {
+  transform: translateX(2px);
+}
+
+.cityPin:active .cityPin__marker {
+  transform: scale(0.95);
+}
+
+.cityPin--locked {
+  cursor: not-allowed;
+}
+
+.cityPin--locked .cityPin__marker::after {
+  animation: none;
+  opacity: 0;
+}
+
+.cityPin--locked .cityPin__meta,
+.cityPin--locked .cityPin__arrow {
+  color: #64748b;
+}
+
+@keyframes cityPin-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cityPin__marker::after {
+    animation: none;
+  }
+  .cityPin__pill {
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* Phones: smaller marker and pill for the scaled-down stage. */
+@media (max-width: 767px) {
+  .cityPin {
+    --pin: 34px;
+  }
+  .cityPin__marker {
+    box-shadow: 0 0 0 3px rgb(var(--brand-500) / 0.2),
+      0 0 14px rgb(var(--brand-500) / 0.55), 0 4px 10px rgba(8, 18, 40, 0.35);
+  }
+  .cityPin__ring {
+    width: 42px;
+    height: 42px;
+  }
+  .cityPin__icon {
+    width: 16px;
+    height: 16px;
+  }
+  .cityPin__pill {
+    height: 36px;
+    gap: 6px;
+  }
+  .cityPin__name {
+    font-size: 11px;
+  }
+  .cityPin__meta {
+    font-size: 9px;
+  }
+}
+
+/* Ruined city: charred marker and pill with an ember rim. */
+.cityScene--destroyed .cityPin__marker {
+  background: linear-gradient(180deg, rgba(44, 22, 18, 0.92), rgba(14, 8, 9, 0.94));
+  border-color: rgba(255, 110, 40, 0.7);
+  box-shadow: 0 0 0 5px rgba(255, 90, 20, 0.2), 0 0 18px rgba(255, 90, 20, 0.5);
+}
+
+.cityScene--destroyed .cityPin__pill {
+  background: rgba(20, 10, 9, 0.88);
+  border-color: rgba(255, 110, 40, 0.5);
+}
+
+.cityScene--destroyed .cityPin__name {
+  color: #f4e4d8;
+}
+
+.cityScene--destroyed .cityPin__meta,
+.cityScene--destroyed .cityPin__arrow {
+  color: #ffb07a;
 }
