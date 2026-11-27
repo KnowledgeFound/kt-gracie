@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { PACE_RATE } from './constants';
 import type { GuidePace } from './types';
+import { clipsFor, loadClipManifest, playClips, stopClips } from './voiceClips';
+
+// Fetch the recorded-voice manifest early so it is ready by the first line.
+if (typeof window !== 'undefined') void loadClipManifest();
 
 /**
  * Gracie's voice.
@@ -86,12 +90,17 @@ function clearKeepAlive(): void {
 	keepAlive = null;
 }
 
-export function stopSpeaking(): void {
+function stopBrowserSpeech(): void {
 	if (!speechSupported) return;
 	session += 1;
 	clearKeepAlive();
 	speaking = null;
 	window.speechSynthesis.cancel();
+}
+
+export function stopSpeaking(): void {
+	stopClips();
+	stopBrowserSpeech();
 }
 
 /**
@@ -107,9 +116,20 @@ export function stopSpeaking(): void {
  * than lost.
  */
 export function speak(text: string, options: SpeakOptions = {}): () => void {
-	if (!speechSupported || !text.trim()) return () => {};
+	if (!text.trim()) return () => {};
 
 	const { voiceURI, pace = 'standard', volume = 1, onEnd } = options;
+
+	// Gracie's own (recorded) voice, unless the user picked a browser voice in
+	// Settings or the line was never recorded.
+	const clips = voiceURI ? null : clipsFor(text);
+	if (clips) {
+		stopBrowserSpeech();
+		return playClips(clips, { rate: PACE_RATE[pace], volume, onEnd });
+	}
+	stopClips();
+
+	if (!speechSupported) return () => {};
 	const synth = window.speechSynthesis;
 
 	const id = ++session;

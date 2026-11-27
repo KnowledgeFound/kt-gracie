@@ -280,7 +280,7 @@ export default function GuidePanel() {
 				{speechSupported && (
 					<SettingRow
 						title="Voice"
-						description="Pick any voice installed on this device."
+						description="Gracie's own voice, or any voice installed on this device."
 						htmlFor="guide-voice"
 						stacked
 					>
@@ -295,7 +295,7 @@ export default function GuidePanel() {
 								if (guide.audio && audioAvailable) preview({ voiceURI });
 							}}
 						>
-							<option value="">System default</option>
+							<option value="">Gracie (recommended)</option>
 							{voices.map((voice) => (
 								<option key={voice.voiceURI} value={voice.voiceURI}>
 									{voice.name} — {voice.lang}
