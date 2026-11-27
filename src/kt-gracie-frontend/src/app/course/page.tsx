@@ -94,7 +94,7 @@ export default function CoursePage() {
 					<CourseHeader
 						title={
 							activity && screen !== 'summary'
-								? `${module.name}: ${activity.title}`
+								? `${module.name}`
 								: module.name
 						}
 						mode={screen === 'flashcards' ? 'practice' : 'lesson'}
