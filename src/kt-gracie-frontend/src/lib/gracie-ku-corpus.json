@@ -26,7 +26,7 @@
             ],
             "image": "anti_corruption_img",
             "description": "This knowledge unit provides an overview of corruption, its definitions, and its impact on society. It introduces learners to the concept of corruption, its various forms, and the importance of anti-corruption measures.",
-            "icon": "BookOpen",
+            "icon": "ShieldCheck",
             "block": "leftUp",
             "duration": "30 minutes",
             "sources": [

@@ -3,41 +3,17 @@ import { Volume2, VolumeX } from 'lucide-react';
 import {
 	getIntroLastShown,
 	isIntroDue,
-	leveled,
 	markIntroShown,
 	speak,
 	speechSupported,
 	stopSpeaking,
 	useReadingLevel,
 	useSettings,
-	type Leveled,
 } from '@/features/settings';
-import { getModule, getModuleProgress } from '../constants';
-import type { Module } from '../types';
+import { getModule } from '../constants';
+import { SCRIPT, SPOKEN_GREETING, idlePrompt as idlePromptText, moduleBriefing } from '../gracieLines';
 
 const GRACIE_VIDEO_SRC = '/assets/talking-gracie.webm';
-
-// Short intro script. Each entry is one speech bubble, written per reading
-// level; the user advances with the Continue button. Swap for dynamic/localized
-// content later. Keep the tone warm — the city grows with the learner, it is
-// never under threat.
-const SCRIPT: Leveled<string>[] = [
-	leveled(
-		"Hi, I'm Gracie! I'm here to show you around your city.",
-		"Hi, I'm Gracie! I'm here to guide you through your Integrity City.",
-		"Hi, I'm Gracie. I'll be your guide through Integrity City and its five districts.",
-	),
-	leveled(
-		'Your city grows when you learn! Play the quizzes and games and watch it light up. Keep that health meter high!',
-		'Your city grows every time you learn. Do well in the quizzes and games and watch it light up. Keep that health meter high!',
-		'The city reflects your progress: every lesson and assessment you complete raises its health and brings its districts to life.',
-	),
-	leveled(
-		"Tap any district and I'll show you what to learn there.",
-		"Click on any city district and I'll guide you through each module.",
-		'Select any district to open its module. I will brief you on what it covers.',
-	),
-];
 
 // The talking loop plays this many times per message, then stops.
 const LOOPS_PER_STEP = 2;
@@ -56,19 +32,6 @@ const DOCK_MS = 1150;
  *  - `docked` — parked lower-left, veil gone, city back in focus
  */
 type Phase = 'enter' | 'center' | 'docked';
-
-/**
- * What Gracie says about the district the user just clicked — the module's own
- * copy from constants.ts, plus where they left off if they have started it.
- */
-function moduleBriefing(module: Module, description: string): string {
-	const progress = getModuleProgress(module.id);
-	const intro = `This is the ${module.name} district — built for ${module.audience}.`;
-
-	if (!progress) return `${intro} ${description}`;
-
-	return `${intro} You're ${progress.percentComplete}% of the way through. Next up: ${progress.currentLesson.title}.`;
-}
 
 interface Props {
 	/** The currently open module (its district drawer). When set, Gracie gives
@@ -175,9 +138,7 @@ export default function GracieGuide({
 	// with nothing open she holds on the "click a district" prompt rather than
 	// whichever line the user skipped out of.
 	const idle = !activeModule && !introRunning;
-	const idlePrompt = restore
-		? 'Click a district to restore it.'
-		: 'Click a district to begin.';
+	const idlePrompt = idlePromptText(restore);
 	const greeting = userName ? `Hi ${userName}!` : 'Hi there!';
 	const message = activeModule
 		? moduleBriefing(activeModule, t(activeModule.description))
@@ -185,8 +146,9 @@ export default function GracieGuide({
 		? t(SCRIPT[step])
 		: idlePrompt;
 	// What she reads aloud: the idle bubble shows the greeting on its own line,
-	// so it is folded back into the spoken text here.
-	const spoken = idle ? `${greeting} ${message}` : message;
+	// so it is folded back into the spoken text here — without the learner's
+	// name, so the line matches her pre-recorded voice.
+	const spoken = idle ? `${SPOKEN_GREETING} ${message}` : message;
 
 	// Replay the talking clip whenever the shown message changes.
 	const messageKey = activeModule
@@ -208,15 +170,19 @@ export default function GracieGuide({
 	// always interrupted by the new one. Re-runs on every voice change so a tweak
 	// in Settings is heard on the next line, and cancels on unmount so she never
 	// talks over another screen.
+	// Not while she is still off-screen: on mount she sits on intro step one
+	// for a frame before docking (or rising), and recorded clips start fast
+	// enough to blurt out its first word.
+	const offstage = phase === 'enter';
 	useEffect(() => {
-		if (!guide.audio || !speechSupported) return;
+		if (!guide.audio || !speechSupported || offstage) return;
 		return speak(spoken, {
 			voiceURI: guide.voiceURI,
 			pace: guide.pace,
 			volume: guide.volume,
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [messageKey, spoken, guide.audio, guide.voiceURI, guide.pace, guide.volume]);
+	}, [messageKey, spoken, offstage, guide.audio, guide.voiceURI, guide.pace, guide.volume]);
 
 	const handleEnded = () => {
 		const v = videoRef.current;

@@ -67,6 +67,7 @@ export function textMessages(ask: string, f: LearnerFacts, maxSentences = 3): Ch
 				`The learner is currently studying: ${subject}.\n` +
 				`Speak directly to the learner as "you". Write at most ${maxSentences} short sentences, then stop. ` +
 				'Never restate the question. Do not invent statistics, dates or case details. ' +
+				'Do not use dashes; use commas or full stops instead. ' +
 				'If something is outside the course, say so and point to the NotebookLM material.',
 		},
 		{
@@ -76,7 +77,7 @@ export function textMessages(ask: string, f: LearnerFacts, maxSentences = 3): Ch
 		{
 			role: 'assistant',
 			content:
-				'It means the decisions and the reasons behind them are visible to people outside the room — who bid, what they offered, and why one was chosen. Where that record is missing, favours are very hard to spot after the fact.',
+				'It means the decisions and the reasons behind them are visible to people outside the room: who bid, what they offered, and why one was chosen. Where that record is missing, favours are very hard to spot after the fact.',
 		},
 		{ role: 'user', content: ask },
 	];

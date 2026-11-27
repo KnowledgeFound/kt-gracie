@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
-import { cityBlocks } from '../constants';
+import { ChevronRight, Lock } from 'lucide-react';
+import { cityBlocks, isModuleLocked } from '../constants';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
 import { getResume, getUnitCompletionPercentage } from '@/services/progressContainerService';
@@ -100,6 +100,7 @@ export default function Modules({
 						hoveredBlock === block.id || activeModuleId === module.id;
 					// Fade with the district underneath when a sibling is hovered.
 					const isDimmed = hoveredBlock !== null && hoveredBlock !== block.id;
+					const locked = isModuleLocked(module.id);
 
 					return (
 						<div
@@ -115,7 +116,10 @@ export default function Modules({
 								}`}
 							>
 								<button
-									onClick={() => onClickModule?.(module.id)}
+									type="button"
+									onClick={() => {
+										if (!locked) onClickModule?.(module.id);
+									}}
 									onMouseEnter={() => onHoverModule?.(module.id)}
 									onMouseLeave={() => onHoverModule?.(null)}
 									onFocus={() => onHoverModule?.(module.id)}
@@ -123,21 +127,22 @@ export default function Modules({
 									aria-label={`${module.name}${
 										isStarted ? ` — ${pct}% complete` : ''
 									}`}
+									aria-disabled={locked || undefined}
+									title={module.name}
 									className={[
-										'cityModuleBtn pointer-events-auto group flex flex-col md:flex-row items-center',
-										'gap-0.5 md:gap-1.5 px-2 py-1.5 md:px-3 md:py-2.5 rounded-lg md:rounded-xl',
-										'backdrop-blur-sm shadow-lg shadow-brand-500/20 active:scale-95',
-										'transition-all duration-150',
-										isActive
-											? 'cityModuleBtn--active bg-brand-500/80 text-white shadow-brand-600 backdrop-blur-lg -translate-y-0.5'
-											: 'bg-white/80 hover:bg-brand-500/60',
+										'cityPin pointer-events-auto',
+										isActive ? 'cityPin--active' : '',
+										locked ? 'cityPin--locked' : '',
+										// Pins on the right of the map open leftwards so the
+										// name never runs off the screen.
+										block.anchor.x > 60 ? 'cityPin--left' : '',
 									].join(' ')}
 								>
-									<MapButtonInner
+									<MapPin
 										module={module}
 										isStarted={isStarted}
 										pct={pct}
-										isActive={isActive}
+										locked={locked}
 									/>
 								</button>
 							</div>
@@ -202,65 +207,55 @@ function ProgressRing({
 	);
 }
 
-// ─── Map button inner ─────────────────────────────────────────────────────────
+// ─── Map pin ──────────────────────────────────────────────────────────────────
 
-interface MapButtonInnerProps {
+interface MapPinProps {
 	module: Module;
 	isStarted: boolean;
 	pct: number;
-	isActive: boolean;
+	locked?: boolean;
 }
 
-function MapButtonInner({
-	module,
-	isStarted,
-	pct,
-	isActive,
-}: MapButtonInnerProps) {
+/**
+ * At rest a pin is just a glowing icon with a progress ring, so the map stays
+ * clean. On hover / focus / while its drawer is open it slides out into a pill
+ * with the district name, lesson progress and an arrow. Styling lives in
+ * `.cityPin*` in city.css.
+ */
+function MapPin({ module, isStarted, pct, locked = false }: MapPinProps) {
 	const Icon = module.icon;
+	const total = module.lessons ?? 0;
+	const done = Math.round((pct / 100) * total);
+	const meta = locked
+		? 'Coming soon'
+		: total > 0
+			? `${done}/${total} lessons`
+			: isStarted
+				? `${pct}% complete`
+				: 'Start district';
+
 	return (
 		<>
-			<span className="relative shrink-0 flex items-center justify-center w-4 h-4 md:w-6 md:h-6 md:mr-2">
-				{isStarted && (
-					<ProgressRing
-						pct={pct}
-						size={36}
-						stroke={3}
-						className="w-6 h-6 md:w-9 md:h-9"
-					/>
+			<span className="cityPin__marker">
+				<ProgressRing pct={pct} size={58} stroke={3} className="cityPin__ring" />
+				<Icon className="cityPin__icon" />
+				{locked && (
+					<span className="cityPin__lock" aria-hidden="true">
+						<Lock className="w-2.5 h-2.5" />
+					</span>
 				)}
-				<Icon
-					className={`w-4 h-4 md:w-6 md:h-6 transition-colors ${
-						isActive ? 'text-white' : 'text-brand-600 group-hover:text-white'
-					}`}
-				/>
 			</span>
-			<span
-				className={`font-medium text-[11px] leading-tight md:text-base transition-colors ${
-					isActive
-						? 'text-white'
-						: 'text-ink-deep group-hover:text-white dark:text-black'
-				}`}
-			>
-				{module.name}
-			</span>
-			{isStarted && (
-				<span
-					className={`cityModuleBadge md:ml-0.5 px-1 md:px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold transition-colors shrink-0 ${
-						isActive
-							? 'bg-white/20 text-white '
-							: 'bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white dark:text-black'
-					}`}
-				>
-					{pct}%
+			<span className="cityPin__pill" aria-hidden="true">
+				<span className="cityPin__text">
+					<span className="cityPin__name">{module.name}</span>
+					<span className="cityPin__meta">{meta}</span>
 				</span>
-			)}
-			<ChevronRight
-				className={`hidden md:block w-4 h-4 shrink-0 transition-colors ${
-					isActive ? 'text-white' : 'text-ink-muted group-hover:text-white'
-				}`}
-				aria-hidden="true"
-			/>
+				{locked ? (
+					<Lock className="cityPin__arrow" />
+				) : (
+					<ChevronRight className="cityPin__arrow" />
+				)}
+			</span>
 		</>
 	);
 }

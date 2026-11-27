@@ -40,7 +40,7 @@ export interface GuideSettings {
 	audio: boolean;
 	/** Speech volume, 0–1. */
 	volume: number;
-	/** `SpeechSynthesisVoice.voiceURI`, or null for the browser default. */
+	/** `SpeechSynthesisVoice.voiceURI`, or null for Gracie's recorded voice (browser default where a line is not recorded). */
 	voiceURI: string | null;
 	pace: GuidePace;
 	/** Keep her speech bubble on screen (text captions of what she says). */

@@ -19,7 +19,11 @@ import {
 } from '@/features/city';
 import { useUser } from '@/features/auth';
 import { useSettings } from '@/features/settings';
-import { cityBlocks, getCityBlock } from '@/features/city/constants';
+import {
+	cityBlocks,
+	getCityBlock,
+	isModuleLocked,
+} from '@/features/city/constants';
 import type { CityBlockId } from '@/features/city/types';
 import { useCityLook } from '@/features/city/hooks/useCityLook';
 import { getCorpus } from '@/services/corpusService';
@@ -53,6 +57,9 @@ export default function CityScene() {
 	const [healthOpen, setHealthOpen] = useState(false);
 	const [tokenOpen, setTokenOpen] = useState(false);
 	const [progressOpen, setProgressOpen] = useState(false);
+	// Set when the modal is opened from the "Your Progress" card, so it opens
+	// beside the card; null (header button) keeps it centred under the header.
+	const [progressAnchor, setProgressAnchor] = useState<DOMRect | null>(null);
 	const [moduleId, setModuleId] = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<CityBlockId | null>(null);
 	// Gracie's centre-stage intro runs on arrival; the city is inert behind its
@@ -91,6 +98,7 @@ export default function CityScene() {
 	// Gracie together, so the two can never end up describing different places;
 	// closing the drawer clears both and returns her to her idle prompt.
 	const handleModuleClick = (id: number) => {
+		if (isModuleLocked(id)) return;
 		setModuleId(id);
 	};
 
@@ -289,16 +297,19 @@ export default function CityScene() {
 						const isActive =
 							hoveredBlock === block.id || moduleId === block.moduleId;
 						const isDimmed = hoveredBlock !== null && hoveredBlock !== block.id;
+						const locked = isModuleLocked(block.moduleId);
 
 						return (
 							<button
 								key={block.id}
 								type="button"
 								aria-label={`Open the ${block.alt}`}
+								aria-disabled={locked || undefined}
 								className={[
 									'cityBlockItem',
 									isActive ? 'cityBlockItem--active' : '',
 									isDimmed ? 'cityBlockItem--dimmed' : '',
+									locked ? 'cityBlockItem--locked' : '',
 								]
 									.filter(Boolean)
 									.join(' ')}
@@ -344,7 +355,10 @@ export default function CityScene() {
 				username={user?.firstName ?? '—'}
 				onClickHealth={() => setHealthOpen(true)}
 				onClickToken={() => setTokenOpen(true)}
-				onClickTrend={() => setProgressOpen(true)}
+				onClickTrend={() => {
+					setProgressAnchor(null);
+					setProgressOpen(true);
+				}}
 				onClickUser={() => setDrawerOpen(true)}
 			/>
 
@@ -354,7 +368,10 @@ export default function CityScene() {
 				restore={!isVibrant}
 				tokens={user?.tokenBalance ?? 0}
 				health={city?.health ?? 0}
-				onOpenProgress={() => setProgressOpen(true)}
+				onOpenProgress={(anchor) => {
+					setProgressAnchor(anchor);
+					setProgressOpen(true);
+				}}
 			/>
 
 			{/* User profile drawer — right side */}
@@ -381,6 +398,7 @@ export default function CityScene() {
 			<ProgressModal
 				open={progressOpen}
 				onClose={() => setProgressOpen(false)}
+				anchor={progressAnchor}
 			/>
 
 			<Modules
