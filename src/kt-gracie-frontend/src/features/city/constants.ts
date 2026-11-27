@@ -1,4 +1,4 @@
-import { Users, Target, BookOpen, Globe, Lightbulb } from 'lucide-react';
+import { Users, Target, ShieldCheck, Globe, Lightbulb } from 'lucide-react';
 import { leveled } from '@/features/settings/readingLevel';
 import type {
 	Module,
@@ -308,7 +308,7 @@ export const modules: Module[] = [
 		ktReward:400,
 		level: 'Beginner',
 		duration: '2 hours',
-		icon: BookOpen,
+		icon: ShieldCheck,
 		block: 'leftUp',
 		description: leveled(
 			'Learn what corruption is, why it hurts people, and simple ways everyone can help stop it.',

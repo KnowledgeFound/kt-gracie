@@ -94,7 +94,7 @@ export default function GracieChat({ open, onClose }: Props) {
 						at: Date.now(),
 						source: 'scripted',
 						route: 'error',
-						text: `Sorry — something went wrong answering that. ${
+						text: `Sorry, something went wrong answering that. ${
 							err instanceof Error ? err.message : ''
 						}`.trim(),
 					},

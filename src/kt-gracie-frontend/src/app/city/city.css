@@ -1461,7 +1461,7 @@
   gap: 8px;
   /* Bottom of the bubble sits at her chest; text stacks up from there. */
   margin-bottom: calc(var(--gg-h) * 0.45);
-  margin-left: -50px;
+  margin-left: -75px;
 }
 
 .gracieGuide__bubble {

@@ -11,8 +11,8 @@ interface CityHeroProps {
 	restore: boolean;
 	tokens: number;
 	health: number;
-	/** Opens the full progress modal. */
-	onOpenProgress?: () => void;
+	/** Opens the full progress modal, anchored next to the card. */
+	onOpenProgress?: (anchor: DOMRect) => void;
 }
 
 const RING_SIZE = 80;
@@ -57,7 +57,7 @@ export default function CityHero({
 			<button
 				type="button"
 				className="cityHero__card"
-				onClick={onOpenProgress}
+				onClick={(e) => onOpenProgress?.(e.currentTarget.getBoundingClientRect())}
 				aria-label={`Your progress: ${pct}% complete, ${modulesDone} of ${modulesTotal} modules, ${tokens} KT, ${healthPct}% integrity health. Open details`}
 			>
 				<span className="cityHero__cardHead">

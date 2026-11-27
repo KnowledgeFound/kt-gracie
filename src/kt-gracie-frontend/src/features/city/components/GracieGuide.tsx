@@ -63,11 +63,28 @@ type Phase = 'enter' | 'center' | 'docked';
  */
 function moduleBriefing(module: Module, description: string): string {
 	const progress = getModuleProgress(module.id);
-	const intro = `This is the ${module.name} district — built for ${module.audience}.`;
+	// Explain the module itself ("The Youth Led module is for young people and
+	// communities…") rather than announcing it. No dashes: they read badly
+	// aloud and in the bubble.
+	const intro = `The ${module.name} module is for ${spokenAudience(module.audience)}.`;
 
-	if (!progress) return `${intro} ${description}`;
+	if (!progress) return `${intro} It helps you ${lowerFirst(description)}`;
 
 	return `${intro} You're ${progress.percentComplete}% of the way through. Next up: ${progress.currentLesson.title}.`;
+}
+
+/** "Local Leaders & NGOs" → "local leaders and NGOs" (acronyms keep their case). */
+function spokenAudience(audience: string): string {
+	return audience
+		.replace(/&/g, 'and')
+		.split(' ')
+		.map((w) => (w.length > 1 && w === w.toUpperCase() ? w : w.toLowerCase()))
+		.join(' ');
+}
+
+/** Module descriptions open with a verb ("Discover…"), so they follow "It helps you". */
+function lowerFirst(text: string): string {
+	return text.charAt(0).toLowerCase() + text.slice(1);
 }
 
 interface Props {

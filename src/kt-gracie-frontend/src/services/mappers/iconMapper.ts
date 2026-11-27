@@ -15,11 +15,16 @@ import { CityBlockId } from '@/features/city/types';
 export type IconComponent = ComponentType<{ className?: string }>;
 
 
-// Map string identifiers to the actual React component
+// Map string identifiers to the actual React component. Keys are lowercase;
+// both the short names ("shield") and the lucide component names the corpus
+// uses ("ShieldCheck", "BookOpen") resolve.
 export const ICON_MAP: Record<string, IconComponent> = {
   shield: ShieldCheck,
+  shieldcheck: ShieldCheck,
   building: Building2,
+  building2: Building2,
   book: BookOpen,
+  bookopen: BookOpen,
   users: Users,
   target: Target,
   globe: Globe,

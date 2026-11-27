@@ -9,6 +9,22 @@ import * as ProgressContainer from '@/services/progressContainerService'
 interface ProgressModalProps {
 	open: boolean;
 	onClose: () => void;
+	/** Box of the element that opened the modal (the "Your Progress" card).
+	 *  When given, the modal opens right next to it instead of centred under
+	 *  the header. */
+	anchor?: DOMRect | null;
+}
+
+/** Gap between the anchor and the modal, and the minimum margin to the viewport edge. */
+const ANCHOR_GAP = 16;
+const EDGE = 16;
+/** Roughly the modal's natural height; when there isn't this much room below
+ *  the card, the modal starts higher so it isn't cut short. */
+const ANCHORED_HEIGHT = 560;
+
+function anchoredTop(anchor: DOMRect): number {
+	const roomTop = window.innerHeight - EDGE - ANCHORED_HEIGHT;
+	return Math.max(EDGE, Math.min(anchor.top, roomTop));
 }
 
 interface AchievementDef {
@@ -45,7 +61,7 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function ProgressModal({ open, onClose }: ProgressModalProps) {
+export default function ProgressModal({ open, onClose, anchor = null }: ProgressModalProps) {
 	const user = useOptionalUser();
 
 	const TOTAL_ASSESSMENTS = ProgressContainer.getTotalNumberOfAssessments() ?? 1;
@@ -74,7 +90,7 @@ export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 					{/* Backdrop */}
 					<motion.div
 						key="backdrop"
-						className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
+						className="fixed inset-0 z-[65] bg-black/20 backdrop-blur-[2px]"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
@@ -85,10 +101,26 @@ export default function ProgressModal({ open, onClose }: ProgressModalProps) {
 					{/* Modal */}
 					<motion.div
 						key="modal"
-						className="fixed z-50 top-16 left-1/2 -translate-x-1/2 w-full max-w-sm mx-4 rounded-2xl overflow-hidden shadow-card-lg border border-gray-200 bg-white flex flex-col max-h-[80vh]"
-						initial={{ opacity: 0, y: -12, scale: 0.97 }}
-						animate={{ opacity: 1, y: 0, scale: 1 }}
-						exit={{ opacity: 0, y: -8, scale: 0.97 }}
+						className={
+							anchor
+								? 'fixed z-[70] w-full max-w-sm rounded-2xl overflow-hidden shadow-card-lg border border-gray-200 bg-white flex flex-col'
+								: 'fixed z-[70] top-16 left-1/2 -translate-x-1/2 w-full max-w-sm mx-4 rounded-2xl overflow-hidden shadow-card-lg border border-gray-200 bg-white flex flex-col max-h-[80vh]'
+						}
+						// Anchored: top-aligned with the card, just to its right, and
+						// never taller than the space left below it.
+						style={
+							anchor
+								? {
+										left: anchor.right + ANCHOR_GAP,
+										top: anchoredTop(anchor),
+										maxHeight: `calc(100vh - ${anchoredTop(anchor) + EDGE}px)`,
+										transformOrigin: 'left top',
+									}
+								: undefined
+						}
+						initial={anchor ? { opacity: 0, x: -12, scale: 0.97 } : { opacity: 0, y: -12, scale: 0.97 }}
+						animate={anchor ? { opacity: 1, x: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+						exit={anchor ? { opacity: 0, x: -8, scale: 0.97 } : { opacity: 0, y: -8, scale: 0.97 }}
 						transition={{ type: 'spring', stiffness: 340, damping: 30 }}
 					>
 						{/* ── Header ─────────────────────────────────────────── */}

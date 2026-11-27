@@ -57,6 +57,9 @@ export default function CityScene() {
 	const [healthOpen, setHealthOpen] = useState(false);
 	const [tokenOpen, setTokenOpen] = useState(false);
 	const [progressOpen, setProgressOpen] = useState(false);
+	// Set when the modal is opened from the "Your Progress" card, so it opens
+	// beside the card; null (header button) keeps it centred under the header.
+	const [progressAnchor, setProgressAnchor] = useState<DOMRect | null>(null);
 	const [moduleId, setModuleId] = useState<number | null>(null);
 	const [hoveredBlock, setHoveredBlock] = useState<CityBlockId | null>(null);
 	// Gracie's centre-stage intro runs on arrival; the city is inert behind its
@@ -352,7 +355,10 @@ export default function CityScene() {
 				username={user?.firstName ?? '—'}
 				onClickHealth={() => setHealthOpen(true)}
 				onClickToken={() => setTokenOpen(true)}
-				onClickTrend={() => setProgressOpen(true)}
+				onClickTrend={() => {
+					setProgressAnchor(null);
+					setProgressOpen(true);
+				}}
 				onClickUser={() => setDrawerOpen(true)}
 			/>
 
@@ -362,7 +368,10 @@ export default function CityScene() {
 				restore={!isVibrant}
 				tokens={user?.tokenBalance ?? 0}
 				health={city?.health ?? 0}
-				onOpenProgress={() => setProgressOpen(true)}
+				onOpenProgress={(anchor) => {
+					setProgressAnchor(anchor);
+					setProgressOpen(true);
+				}}
 			/>
 
 			{/* User profile drawer — right side */}
@@ -389,6 +398,7 @@ export default function CityScene() {
 			<ProgressModal
 				open={progressOpen}
 				onClose={() => setProgressOpen(false)}
+				anchor={progressAnchor}
 			/>
 
 			<Modules
