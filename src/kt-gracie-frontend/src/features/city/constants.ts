@@ -670,6 +670,21 @@ export const cityBlocks: CityBlock[] = modules.map((m) => {
 	};
 });
 
+// ─── Locked modules ───────────────────────────────────────────────────────────
+
+/**
+ * Knowledge units that are on the map but can't be entered yet. Their district
+ * and button stay visible but don't open.
+ * Remove an id here to unlock it.
+ */
+export const LOCKED_KU_IDS: readonly string[] = ['KU-004'];
+
+/** Whether a module (by numeric id) is locked. */
+export function isModuleLocked(moduleId: number): boolean {
+	const kuId = modules.find((m) => m.id === moduleId)?.kuId;
+	return kuId !== undefined && LOCKED_KU_IDS.includes(kuId);
+}
+
 // ─── Lookup helpers ───────────────────────────────────────────────────────────
 
 /** Get a module by id, returns undefined if not found. */

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { AssessmentType } from '@/ENUMS/enums';
 import { QuizScreen, ResultsScreen } from '@/features/quiz';
 import { GracieChat, GracieFeedback } from '@/features/gracie-ai';
@@ -15,6 +15,7 @@ import {
 import type { Module } from '@/features/city/types';
 import { getAllModules } from '@/services/corpusService';
 import { useModuleImage } from '@/features/city';
+import { isModuleLocked } from '@/features/city/constants';
 
 /**
  * Course route — /course/:moduleId
@@ -35,10 +36,19 @@ export default function CoursePage() {
 		if (!course.module) return;
 		getAllModules()
 			.then((all) =>
-				setNextModule(all.find((m) => m.id === course.module!.id + 1) ?? null),
+				setNextModule(
+					all.find(
+						(m) => m.id === course.module!.id + 1 && !isModuleLocked(m.id),
+					) ?? null,
+				),
 			)
 			.catch(() => setNextModule(null));
 	}, [course.module]);
+
+	// Locked modules can't be entered, even by direct URL.
+	if (moduleId !== undefined && isModuleLocked(Number(moduleId))) {
+		return <Navigate to="/city" replace />;
+	}
 
 	if (course.loading) {
 		return (

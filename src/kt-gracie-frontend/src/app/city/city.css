@@ -243,6 +243,17 @@
   opacity: 0.85;
 }
 
+/* --- Locked district: visible but can't be entered --- */
+
+.cityBlockItem--locked {
+  cursor: not-allowed;
+}
+
+.cityBlockItem--locked .cityBlock {
+  filter: grayscale(0.6);
+}
+
+
 .cityScene--hovering .cityBackground {
   filter: brightness(0.85) blur(1px);
 }

@@ -19,7 +19,11 @@ import {
 } from '@/features/city';
 import { useUser } from '@/features/auth';
 import { useSettings } from '@/features/settings';
-import { cityBlocks, getCityBlock } from '@/features/city/constants';
+import {
+	cityBlocks,
+	getCityBlock,
+	isModuleLocked,
+} from '@/features/city/constants';
 import type { CityBlockId } from '@/features/city/types';
 import { useCityLook } from '@/features/city/hooks/useCityLook';
 import { getCorpus } from '@/services/corpusService';
@@ -91,6 +95,7 @@ export default function CityScene() {
 	// Gracie together, so the two can never end up describing different places;
 	// closing the drawer clears both and returns her to her idle prompt.
 	const handleModuleClick = (id: number) => {
+		if (isModuleLocked(id)) return;
 		setModuleId(id);
 	};
 
@@ -289,16 +294,19 @@ export default function CityScene() {
 						const isActive =
 							hoveredBlock === block.id || moduleId === block.moduleId;
 						const isDimmed = hoveredBlock !== null && hoveredBlock !== block.id;
+						const locked = isModuleLocked(block.moduleId);
 
 						return (
 							<button
 								key={block.id}
 								type="button"
 								aria-label={`Open the ${block.alt}`}
+								aria-disabled={locked || undefined}
 								className={[
 									'cityBlockItem',
 									isActive ? 'cityBlockItem--active' : '',
 									isDimmed ? 'cityBlockItem--dimmed' : '',
+									locked ? 'cityBlockItem--locked' : '',
 								]
 									.filter(Boolean)
 									.join(' ')}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
-import { cityBlocks } from '../constants';
+import { ChevronRight, Lock } from 'lucide-react';
+import { cityBlocks, isModuleLocked } from '../constants';
 import { CityBlockId, Module } from '../types';
 import { getAllModules } from '@/services/corpusService';
 import { getResume, getUnitCompletionPercentage } from '@/services/progressContainerService';
@@ -100,6 +100,7 @@ export default function Modules({
 						hoveredBlock === block.id || activeModuleId === module.id;
 					// Fade with the district underneath when a sibling is hovered.
 					const isDimmed = hoveredBlock !== null && hoveredBlock !== block.id;
+					const locked = isModuleLocked(module.id);
 
 					return (
 						<div
@@ -115,7 +116,10 @@ export default function Modules({
 								}`}
 							>
 								<button
-									onClick={() => onClickModule?.(module.id)}
+									type="button"
+									onClick={() => {
+										if (!locked) onClickModule?.(module.id);
+									}}
 									onMouseEnter={() => onHoverModule?.(module.id)}
 									onMouseLeave={() => onHoverModule?.(null)}
 									onFocus={() => onHoverModule?.(module.id)}
@@ -123,8 +127,10 @@ export default function Modules({
 									aria-label={`${module.name}${
 										isStarted ? ` — ${pct}% complete` : ''
 									}`}
+									aria-disabled={locked || undefined}
 									className={[
-										'cityModuleBtn pointer-events-auto group flex flex-col md:flex-row items-center',
+										'cityModuleBtn pointer-events-auto group relative flex flex-col md:flex-row items-center',
+										locked ? 'cityModuleBtn--locked cursor-not-allowed' : '',
 										'gap-0.5 md:gap-1.5 px-2 py-1.5 md:px-3 md:py-2.5 rounded-lg md:rounded-xl',
 										'backdrop-blur-sm shadow-lg shadow-brand-500/20 active:scale-95',
 										'transition-all duration-150',
@@ -138,6 +144,7 @@ export default function Modules({
 										isStarted={isStarted}
 										pct={pct}
 										isActive={isActive}
+										locked={locked}
 									/>
 								</button>
 							</div>
@@ -209,6 +216,7 @@ interface MapButtonInnerProps {
 	isStarted: boolean;
 	pct: number;
 	isActive: boolean;
+	locked?: boolean;
 }
 
 function MapButtonInner({
@@ -216,6 +224,7 @@ function MapButtonInner({
 	isStarted,
 	pct,
 	isActive,
+	locked = false,
 }: MapButtonInnerProps) {
 	const Icon = module.icon;
 	return (
@@ -255,12 +264,21 @@ function MapButtonInner({
 					{pct}%
 				</span>
 			)}
-			<ChevronRight
-				className={`hidden md:block w-4 h-4 shrink-0 transition-colors ${
-					isActive ? 'text-white' : 'text-ink-muted group-hover:text-white'
-				}`}
-				aria-hidden="true"
-			/>
+			{locked ? (
+				<Lock
+					className={`w-3 h-3 md:w-4 md:h-4 shrink-0 transition-colors ${
+						isActive ? 'text-white' : 'text-ink-muted group-hover:text-white'
+					}`}
+					aria-hidden="true"
+				/>
+			) : (
+				<ChevronRight
+					className={`hidden md:block w-4 h-4 shrink-0 transition-colors ${
+						isActive ? 'text-white' : 'text-ink-muted group-hover:text-white'
+					}`}
+					aria-hidden="true"
+				/>
+			)}
 		</>
 	);
 }
